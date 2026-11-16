@@ -1,0 +1,125 @@
+{
+  "date": "2026-11-16",
+  "issue": 55,
+  "tests": {
+    "command": "npm run test:postgres",
+    "passed": 69,
+    "failed": 0,
+    "skipped": 0
+  },
+  "policy": {
+    "checkoutHoldMinutes": 5,
+    "payLaterMinimumHoursBeforeShow": 3,
+    "payLaterExpiryHoursBeforeShow": 2,
+    "availabilityUsesStoredExpiry": true,
+    "missingDeadlineBlocksPendingReview": true
+  },
+  "development": {
+    "readOnly": true,
+    "screens": [
+      {
+        "screen_id": 1,
+        "screening_id": 9,
+        "as_of": "2026-11-16T02:45:26.511Z",
+        "inventory_complete": true,
+        "seated": {
+          "total": 100,
+          "available": 99
+        },
+        "wheelchair": {
+          "total": 10,
+          "available": 10
+        }
+      },
+      {
+        "screen_id": 2,
+        "screening_id": 11,
+        "as_of": "2026-11-16T02:45:26.512Z",
+        "inventory_complete": true,
+        "seated": {
+          "total": 200,
+          "available": 199
+        },
+        "wheelchair": {
+          "total": 10,
+          "available": 10
+        }
+      },
+      {
+        "screen_id": 3,
+        "screening_id": 13,
+        "as_of": "2026-11-16T02:45:26.515Z",
+        "inventory_complete": true,
+        "seated": {
+          "total": 100,
+          "available": 99
+        },
+        "wheelchair": {
+          "total": 10,
+          "available": 10
+        }
+      },
+      {
+        "screen_id": 4,
+        "screening_id": 15,
+        "as_of": "2026-11-16T02:45:26.516Z",
+        "inventory_complete": true,
+        "seated": {
+          "total": 200,
+          "available": 199
+        },
+        "wheelchair": {
+          "total": 10,
+          "available": 10
+        }
+      }
+    ]
+  },
+  "representativeExample": {
+    "target": "disposable local test database; removed after verification",
+    "city": "Oulu",
+    "screen_id": 1,
+    "film_id": 1,
+    "screening_id": 1,
+    "readPath": "/api/seats/availability?screenId=1&screeningId=1",
+    "beforeStoredHoldExpiry": {
+      "screen_id": 1,
+      "screening_id": 1,
+      "as_of": "2026-11-16T02:45:26.817Z",
+      "inventory_complete": true,
+      "seated": {
+        "total": 100,
+        "available": 95
+      },
+      "wheelchair": {
+        "total": 10,
+        "available": 9
+      }
+    },
+    "afterStoredHoldExpiry": {
+      "screen_id": 1,
+      "screening_id": 1,
+      "as_of": "2026-11-16T02:45:26.823Z",
+      "inventory_complete": true,
+      "seated": {
+        "total": 100,
+        "available": 96
+      },
+      "wheelchair": {
+        "total": 10,
+        "available": 9
+      }
+    },
+    "readsPreserveBookingHistory": true,
+    "fixturesCreatedDirectlyForVerification": true
+  },
+  "remaining": {
+    "holdCreation": true,
+    "writeDeadlineValidation": true,
+    "atomicAllocation": true,
+    "paymentExpiryRace": true,
+    "ceoRelease": true,
+    "frontend": true,
+    "sharedDatabaseVerification": true
+  }
+}

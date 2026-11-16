@@ -1,12 +1,10 @@
 import { SeatRequestError } from "./seatsService.js";
 
 export function createSeatsController(service) {
-  return {
-    async listSeats(req, res) {
+  function handle(read) {
+    return async (req, res) => {
       try {
-        res
-          .status(200)
-          .json({ success: true, data: await service.listSeats(req.query) });
+        res.status(200).json({ success: true, data: await read(req.query) });
       } catch (error) {
         if (error instanceof SeatRequestError)
           return res.status(400).json({ success: false, error: error.message });
@@ -16,6 +14,10 @@ export function createSeatsController(service) {
           error: "There was a inside error while fetching the Seat data",
         });
       }
-    },
+    };
+  }
+  return {
+    listSeats: handle(service.listSeats),
+    getAvailability: handle(service.getAvailability),
   };
 }

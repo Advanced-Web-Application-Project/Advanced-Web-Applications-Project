@@ -19,6 +19,15 @@ safeguards and verification evidence. The historical missing-column/seed finding
 below no longer describe the current local implementation. General occupancy
 expiry, selection validation and the frontend map remain separate tasks.
 
+## Availability update — 16 November 2026
+
+#55 uses stored expiry deadlines for screening-specific reads and adds separate
+seated/wheelchair counts. Five-minute checkout holds and pay-later eligibility
+(at least three hours before showtime, expiring two hours before it) are confirmed.
+Creation/validation of those deadlines remains future allocation work. See
+[the current availability contract](API-SEAT-AVAILABILITY.md). Historical ticket-
+only occupancy findings below are superseded; reads do not secure places.
+
 ## Status and scope
 
 Reviewed on 8 November 2026 against local commit

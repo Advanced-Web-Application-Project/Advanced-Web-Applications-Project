@@ -116,3 +116,12 @@ in the 100/200 seated capacity; ten wheelchair places are additional. Repeatable
 physical inventory is available through `npm run db:seed:inventory` from `backend/`; see
 the [inventory setup and API fields](docs/SCREEN-INVENTORY.md). See the [CEO reservation policy](docs/CEO-RESERVATIONS.md)
 for database/API behavior, verified scope and the deferred CEO-only release feature.
+
+
+## Screening availability
+
+`GET /api/seats?screenId=...&screeningId=...` now respects stored booking expiry
+deadlines. `GET /api/seats/availability` with both IDs returns separate seated
+and wheelchair available/total counts and a server snapshot time. See the
+[availability contract](docs/API-SEAT-AVAILABILITY.md) for states, errors,
+confirmed five-minute checkout policy and verification. Reads create no holds.

@@ -102,15 +102,18 @@ export async function verifyInventory({ databaseUrl, baseUrl }) {
         for (const key of Object.keys(place))
           assert.equal(found[key], place[key], key);
       }
-      const occupied = (
-        await client.query(
-          `SELECT DISTINCT t.seat_id FROM public.tickets t
-        JOIN public.bookings b ON b.id=t.booking_id WHERE b.screening_id=$1`,
-          [show.id],
-        )
-      ).rows.map((s) => s.seat_id);
-      for (const seat of rows)
-        assert.equal(seat.isBooked, occupied.includes(seat.id));
+      const counts = await get(
+        `/api/seats/availability?screenId=${screen.id}&screeningId=${show.id}`,
+      );
+      assert.equal(counts.inventory_complete, true);
+      assert.deepEqual(counts.seated, {
+        total: screen.capacity,
+        available: rows.filter((s) => !s.is_wheelchair && !s.isBooked).length,
+      });
+      assert.deepEqual(counts.wheelchair, {
+        total: 10,
+        available: rows.filter((s) => s.is_wheelchair && !s.isBooked).length,
+      });
       const ceo = (
         await client.query(
           `SELECT b.id AS booking_id,t.seat_id FROM public.bookings b

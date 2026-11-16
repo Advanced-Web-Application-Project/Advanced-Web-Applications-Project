@@ -21,6 +21,7 @@ try {
       TEST_SCREENINGS_DATABASE_URL: databaseUrl,
       TEST_CEO_DATABASE_URL: databaseUrl,
       TEST_INVENTORY_DATABASE_URL: databaseUrl,
+      TEST_AVAILABILITY_DATABASE_URL: databaseUrl,
     },
   });
   const [code] = await once(child, "exit");
