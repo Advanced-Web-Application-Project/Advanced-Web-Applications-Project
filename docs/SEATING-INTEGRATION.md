@@ -10,6 +10,15 @@ The permanent/no-override statements in the historical review below are
 superseded by this decision. The remaining review still describes its stated
 baseline commit, not the current implementation.
 
+## Inventory update — 16 November 2026
+
+#51 adds repeatable inventories and explicit stored `physical_column` and
+`display_label` fields, preserving existing integer labels and IDs. See
+[screen inventory](SCREEN-INVENTORY.md) for commands, current API data meanings,
+safeguards and verification evidence. The historical missing-column/seed findings
+below no longer describe the current local implementation. General occupancy
+expiry, selection validation and the frontend map remain separate tasks.
+
 ## Status and scope
 
 Reviewed on 8 November 2026 against local commit

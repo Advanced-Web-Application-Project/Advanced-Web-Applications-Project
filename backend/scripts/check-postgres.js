@@ -20,6 +20,7 @@ try {
       TEST_BROWSING_DATABASE_URL: databaseUrl,
       TEST_SCREENINGS_DATABASE_URL: databaseUrl,
       TEST_CEO_DATABASE_URL: databaseUrl,
+      TEST_INVENTORY_DATABASE_URL: databaseUrl,
     },
   });
   const [code] = await once(child, "exit");

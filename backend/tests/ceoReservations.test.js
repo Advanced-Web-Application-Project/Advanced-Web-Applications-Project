@@ -121,7 +121,7 @@ test(
       ).rows[0].id;
     }
     async function fillLayout(client, screen) {
-      // Valid test fixtures only; production inventory generation remains #51.
+      // Independent fixture construction also exercises legacy inserts without column fields.
       for (let ordinal = 1; ordinal <= screen.capacity; ordinal += 1) {
         const row = Math.floor((ordinal - 1) / 10) + 1;
         const label = ordinal >= 13 ? ordinal + 1 : ordinal;
@@ -689,7 +689,7 @@ test(
                     "SELECT count(*)::int AS count FROM rio_schema_migrations",
                   )
                 ).rows[0].count,
-                conflict ? 1 : 3,
+                conflict ? 1 : 4,
               );
             } finally {
               await rm(directory, { recursive: true, force: true });

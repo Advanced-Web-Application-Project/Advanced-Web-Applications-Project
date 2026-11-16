@@ -112,6 +112,7 @@ API configuration, build/lint/test commands and verified scope.
 ## CEO seat reservations
 
 Each screening now receives a non-expiring system CEO booking. Seat 1 is included
-in the 100/200 seated capacity; ten wheelchair places are additional. Physical
-inventory generation remains #51. See the [CEO reservation policy](docs/CEO-RESERVATIONS.md)
+in the 100/200 seated capacity; ten wheelchair places are additional. Repeatable
+physical inventory is available through `npm run db:seed:inventory` from `backend/`; see
+the [inventory setup and API fields](docs/SCREEN-INVENTORY.md). See the [CEO reservation policy](docs/CEO-RESERVATIONS.md)
 for database/API behavior, verified scope and the deferred CEO-only release feature.

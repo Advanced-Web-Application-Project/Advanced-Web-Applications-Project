@@ -253,3 +253,18 @@ Before #51, local CEO bookings have no tickets because there are no seat rows;
 inserting each screen's designated seat 1 later attaches those tickets without
 recreating screenings or bookings. Do not interpret absent inventory as available
 physical places. Existing migration files and IDs are preserved.
+
+
+## Physical inventory (#51)
+
+After applying migrations and browsing fixtures, run `npm run db:seed:inventory`
+from `backend/`. Reruns preserve IDs/bookings and report zero inserted rows.
+With the backend running, `npm run verify:inventory` verifies all four layouts
+and the city/screen/movie/screening/seat API path using read-only queries.
+
+Migration `0004_screen_inventory.sql` adds stored physical columns/display labels,
+unique positions/zone labels, bounds and preservation guards. The local inventory
+now contains 600 seated plus 40 separate wheelchair places; earlier empty-inventory
+statements above describe the historical #39/#52/#36 verification stages. See
+[the inventory guide](../docs/SCREEN-INVENTORY.md) and
+[recorded verification](verification/inventory.json) for current behavior.

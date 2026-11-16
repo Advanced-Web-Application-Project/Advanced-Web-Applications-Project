@@ -11,7 +11,9 @@
     "db:migrate:dev": "node scripts/db-migrate.js",
     "db:seed:browsing": "node scripts/db-seed-browsing.js",
     "verify:browsing": "node scripts/verify-browsing.js",
-    "test:postgres": "node scripts/check-postgres.js"
+    "test:postgres": "node scripts/check-postgres.js",
+    "db:seed:inventory": "node scripts/db-seed-inventory.js",
+    "verify:inventory": "node scripts/verify-inventory.js"
   },
   "keywords": [],
   "author": "",

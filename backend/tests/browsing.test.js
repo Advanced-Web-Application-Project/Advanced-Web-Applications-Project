@@ -214,9 +214,13 @@ test(
     );
 
     await t.test(
-      "existing incompatible wheelchair capacity is preserved",
+      "browsing seed still refuses incompatible manually drifted metadata",
       async () => {
         await withDatabase(async (url, client) => {
+          // Simulate an older or manually drifted schema to retain the seed guard regression.
+          await client.query(
+            "ALTER TABLE screens DROP CONSTRAINT screens_wheelchair_capacity_check",
+          );
           await client.query("INSERT INTO cities (name) VALUES ('Oulu')");
           await client.query(
             "INSERT INTO screens (city_id, capacity, wheelchair_capacity) VALUES (1, 100, 9)",
