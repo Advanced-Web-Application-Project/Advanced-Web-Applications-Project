@@ -1,5 +1,15 @@
 # RIO Seating Integration
 
+## Policy update — 16 November 2026
+
+The user has confirmed that 100/200 includes seat 1 and wheelchair labels are
+W1–W10. Seat 1 now uses a default system reservation per screening; only a future
+authenticated CEO administrator may release it to customers. Release stays
+disabled until that authentication exists. See [current CEO reservation policy](CEO-RESERVATIONS.md).
+The permanent/no-override statements in the historical review below are
+superseded by this decision. The remaining review still describes its stated
+baseline commit, not the current implementation.
+
 ## Status and scope
 
 Reviewed on 8 November 2026 against local commit
