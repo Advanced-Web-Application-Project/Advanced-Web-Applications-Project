@@ -96,9 +96,9 @@ flag indicates designation. It is not screening availability. The prototype
 its existing fields remain. A pending system booking may still have the
 prototype's `[null]` seat aggregation until inventory is provisioned.
 
-General booking-state/expiry filtering, comprehensive seat-request ID validation
-and authoritative availability/selection remain #55/#27. This change does not
-claim that expired customer tickets are already handled correctly.
+Deadline-aware availability and strict seat-request ID validation are now implemented
+in #55; see [the current availability contract](API-SEAT-AVAILABILITY.md).
+Authoritative selection/allocation and CEO-only release remain separate work.
 
 ## Commands and evidence
 

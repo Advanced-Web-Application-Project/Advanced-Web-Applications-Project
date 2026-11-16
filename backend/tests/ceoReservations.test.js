@@ -27,9 +27,14 @@ test("seat flags do not assume database ID 1 and use screening booking provenanc
     { id: 81, seat_label: 1, is_wheelchair: true, is_ceo_reserved: false },
   ];
   const service = createSeatsService({
-    screeningBelongsToScreen: async () => true,
+    findScreeningAvailability: async () => ({
+      seats: places.map((place) => ({
+        ...place,
+        isBooked: place.id === 80,
+        isReservedByCeo: place.id === 80,
+      })),
+    }),
     findSeats: async () => places,
-    findTicketOccupancy: async () => [{ seat_id: 80, booking_type: "ceo" }],
   });
   const inventory = await service.listSeats({ screenId: "4" });
   assert.deepEqual(
@@ -49,7 +54,7 @@ test("seat flags do not assume database ID 1 and use screening booking provenanc
 
 test("cross-screen seat requests fail before inventory/occupancy is read", async () => {
   const service = createSeatsService({
-    screeningBelongsToScreen: async () => false,
+    findScreeningAvailability: async () => null,
     findSeats: async () => {
       throw new Error("Should not read mismatched inventory");
     },

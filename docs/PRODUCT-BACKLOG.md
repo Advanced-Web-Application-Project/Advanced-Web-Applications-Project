@@ -57,11 +57,12 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 - Authorised administrators set the base ticket price. The scope of a price setting remains open.
 - A child ticket, for a customer aged 12 or under, is priced at 50% of the adult price. This is the normal child category price.
 - A proposed 15% first-time/premiere surcharge remains unconfirmed and must not be silently applied.
+- Confirming a seat selection creates a five-minute checkout hold with a stored expiry deadline; merely choosing seats creates no allocation. Revalidate and allocate atomically at confirmation (confirmed 16 November 2026).
 - Guest customers can buy without registration or login.
 - Reserving without immediate payment requires an account.
 - A booking of six or more requires immediate payment. Working interpretation: count all attendee places in that booking, including wheelchair places; confirm the threshold unit.
-- New bookings at or within two hours before the screening require immediate payment.
-- Earlier unpaid customer reservations expire two hours before the screening and release their places. Paid bookings are unaffected.
+- Pay-later reservations are allowed at least three hours before the screening; bookings less than three hours before it require immediate payment (confirmed 16 November 2026).
+- Unpaid customer reservations expire two hours before the screening and release their places. Store the deadline in `expiry_time`; availability reads compare it with the current time rather than recalculating it. Paid bookings are unaffected (confirmed 16 November 2026).
 - Stripe handles online payments. Pay-at-cinema recording and the deadline/payment race require refinement.
 
 ### Company bookings
@@ -185,7 +186,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 - Before confirmation, the system validates availability, selection rules, and the authoritative price.
 - Payment completion around hold expiry follows a defined outcome without leaving an unexplained charge or double allocation.
 
-**Dependencies:** RIO-07. **Open:** Hold duration and expiry/payment policy (O-07).
+**Dependencies:** RIO-07. **Agreed:** Five-minute checkout holds. **Open:** Expiry/payment race policy (O-07).
 
 ### RIO-09 — Complete guest checkout through Stripe
 
@@ -258,7 +259,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 
 **Acceptance criteria**
 - Only signed-in customers can complete an unpaid reservation.
-- Pay-later is available only more than two hours before the screening and below the six-place threshold.
+- Pay-later is available only at least three hours before the screening and below the six-place threshold.
 - Six or more places, or a booking at/within the two-hour cutoff, requires immediate payment.
 - A successful reservation holds the places and shows its exact payment deadline and unpaid status.
 - Availability and seating rules are enforced consistently with paid purchases.
@@ -394,7 +395,7 @@ These are refinement tasks, not reasons to stop work on independent items. Custo
 | O-04 | Select movie-data provider and required metadata fields. | RIO-03, 06 |
 | O-05 | Define duration/turnaround and changes/cancellation of screenings with bookings. | RIO-04 |
 | O-06 | Define base-price scope, currency, rounding, and price changes during checkout; confirm or reject the proposed +15% premiere rule. | RIO-05, 09 |
-| O-07 | Choose checkout-hold duration; define payment after hold expiry and isolated-seat validation with temporary holds or existing gaps. | RIO-07–09 |
+| O-07 | Checkout hold duration is five minutes (confirmed 16 November 2026); define payment after hold expiry and isolated-seat validation with temporary holds or existing gaps. | RIO-07–09 |
 | O-08 | Agree guest contact fields, confirmation delivery/retrieval, ticket admission validation, and Stripe setup. | RIO-09–10 |
 | O-09 | Confirm six-place threshold counting; agree online/cinema settlement, manual reservation deadlines, and payment at the two-hour cutoff. | RIO-11, 14–16 |
 | O-10 | Select dashboard metrics and define reporting calculations, period filters, and city visibility. | RIO-12 |

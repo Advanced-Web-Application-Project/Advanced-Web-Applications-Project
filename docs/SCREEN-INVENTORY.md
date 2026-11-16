@@ -123,3 +123,11 @@ Shared/CSC adoption and deployment are not verified. Booking status/expiry,
 authoritative selection validation, aggregate availability/listing counts,
 frontend seat maps, checkout holds and CEO-only release remain #55/#27/#77/
 #56/#57/#76 and their related tasks. A successful selection does not secure seats.
+
+
+## Availability follow-up (#55)
+
+Deadline-aware reads and the separate seated/wheelchair counts endpoint are now
+provided by [the availability feature](API-SEAT-AVAILABILITY.md). Inventory setup
+still creates no customer hold; frontend count display and allocation writes
+remain their separate tasks.

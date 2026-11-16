@@ -7,4 +7,5 @@ export function registerSeatRoutes(app, pool) {
     createSeatsService(createSeatsRepository(pool)),
   );
   app.get("/api/seats", controller.listSeats);
+  app.get("/api/seats/availability", controller.getAvailability);
 }
