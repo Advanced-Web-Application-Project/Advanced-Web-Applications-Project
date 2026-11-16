@@ -1,0 +1,225 @@
+{
+  "verifiedOn": "2026-11-16",
+  "scope": "Only the isolated local rio_dev database and disposable test databases. No shared database migrated.",
+  "decisions": {
+    "seatedCapacities": [100, 200],
+    "ceoIncludedInCapacity": true,
+    "wheelchairCapacity": 10,
+    "wheelchairLabels": "W1–W10",
+    "releaseAuthority": "Future authenticated CEO administrator only; release disabled in this milestone"
+  },
+  "migration": {
+    "applied": ["0002_ceo_reservations.sql"],
+    "previouslyApplied": 1
+  },
+  "rerun": {
+    "applied": [],
+    "previouslyApplied": 3
+  },
+  "beforeCounts": {
+    "bookings": 0,
+    "cities": 2,
+    "company_requests": 0,
+    "films": 2,
+    "invoices": 0,
+    "prices": 0,
+    "screenings": 8,
+    "screens": 4,
+    "seats": 0,
+    "tickets": 0,
+    "users": 0
+  },
+  "afterCounts": {
+    "bookings": 16,
+    "cities": 2,
+    "company_requests": 0,
+    "films": 2,
+    "invoices": 0,
+    "prices": 0,
+    "screenings": 16,
+    "screens": 4,
+    "seats": 0,
+    "tickets": 0,
+    "users": 0
+  },
+  "localReservations": [
+    {
+      "screening_id": 1,
+      "screen_id": 1,
+      "reservation_id": 1,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 2,
+      "screen_id": 1,
+      "reservation_id": 2,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 3,
+      "screen_id": 2,
+      "reservation_id": 3,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 4,
+      "screen_id": 2,
+      "reservation_id": 4,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 5,
+      "screen_id": 3,
+      "reservation_id": 5,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 6,
+      "screen_id": 3,
+      "reservation_id": 6,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 7,
+      "screen_id": 4,
+      "reservation_id": 7,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 8,
+      "screen_id": 4,
+      "reservation_id": 8,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 9,
+      "screen_id": 1,
+      "reservation_id": 9,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 10,
+      "screen_id": 1,
+      "reservation_id": 10,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 11,
+      "screen_id": 2,
+      "reservation_id": 11,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 12,
+      "screen_id": 2,
+      "reservation_id": 12,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 13,
+      "screen_id": 3,
+      "reservation_id": 13,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 14,
+      "screen_id": 3,
+      "reservation_id": 14,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 15,
+      "screen_id": 4,
+      "reservation_id": 15,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    },
+    {
+      "screening_id": 16,
+      "screen_id": 4,
+      "reservation_id": 16,
+      "booking_type": "ceo",
+      "status": "reserved",
+      "expiry_time": null,
+      "ticket_count": 0
+    }
+  ],
+  "realBrowsingVerified": {
+    "screens": 4,
+    "screenings": 8
+  },
+  "backendTests": {
+    "total": 47,
+    "passed": 47,
+    "failed": 0,
+    "skipped": 0
+  },
+  "completeTestLayoutAvailability": [
+    {
+      "capacity": 100,
+      "availableSeated": 99,
+      "wheelchairSpaces": 10
+    },
+    {
+      "capacity": 200,
+      "availableSeated": 199,
+      "wheelchairSpaces": 10
+    }
+  ],
+  "remaining": [
+    "Local physical inventory remains empty until #51; CEO tickets attach on provisioning",
+    "CEO account authentication and release endpoint are not implemented and no release is permitted",
+    "General hold/expiry availability semantics remain #55 and allocation work",
+    "Frontend seat map and availability-count display remain later seating items"
+  ],
+  "followUpMigration": {
+    "applied": ["0003_guard_ceo_seat_conversion.sql"],
+    "previouslyApplied": 2
+  },
+  "referencedSeatConversionBlocked": true,
+  "followUpPreservedReservationIds": true
+}

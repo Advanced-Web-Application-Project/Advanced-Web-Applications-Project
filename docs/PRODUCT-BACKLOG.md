@@ -30,8 +30,8 @@ The administration website includes a dashboard and a control hub. The customer 
 - The seat map places the screen at the bottom. Row 1 is the nearest seated row to the screen. A wheelchair area lies between row 1 and the screen. Side access and stairs to higher rows inform the layout.
 - Seat numbers continue across rows and skip label 13. Snake numbering alternates direction: row 1 runs left to right, row 2 right to left, and so on.
 - Row labels skip 13; physical rows are not omitted.
-- Every screen has ten wheelchair parking spaces in addition to its physical seats. Customers watch from their own wheelchairs. Space identifiers and ticket pricing remain open.
-- Seat 1 is permanently allocated to the CEO. No customer, cashier, administrator, or CEO action can release or sell it.
+- Every screen has ten wheelchair parking spaces in addition to its physical seats. Customers watch from their own wheelchairs. Space identifiers are W1–W10; ticket pricing remains open (confirmed 16 November 2026).
+- Seat 1 starts reserved for the CEO through a system booking for every screening. Only the authenticated CEO administrator may later release that screening's reservation to customers; ordinary administrators, cashiers and customers cannot. CEO authentication/release is future work and release remains disabled until implemented. See [CEO reservation policy](CEO-RESERVATIONS.md) (confirmed 16 November 2026).
 - Working name RIO requires confirmation. UI colours are gold, red, and black.
 
 | Physical row | Row label | Seat labels, left to right |
@@ -41,14 +41,14 @@ The administration website includes a dashboard and a control hub. The customer 
 | 3 | 3 | 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 |
 | 13 | 14 | Numbering continues without a missing physical row |
 
-With this interpretation, the 100-seat screen has labels through 101 and the 200-seat screen through 201. Assuming seat 1 is included in those capacities, ordinary customer capacity is 99 or 199, plus ten wheelchair spaces. Confirm that capacity interpretation before final configuration.
+With this interpretation, the 100-seat screen has labels through 101 and the 200-seat screen through 201. Seat 1 is included in those capacities, so initial ordinary seated availability is 99/100 or 199/200, plus ten separate wheelchair spaces (confirmed 16 November 2026).
 
 ### Seat-selection rules
 
 - A booking must not create an isolated available seat between unavailable seats in the same physical row. Two or more consecutive available seats are allowed.
 - One available seat at either end of a row is allowed.
 - Validate physical adjacency, not arithmetic differences between seat labels.
-- Customers and staff follow the same rule. Seat 1 has no override.
+- Customers and staff follow the same rule. Only an authenticated CEO administrator may explicitly release the default seat-1 reservation; no ordinary customer/staff override exists.
 - Example: if seats 5 and 6 are already booked, selecting 7 is allowed; selecting 8 alone is rejected because it isolates 7; selecting 9 alone is allowed because 7 and 8 remain together, assuming no other seats cause a violation.
 - Technical treatment of temporary checkout holds and pre-existing isolated gaps needs refinement; it must preserve the agreed customer-facing rule.
 
@@ -312,7 +312,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 - Staff can review pending requests within their permitted city scope.
 - Declining records a message for the company.
 - Acceptance requires available places in the agreed screening and immediately secures them.
-- Seat rules, capacity limits, and permanent CEO protection apply.
+- Seat rules, capacity limits, and the default CEO reservation/CEO-only release policy apply.
 - Acceptance and allocation succeed together; a partial failure cannot leave a request accepted without its places.
 - The company receives the decision through the agreed channel.
 
@@ -389,7 +389,7 @@ These are refinement tasks, not reasons to stop work on independent items. Custo
 | ID | Decision | Affects |
 | --- | --- | --- |
 | O-01 | Confirm RIO name. | Branding |
-| O-02 | Confirm seat 1 is within stated capacity; choose wheelchair identifiers and price category; decide loyalty eligibility for wheelchair tickets. | RIO-01, 05, 07, 20 |
+| O-02 | Capacity includes seat 1 and W1–W10 identifiers are confirmed (16 November 2026); wheelchair price category and loyalty eligibility remain open. | RIO-01, 05, 07, 20 |
 | O-03 | Define administrator/cashier permissions, city scope, staff provisioning, and who may set prices or reserve manually. | RIO-02, 05, 11 |
 | O-04 | Select movie-data provider and required metadata fields. | RIO-03, 06 |
 | O-05 | Define duration/turnaround and changes/cancellation of screenings with bookings. | RIO-04 |

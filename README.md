@@ -25,7 +25,7 @@ The [Architecture guide](docs/ARCHITECTURE.md) explains the planned application 
 
 ## Product Backlog
 
-Explore the [Product Backlog](PRODUCT-BACKLOG.md) for planned features, priorities, acceptance criteria, and open decisions.
+Explore the [Product Backlog](docs/PRODUCT-BACKLOG.md) for planned features, priorities, acceptance criteria, and open decisions.
 
 ## Communication
 
@@ -86,8 +86,8 @@ Application setup lives in `backend/src/app.js` and has no listening side effect
 Runtime orchestration lives in `backend/src/server.js`; `backend/server.js` loads
 the environment and handles process signals. Shared configuration is in
 `backend/src/config/`. Other prototype SQL/routes remain in `backend/api.js`, with the pool passed in
-explicitly; screening reads now follow the feature layers in
-`backend/src/features/screenings/`. See the [screening API contract](docs/API-SCREENINGS.md). New business logic should follow the feature
+explicitly; screening and seat reads now follow their feature layers in
+`backend/src/features/`. See the [screening API contract](docs/API-SCREENINGS.md). New business logic should follow the feature
 boundaries in the architecture guide as those features are implemented.
 
 The existing Docker Compose/Kubernetes files remain deployment scaffolding:
@@ -108,3 +108,10 @@ npm run dev
 
 Open `http://127.0.0.1:5173/`. See the [frontend guide](frontend/README.md) for
 API configuration, build/lint/test commands and verified scope.
+
+## CEO seat reservations
+
+Each screening now receives a non-expiring system CEO booking. Seat 1 is included
+in the 100/200 seated capacity; ten wheelchair places are additional. Physical
+inventory generation remains #51. See the [CEO reservation policy](docs/CEO-RESERVATIONS.md)
+for database/API behavior, verified scope and the deferred CEO-only release feature.

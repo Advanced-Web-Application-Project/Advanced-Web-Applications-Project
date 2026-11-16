@@ -99,7 +99,7 @@ test(
     }
 
     await t.test(
-      "inspect empty schema, apply baseline, verify catalog and preserve linked records on rerun",
+      "inspect empty schema, apply migrations, verify catalog and preserve linked records on rerun",
       async () => {
         await withDatabase(async (url, client) => {
           const before = await inspectDatabase(url);
@@ -107,7 +107,11 @@ test(
           assert.deepEqual(before.tables, []);
           assert.deepEqual(before.missingTables, APPLICATION_TABLES);
           assert.deepEqual(await migrate(url), {
-            applied: ["0001_initial_schema.sql"],
+            applied: [
+              "0001_initial_schema.sql",
+              "0002_ceo_reservations.sql",
+              "0003_guard_ceo_seat_conversion.sql",
+            ],
             previouslyApplied: 0,
           });
           const schema = await inspectDatabase(url);
@@ -119,7 +123,7 @@ test(
           );
           assert.equal(
             schema.constraints.filter((row) => row.type === "c").length,
-            9,
+            13,
           );
           assert.equal(
             schema.constraints.filter((row) => row.type === "p").length,
@@ -128,13 +132,24 @@ test(
           assert.deepEqual(
             schema.triggers.map((row) => [row.name, row.enabled]),
             [
+              ["trg_ensure_ceo_for_inventory", "O"],
+              ["trg_ensure_ceo_for_screening", "O"],
               ["trg_prevent_ceo_seat_booking", "O"],
+              ["trg_protect_ceo_booking", "O"],
+              ["trg_protect_ceo_screening", "O"],
               ["trg_protect_ceo_seat_config", "O"],
             ],
           );
           assert.deepEqual(
             schema.functions.map((row) => row.name),
-            ["prevent_ceo_seat_booking", "protect_ceo_seat_config"],
+            [
+              "ensure_ceo_after_inventory_or_screening",
+              "ensure_ceo_reservation",
+              "prevent_ceo_screening_relocation",
+              "prevent_ceo_seat_booking",
+              "protect_ceo_booking",
+              "protect_ceo_seat_config",
+            ],
           );
           assert.ok(
             schema.indexes.some((row) => row.name === "cities_name_key"),
@@ -153,7 +168,7 @@ test(
             users:
               "id role permitted_city_id email password_hash loyalty_progress",
             bookings:
-              "id user_id guest_email screening_id status booking_time expiry_time",
+              "id user_id guest_email screening_id status booking_time expiry_time booking_type",
             tickets:
               "id booking_id seat_id price_id is_loyalty_rewarded amount_charged",
             company_requests:
@@ -277,7 +292,7 @@ test(
           const records = await snapshot();
           assert.deepEqual(await migrate(url), {
             applied: [],
-            previouslyApplied: 1,
+            previouslyApplied: 3,
           });
           assert.deepEqual(await snapshot(), records);
           assert.equal(
@@ -304,10 +319,10 @@ test(
                 "SELECT count(*)::int AS count FROM rio_schema_migrations",
               )
             ).rows[0].count,
-            1,
+            3,
           );
           console.log(
-            "Schema evidence: empty → 11 application tables, 13 foreign keys, 9 checks, 2 enabled triggers; linked IDs survive rerun.",
+            "Schema evidence: empty → 11 application tables, 13 foreign keys, 13 checks, 6 enabled triggers; linked IDs survive rerun.",
           );
         });
       },
@@ -320,7 +335,7 @@ test(
           const results = await Promise.all([migrate(url), migrate(url)]);
           assert.equal(
             results.reduce((count, result) => count + result.applied.length, 0),
-            1,
+            3,
           );
           assert.equal((await inspectDatabase(url)).tables.length, 12);
         });

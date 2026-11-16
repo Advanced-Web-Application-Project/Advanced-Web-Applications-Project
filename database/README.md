@@ -235,3 +235,21 @@ M0 did not include the React application, seats/availability/validation, prices,
 holds or payment. Screening `screenId` filtering and stable `film_id` responses
 were subsequently added in #53; see the [screening API contract](../docs/API-SCREENINGS.md).
 No shared/CSC database or deployed application was verified.
+
+## CEO-reservation migration (#36)
+
+`0002_ceo_reservations.sql` adds `bookings.booking_type`, default system
+reservations, per-screen seat-1 constraints and corrected guards. Follow-up
+`0003_guard_ceo_seat_conversion.sql` protects referenced ordinary places from
+conversion into CEO inventory. The approved
+16 November policy replaces the old unconditional permanent-lock requirement.
+See [CEO reservations](../docs/CEO-RESERVATIONS.md) for the full contract and
+[verification evidence](verification/ceo-reservations.json).
+
+The migration has been applied only to the isolated local development database.
+It does not generate physical inventory or a CEO account. Default reservations
+remain unavailable for release until proper CEO authentication is implemented.
+Before #51, local CEO bookings have no tickets because there are no seat rows;
+inserting each screen's designated seat 1 later attaches those tickets without
+recreating screenings or bookings. Do not interpret absent inventory as available
+physical places. Existing migration files and IDs are preserved.

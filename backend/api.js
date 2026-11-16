@@ -1,58 +1,11 @@
+import { registerSeatRoutes } from "./src/features/seats/seatsRoutes.js";
 import { registerScreeningRoutes } from "./src/features/screenings/screeningsRoutes.js";
 
 export default function(app, pool) {
 
 
 
-//GET SEATS
-
-    app.get('/api/seats', async (req, res) => {
-        try{ 
-            const screenId = req.query.screenId
-            const screeningId = req.query.screeningId;
-
-            if(!screenId){
-                return res.status(400).json({
-                    success:false,
-                    error: 'screenId query parameter required'
-                })
-            }
-
-            const seatsResult = await pool.query(`
-                SELECT * FROM seats where screen_id = $1 ORDER BY id ASC
-                `, [screenId])
-          
-                let seats = seatsResult.rows;
-                let bookedSeatsId = [];
-
-                if(screeningId){
-                    const screeningSeats = await pool.query(`
-                    SELECT 
-                    tickets.seat_id
-                    FROM tickets
-                    JOIN bookings ON tickets.booking_id = bookings.id
-                    WHERE bookings.screening_id = $1`, [screeningId])
-
-                        bookedSeatsId = screeningSeats.rows.map(lol => lol.seat_id)
-                }
-        
-                seats = seats.map(seat =>{
-                    return{
-                    ...seat,
-                    isBooked: bookedSeatsId.includes(seat.id),
-                    isReservedByCeo: seat.id === 1 || Boolean(seat.is_ceo_reserved)
-                    }
-
-                    
-                })
-
-           res.status(200).json({success: true, data: seats})
-
-        }catch (error){
-            console.error('There was error fetching the seats')
-            res.status(500).json({success: false, error: 'There was a inside error while fetching the Seat data'})
-        }
-    })
+    registerSeatRoutes(app, pool);
 
 //get all screens
     app.get('/api/screens', async (req, res) => {
@@ -217,6 +170,7 @@ export default function(app, pool) {
         let query = `
         SELECT
         bookings.id AS booking_id,
+        bookings.booking_type,
         screenings.screening_time,
         films.title AS film_title,
         ARRAY_AGG(tickets.seat_id) AS seat_id
