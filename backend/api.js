@@ -265,6 +265,7 @@ export default function(app) {
         SELECT
         bookings.id AS booking_id,
         screenings.screening_time,
+        
         films.title AS film_title,
         ARRAY_AGG(tickets.seat_id) AS seat_id
         FROM bookings
@@ -298,9 +299,9 @@ export default function(app) {
 
 
     })
-}
 
 
+//delete booking
 app.delete('/api/bookings/:id', async (req, res)=>{
     const client = await pool.connect();
     try{
@@ -326,5 +327,65 @@ app.delete('/api/bookings/:id', async (req, res)=>{
     }
 })
 
+//post booking
+app.post('/api/bookings', async (req, res)=>{
+    const client = await pool.connect();
+    try{
+        const screeningId = req.body.screeningId
+        const seatId = req.body.seatId
+
+        const clientEmail = req.body.clientEmail || 'test@client.com'
+
+        if(!screeningId || !seatId || !Array.isArray(seatId) || seatId.length === 0 ){
+            client.release();
+            return res.status(400).json({success: false, error: 'ScreeningId and seatId array is required'})
+        }
+
+        await client.query('BEGIN')
+        const checkExistingTickets = await client.query(`
+            SELECT
+            tickets.seat_id
+            FROM tickets
+            JOIN bookings ON tickets.booking_id = bookings.id 
+            WHERE bookings.screening_id = $1 AND tickets.seat_id = ANY($2::int[])
+            `, [screeningId, seatId])
 
 
+            if (checkExistingTickets.rows.length > 0){
+               await client.query('ROLLBACK')
+               client.release();
+               return res.status(400).json({
+                success: false,
+                error: 'Some of the seats are reserved'
+               })
+            }
+
+            const booking = await client.query(`
+                INSERT INTO bookings (screening_id, status, booking_time, guest_email)
+                VALUES ($1, 'paid', NOW(), $2)
+                RETURNING id, screening_id, booking_time, guest_email
+                `, [screeningId, clientEmail]);
+
+                const newBooking = booking.rows[0]
+                const newBookingId = newBooking.id
+
+            for(const seatIds of seatId){
+                await client.query(`
+                    INSERT INTO tickets (booking_id, seat_id, amount_charged)
+                    VALUES ($1, $2, 1000)`, [newBookingId, seatIds ])
+            }
+
+            await client.query('COMMIT')
+            client.release()
+
+            res.status(201).json({
+                success: true, data:{bookingId: newBookingId, screeningid: newBooking.screening_id, seatIds: seatId}})
+    }catch(error){
+        await client.query('ROLLBACK');
+        client.release();
+        console.error('There was an inside error while posting a new booking', error)
+        res.status(500).json({success: false, error: 'There was internal error while creating booking'})
+}
+})
+
+}

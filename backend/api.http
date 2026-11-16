@@ -50,5 +50,23 @@ GET {{baseUrl}}/api/prices
 GET {{baseUrl}}/api/bookings
 
 
+### GET BOOKINGS WITH SCREENING FILTER
+GET {{baseUrl}}/api/bookings?screeningId=1
 
+
+
+### CREATE A NEW BOOKING POST
+POST {{baseUrl}}/api/bookings
+Content-Type: application/json
+
+{
+    "screeningId": 1,
+    "seatId": [2],
+    "clientEmail": "test@client.com"
+}
+
+
+
+### DELETE BOOKING BY ID 
+DELETE {{baseUrl}}/api/bookings/16
 
