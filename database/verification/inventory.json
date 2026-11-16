@@ -1,0 +1,315 @@
+{
+  "date": "2026-11-16",
+  "issue": 51,
+  "target": "isolated local rio_dev, connection omitted",
+  "migrations": {
+    "applied": ["0004_screen_inventory.sql"],
+    "previouslyApplied": 3
+  },
+  "before": {
+    "places": 0,
+    "bookings": 16,
+    "tickets": 0
+  },
+  "seed": {
+    "screens": [
+      {
+        "id": 1,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "city": "Oulu",
+        "seated": 100,
+        "wheelchair": 10,
+        "inserted": 110
+      },
+      {
+        "id": 2,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "city": "Oulu",
+        "seated": 200,
+        "wheelchair": 10,
+        "inserted": 210
+      },
+      {
+        "id": 3,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "city": "Tampere",
+        "seated": 100,
+        "wheelchair": 10,
+        "inserted": 110
+      },
+      {
+        "id": 4,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "city": "Tampere",
+        "seated": 200,
+        "wheelchair": 10,
+        "inserted": 210
+      }
+    ]
+  },
+  "rerun": {
+    "screens": [
+      {
+        "id": 1,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "city": "Oulu",
+        "seated": 100,
+        "wheelchair": 10,
+        "inserted": 0
+      },
+      {
+        "id": 2,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "city": "Oulu",
+        "seated": 200,
+        "wheelchair": 10,
+        "inserted": 0
+      },
+      {
+        "id": 3,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "city": "Tampere",
+        "seated": 100,
+        "wheelchair": 10,
+        "inserted": 0
+      },
+      {
+        "id": 4,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "city": "Tampere",
+        "seated": 200,
+        "wheelchair": 10,
+        "inserted": 0
+      }
+    ]
+  },
+  "preservation": {
+    "bookingsUnchanged": true,
+    "bookingHash": "de4dd9276aef3d796203d593b185e5f8b78158828b3069d7cc84a52e5bd931ac",
+    "placeIdsAndRowsUnchangedOnRerun": true,
+    "originalTicketsPreserved": true,
+    "allTicketsUnchangedOnRerun": true
+  },
+  "tests": {
+    "command": "npm run test:postgres",
+    "passed": 57,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browsing": {
+    "transactionReadOnly": "on",
+    "timezone": "Europe/Helsinki",
+    "verifiedScreens": 4,
+    "verifiedScreenings": 8,
+    "examples": [
+      {
+        "city_id": 1,
+        "city_name": "Oulu",
+        "screen_id": 1,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "film_marker": "rio-dev:browsing:northern-lights",
+        "screening_id": 9,
+        "local_time": "2026-11-17T18:00:00"
+      },
+      {
+        "city_id": 1,
+        "city_name": "Oulu",
+        "screen_id": 1,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "film_id": 2,
+        "film_title": "RIO demo: Lake Stories",
+        "film_marker": "rio-dev:browsing:lake-stories",
+        "screening_id": 10,
+        "local_time": "2026-11-17T20:00:00"
+      },
+      {
+        "city_id": 1,
+        "city_name": "Oulu",
+        "screen_id": 2,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "film_marker": "rio-dev:browsing:northern-lights",
+        "screening_id": 11,
+        "local_time": "2026-11-17T18:00:00"
+      },
+      {
+        "city_id": 1,
+        "city_name": "Oulu",
+        "screen_id": 2,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "film_id": 2,
+        "film_title": "RIO demo: Lake Stories",
+        "film_marker": "rio-dev:browsing:lake-stories",
+        "screening_id": 12,
+        "local_time": "2026-11-17T20:00:00"
+      },
+      {
+        "city_id": 2,
+        "city_name": "Tampere",
+        "screen_id": 3,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "film_marker": "rio-dev:browsing:northern-lights",
+        "screening_id": 13,
+        "local_time": "2026-11-17T18:00:00"
+      },
+      {
+        "city_id": 2,
+        "city_name": "Tampere",
+        "screen_id": 3,
+        "capacity": 100,
+        "wheelchair_capacity": 10,
+        "film_id": 2,
+        "film_title": "RIO demo: Lake Stories",
+        "film_marker": "rio-dev:browsing:lake-stories",
+        "screening_id": 14,
+        "local_time": "2026-11-17T20:00:00"
+      },
+      {
+        "city_id": 2,
+        "city_name": "Tampere",
+        "screen_id": 4,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "film_marker": "rio-dev:browsing:northern-lights",
+        "screening_id": 15,
+        "local_time": "2026-11-17T18:00:00"
+      },
+      {
+        "city_id": 2,
+        "city_name": "Tampere",
+        "screen_id": 4,
+        "capacity": 200,
+        "wheelchair_capacity": 10,
+        "film_id": 2,
+        "film_title": "RIO demo: Lake Stories",
+        "film_marker": "rio-dev:browsing:lake-stories",
+        "screening_id": 16,
+        "local_time": "2026-11-17T20:00:00"
+      }
+    ]
+  },
+  "inventory": {
+    "readOnly": true,
+    "screens": [
+      {
+        "id": 1,
+        "capacity": 100,
+        "city_id": 1,
+        "city": "Oulu",
+        "screening_id": 9,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "ceo": {
+          "booking_id": 9,
+          "seat_id": 1
+        },
+        "seated": {
+          "total": 100,
+          "available": 99
+        },
+        "wheelchair": {
+          "total": 10,
+          "available": 10
+        },
+        "row2": ["21", "20", "19", "18", "17", "16", "15", "14", "12", "11"],
+        "row13_label": null
+      },
+      {
+        "id": 2,
+        "capacity": 200,
+        "city_id": 1,
+        "city": "Oulu",
+        "screening_id": 11,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "ceo": {
+          "booking_id": 11,
+          "seat_id": 111
+        },
+        "seated": {
+          "total": 200,
+          "available": 199
+        },
+        "wheelchair": {
+          "total": 10,
+          "available": 10
+        },
+        "row2": ["21", "20", "19", "18", "17", "16", "15", "14", "12", "11"],
+        "row13_label": 14
+      },
+      {
+        "id": 3,
+        "capacity": 100,
+        "city_id": 2,
+        "city": "Tampere",
+        "screening_id": 13,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "ceo": {
+          "booking_id": 13,
+          "seat_id": 321
+        },
+        "seated": {
+          "total": 100,
+          "available": 99
+        },
+        "wheelchair": {
+          "total": 10,
+          "available": 10
+        },
+        "row2": ["21", "20", "19", "18", "17", "16", "15", "14", "12", "11"],
+        "row13_label": null
+      },
+      {
+        "id": 4,
+        "capacity": 200,
+        "city_id": 2,
+        "city": "Tampere",
+        "screening_id": 15,
+        "film_id": 1,
+        "film_title": "RIO demo: Northern Lights",
+        "ceo": {
+          "booking_id": 15,
+          "seat_id": 431
+        },
+        "seated": {
+          "total": 200,
+          "available": 199
+        },
+        "wheelchair": {
+          "total": 10,
+          "available": 10
+        },
+        "row2": ["21", "20", "19", "18", "17", "16", "15", "14", "12", "11"],
+        "row13_label": 14
+      }
+    ]
+  },
+  "scope": {
+    "sharedDatabaseChanged": false,
+    "frontendSeatMap": false,
+    "expirySemantics": false,
+    "selectionValidation": false,
+    "ceoRelease": false
+  }
+}

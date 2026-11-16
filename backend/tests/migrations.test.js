@@ -111,6 +111,7 @@ test(
               "0001_initial_schema.sql",
               "0002_ceo_reservations.sql",
               "0003_guard_ceo_seat_conversion.sql",
+              "0004_screen_inventory.sql",
             ],
             previouslyApplied: 0,
           });
@@ -123,7 +124,7 @@ test(
           );
           assert.equal(
             schema.constraints.filter((row) => row.type === "c").length,
-            13,
+            15,
           );
           assert.equal(
             schema.constraints.filter((row) => row.type === "p").length,
@@ -134,6 +135,8 @@ test(
             [
               ["trg_ensure_ceo_for_inventory", "O"],
               ["trg_ensure_ceo_for_screening", "O"],
+              ["trg_guard_inventory_place", "O"],
+              ["trg_guard_screen_inventory_capacity", "O"],
               ["trg_prevent_ceo_seat_booking", "O"],
               ["trg_protect_ceo_booking", "O"],
               ["trg_protect_ceo_screening", "O"],
@@ -145,6 +148,8 @@ test(
             [
               "ensure_ceo_after_inventory_or_screening",
               "ensure_ceo_reservation",
+              "guard_inventory_place",
+              "guard_screen_inventory_capacity",
               "prevent_ceo_screening_relocation",
               "prevent_ceo_seat_booking",
               "protect_ceo_booking",
@@ -161,7 +166,7 @@ test(
             cities: "id name",
             screens: "id city_id capacity wheelchair_capacity",
             seats:
-              "id screen_id physical_row row_label seat_label is_wheelchair is_ceo_reserved",
+              "id screen_id physical_row row_label seat_label is_wheelchair is_ceo_reserved physical_column display_label",
             films: "id title metadata_api_id description artwork_url",
             screenings: "id film_id screen_id screening_time",
             prices: "id category amount_cents",
@@ -292,7 +297,7 @@ test(
           const records = await snapshot();
           assert.deepEqual(await migrate(url), {
             applied: [],
-            previouslyApplied: 3,
+            previouslyApplied: 4,
           });
           assert.deepEqual(await snapshot(), records);
           assert.equal(
@@ -319,10 +324,10 @@ test(
                 "SELECT count(*)::int AS count FROM rio_schema_migrations",
               )
             ).rows[0].count,
-            3,
+            4,
           );
           console.log(
-            "Schema evidence: empty → 11 application tables, 13 foreign keys, 13 checks, 6 enabled triggers; linked IDs survive rerun.",
+            "Schema evidence: empty → 11 application tables, 13 foreign keys, 15 checks, 8 enabled triggers; linked IDs survive rerun.",
           );
         });
       },
@@ -335,7 +340,7 @@ test(
           const results = await Promise.all([migrate(url), migrate(url)]);
           assert.equal(
             results.reduce((count, result) => count + result.applied.length, 0),
-            3,
+            4,
           );
           assert.equal((await inspectDatabase(url)).tables.length, 12);
         });
