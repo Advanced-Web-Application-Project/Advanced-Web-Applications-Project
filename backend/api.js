@@ -161,7 +161,7 @@ export default function(app, pool) {
     })
 
     
-// GET BOOKINGS ||||  NOT READY YET  ||||
+// GET BOOKINGS
 
     app.get('/api/bookings', async (req, res) => {
         try{
@@ -170,7 +170,6 @@ export default function(app, pool) {
         let query = `
         SELECT
         bookings.id AS booking_id,
-        bookings.booking_type,
         screenings.screening_time,
         films.title AS film_title,
         ARRAY_AGG(tickets.seat_id) AS seat_id
@@ -199,11 +198,156 @@ export default function(app, pool) {
             })
 
         }catch(error){
-            console.log('Error while fetching bookings')
+            console.log('Error while fetching bookings', error)
             res.status(500).json({success: false, error: 'an internal error while fetching bookings'})
         }
 
 
     })
+
+
+//delete booking
+app.delete('/api/bookings/:id', async (req, res)=>{
+    const client = await pool.connect();
+    try{
+        const bookingId = req.params.id;
+
+        const checkBookingId = await pool.query('SELECT * FROM bookings WHERE id = $1', [bookingId])
+        if(checkBookingId.rows.length === 0){
+            client.release();
+            return res.status(404).json({success: false, error: 'Booking not found'})
+        }
+    
+        await client.query('BEGIN');
+        await client.query('DELETE FROM tickets WHERE booking_id = $1', [bookingId])
+        await client.query('DELETE FROM bookings WHERE id = $1', [bookingId])
+        await client.query('COMMIT'); client.release();
+
+        res.status(200).json({success: true, message: `Booking with id of: ${bookingId} deleted`})
+    }catch(error){
+        await client.query('ROLLBACK');
+        client.release();
+
+        res.status(500).json({success: false, error: 'There was an internal error while deleting booking'})
+    }
+})
+
+//post booking
+app.post('/api/bookings', async (req, res)=>{
+    const client = await pool.connect();
+    try{
+        const screeningId = req.body.screeningId
+        const seatId = req.body.seatId
+        const clientEmail = req.body.clientEmail || 'test@client.com'
+
+        if(!screeningId || !seatId || !Array.isArray(seatId) || seatId.length === 0 ){
+            client.release();
+            return res.status(400).json({success: false, error: 'ScreeningId and seatId array is required'})
+        }
+
+        await client.query('BEGIN')
+
+        const seatIdsOnly = seatId.map(s => typeof s === 'object' ? s.seatId : s)
+
+        const checkExistingTickets = await client.query(`
+            SELECT
+            tickets.seat_id
+            FROM tickets
+            JOIN bookings ON tickets.booking_id = bookings.id 
+            WHERE bookings.screening_id = $1 AND tickets.seat_id = ANY($2::int[])
+            `, [screeningId, seatIdsOnly])
+
+
+            if (checkExistingTickets.rows.length > 0){
+               await client.query('ROLLBACK')
+               client.release();
+               return res.status(400).json({
+                success: false,
+                error: 'Some of the seats are reserved'
+               })
+            }
+
+            const pricesResult = await client.query(`
+                SELECT  
+                category,
+                amount_cents
+                FROM prices
+                `)
+            
+            if(pricesResult.rows.length === 0){
+                await client.query('ROLLBACK')
+                client.release()
+                return res.status(400).json({
+                    success: false,
+                     error: 'Base price is not configured in the base'})
+            }
+
+          const priceMap = {};
+          pricesResult.rows.forEach(row => {
+            priceMap[row.category.toLowerCase()] = row.amount_cents
+          })
+                
+          const adultPrice = priceMap['adult']
+
+            const bookingResult = await client.query(`
+            INSERT INTO bookings (screening_id, status, booking_time, guest_email)
+            VALUES ($1, 'paid', NOW(), $2)
+            RETURNING id, screening_id
+            `, [screeningId, clientEmail])
+           
+            const newBooking = bookingResult.rows[0]
+            const createdTickets = [];
+
+           for(const item of seatId){
+            const currentSeatId = typeof item === 'object' ? item.seatId : item;
+            const category = (typeof item === 'object' && item.category) ? item.category.toLowerCase(): 'adult';
+           
+
+           if(!['adult', 'child', 'company'].includes(category)){
+            await client.query('ROLLBACK');
+            client.release();
+            return res.status(400).json({success: false, error: ` Invalid ticket category`})
+           }
+
+        let ticketPrice = priceMap[category]
+        if(ticketPrice === undefined){
+            if(category === 'child'){
+                ticketPrice = Math.round(adultPrice * 0.5)
+            }else{
+                await client.query('ROLLBACK');
+                client.release();
+                return res.status(400).json({success: false, error: `Price for category ${category} is not found`})
+            }
+        }
+
+        await client.query(`
+            INSERT INTO tickets (booking_id, seat_id, amount_charged)
+            VALUES ($1, $2, $3)
+            `, [newBooking.id, currentSeatId, ticketPrice])
+
+            createdTickets.push({
+                seatId: currentSeatId,
+                category,
+                amountCharged: ticketPrice
+            })
+           }
+
+            await client.query('COMMIT')
+            client.release()
+
+            res.status(201).json({
+                success: true, data:{
+                    bookingId: newBooking.id, 
+                    screeningid: newBooking.screening_id, 
+                    tickets: createdTickets
+                    }})
+
+    }catch(error){
+        await client.query('ROLLBACK');
+        client.release();
+        console.error('There was an inside error while posting a new booking', error)
+        res.status(500).json({success: false, error: 'There was internal error while creating booking'})
+}
+})
 }
 

@@ -12,7 +12,7 @@ GET {{baseUrl}}/api/films/1
 ### GET CITIES
 GET {{baseUrl}}/api/cities
 
-### GWT CITY BY ID
+### GET CITY BY ID
 GET {{baseUrl}}/api/cities/1
 
 
@@ -46,11 +46,48 @@ GET {{baseUrl}}/api/prices
 
 
 
-### GET BOOKINGS ||| NOT READY YET
+
+### Post A NEW BOOKING 
+POST {{baseUrl}}/api/bookings
+Content-Type: application/json
+
+{
+    "screeningId": 1,
+    "seatId": [12],
+    "clientEmail": "test@client.com"
+}
+
+### Post a new booking with different ages
+POST http://localhost:3000/api/bookings
+Content-Type: application/json
+
+{
+  "screeningId": 1,
+  "seatId": [
+    { "seatId": 12, "category": "adult" },
+    { "seatId": 14, "category": "child" }
+  ],
+  "clientEmail": "perhe.matkustaja@example.com"
+}
+
+### GET BOOKINGS WITH SCREENING FILTER
+GET {{baseUrl}}/api/bookings?screeningId=1
+
+### GET ALL BOOKINGS 
 GET {{baseUrl}}/api/bookings
 
+### DELETE BOOKING BY ID 
+DELETE {{baseUrl}}/api/bookings/28
 
 
+### 4. INVALID TEST MISSING seatID (returns 400)
+POST http://localhost:3000/api/bookings
+Content-Type: application/json
+
+{
+  "screeningId": 1,
+  "seatId": []
+}
 
 
 
@@ -62,3 +99,4 @@ GET {{baseUrl}}/api/screenings?cityId=1&screenId=1&filmId=1
 
 ### INVALID SCREEN FILTER (expected 400)
 GET {{baseUrl}}/api/screenings?screenId=1.5
+
