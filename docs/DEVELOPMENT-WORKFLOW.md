@@ -128,3 +128,16 @@ Before opening a pull request:
 5. Provide a clear description of the changes.
 
 At least one teammate should review the pull request before merging.
+
+## Rahti deployment work
+
+Rahti application hosting was confirmed on 18 November 2026. Follow the
+[deployment guide](DEPLOYMENT.md): #14 is the product requirement, #45 coordinates
+delivery, #47 owns CI/CD and #67 owns runtime/connectivity and live verification.
+Hosting approval does not establish that the current deployment works.
+
+Link follow-up PRs to their actual issues and begin from current `main`. Keep
+#47/#67 open until their acceptance criteria have evidence; a merged artifact-only
+PR is partial progress. Separate source/build checks from live browser/API smoke
+checks and an application rollback demonstration. Preserve shared PostgreSQL data
+and keep secrets outside source and test output.

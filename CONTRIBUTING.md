@@ -13,8 +13,9 @@ consistent and organized codebase.
 4. Follow the [Development Workflow](docs/DEVELOPMENT-WORKFLOW.md)
    for task selection, branches, commits, pull requests, and reviews.
 
-Local environment setup instructions will be added once the
-application is initialized.
+Local setup commands are in the [README](README.md) and
+[database guide](database/README.md). The [deployment guide](docs/DEPLOYMENT.md)
+records the confirmed Rahti target and the evidence required for deployment work.
 
 ## Contribution Checklist
 

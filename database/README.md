@@ -254,7 +254,6 @@ inserting each screen's designated seat 1 later attaches those tickets without
 recreating screenings or bookings. Do not interpret absent inventory as available
 physical places. Existing migration files and IDs are preserved.
 
-
 ## Physical inventory (#51)
 
 After applying migrations and browsing fixtures, run `npm run db:seed:inventory`
@@ -281,3 +280,12 @@ See [the current booking contract and acceptance evidence](../docs/BOOKING-SAFEG
 `0006_allocation_isolation.sql` requires READ COMMITTED for booking/ticket writes
 so waiting writers obtain fresh availability snapshots. The API selects that
 isolation explicitly. Read-only inspection may still use repeatable read.
+
+## Rahti application hosting
+
+Rahti is the confirmed application target as of 18 November 2026. PostgreSQL
+remains at CSC; the exact deployed database endpoint/ownership must be recorded
+under #67. This decision authorises no database relocation, reset or automatic
+production migration. Existing `k8s/postgres_*` examples are unverified against
+that target and must not be applied or deleted by assumption. See
+[deployment configuration and verification](../docs/DEPLOYMENT.md).

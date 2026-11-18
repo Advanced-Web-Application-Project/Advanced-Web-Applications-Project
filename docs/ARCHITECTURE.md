@@ -11,9 +11,24 @@ This document explains where code belongs and the intended application boundarie
 | Frontend            | React with JavaScript (`.jsx` and `.js`) |
 | Backend             | Node.js with Express                     |
 | Database            | PostgreSQL hosted at CSC (csc.fi)        |
-| Application hosting | Microsoft Azure                          |
+| Application hosting | Rahti (CSC), confirmed 18 November 2026  |
 
-The frontends and Express backend will be hosted on Microsoft Azure, while PostgreSQL will be hosted separately at [CSC](https://www.csc.fi/). This choice uses the team's free CSC database access and avoids consuming its limited Azure allocation for database queries. The Express backend connects to PostgreSQL at CSC; the frontends access data through the backend API.
+The customer frontend, future separate staff frontend and Express backend will
+be deployed on Rahti at CSC, confirmed by the user on 18 November 2026. This
+supersedes the former Azure application-hosting direction. PostgreSQL remains at
+CSC; application hosting does not change or reset the existing database. Browsers
+access data through Express rather than connecting directly to PostgreSQL.
+
+Customer and staff remain separate deployable websites with distinct addresses;
+a shared backend/database is compatible with that requirement. Rahti project/
+namespace, actual site/API addresses, intended database endpoint and release
+arrangements still require recording and live verification. The future staff
+application remains a dependency.
+
+See [deployment status and verification](DEPLOYMENT.md) for the audited Docker/
+Rahti artifacts and the split between #47 CI/CD and #67 runtime/connectivity.
+The hosting decision is confirmed; the existence of manifests or merged PR #81
+is not evidence that the deployed workflow is complete.
 
 One repository does not require one deployment or an npm workspace. Keep frontend and backend dependencies in their own `package.json` files initially. Introduce root-level tooling only when it solves a concrete need.
 

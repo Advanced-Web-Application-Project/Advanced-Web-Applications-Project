@@ -12,12 +12,12 @@ Enable customers to find a cinema screening, choose valid seats, and purchase ti
 
 The tables are in proposed product-backlog order. Order reflects customer value and dependencies, not sprint assignments. The team will estimate and split items before selecting them for a sprint.
 
-| Release group | Scope | Priority |
-| --- | --- | --- |
-| A — Guest purchase | Browsing, seating, guest checkout, Stripe payment, confirmation, and essential staff controls | First usable release |
-| B — Registered reservations | Accounts, pay-later reservations, payment deadlines, and expiry | Second |
-| C — Company booking | Requests, staff decisions, seat allocation, and invoicing | Extra scope; third customer booking flow |
-| D — Loyalty | Account ticket counter and half-price rewards | Extra scope; position against company work to be agreed |
+| Release group               | Scope                                                                                         | Priority                                                |
+| --------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| A — Guest purchase          | Browsing, seating, guest checkout, Stripe payment, confirmation, and essential staff controls | First usable release                                    |
+| B — Registered reservations | Accounts, pay-later reservations, payment deadlines, and expiry                               | Second                                                  |
+| C — Company booking         | Requests, staff decisions, seat allocation, and invoicing                                     | Extra scope; third customer booking flow                |
+| D — Loyalty                 | Account ticket counter and half-price rewards                                                 | Extra scope; position against company work to be agreed |
 
 The administration website includes a dashboard and a control hub. The customer website and staff administration website must be separate websites, each deployed separately. No cinema equipment/playback integration is currently required. Stripe integration will be taught later in the course. Until then, a temporary payment simulation (for example, a button that pretends payment succeeded) can demonstrate the booking flow. The payment feature is complete once the app handles payment results through Stripe; Stripe test mode allows this to be tested without charging real money.
 
@@ -34,12 +34,12 @@ The administration website includes a dashboard and a control hub. The customer 
 - Seat 1 starts reserved for the CEO through a system booking for every screening. Only the authenticated CEO administrator may later release that screening's reservation to customers; ordinary administrators, cashiers and customers cannot. CEO authentication/release is future work and release remains disabled until implemented. See [CEO reservation policy](CEO-RESERVATIONS.md) (confirmed 16 November 2026).
 - Working name RIO requires confirmation. UI colours are gold, red, and black.
 
-| Physical row | Row label | Seat labels, left to right |
-| --- | --- | --- |
-| 1, nearest screen | 1 | 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 |
-| 2 | 2 | 21, 20, 19, 18, 17, 16, 15, 14, 12, 11 |
-| 3 | 3 | 22, 23, 24, 25, 26, 27, 28, 29, 30, 31 |
-| 13 | 14 | Numbering continues without a missing physical row |
+| Physical row      | Row label | Seat labels, left to right                         |
+| ----------------- | --------- | -------------------------------------------------- |
+| 1, nearest screen | 1         | 1, 2, 3, 4, 5, 6, 7, 8, 9, 10                      |
+| 2                 | 2         | 21, 20, 19, 18, 17, 16, 15, 14, 12, 11             |
+| 3                 | 3         | 22, 23, 24, 25, 26, 27, 28, 29, 30, 31             |
+| 13                | 14        | Numbering continues without a missing physical row |
 
 With this interpretation, the 100-seat screen has labels through 101 and the 200-seat screen through 201. Seat 1 is included in those capacities, so initial ordinary seated availability is 99/100 or 199/200, plus ten separate wheelchair spaces (confirmed 16 November 2026).
 
@@ -91,6 +91,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As a cinema operator, I want accurate screen inventories so customers book real places.
 
 **Acceptance criteria**
+
 - Oulu and Tampere each have a 100-seat and a 200-seat screen, each with ten additional wheelchair spaces.
 - Numbering and row labels follow the domain rules; seat labels and physical positions are stored distinctly.
 - Seat 1 is unavailable for sale or manual allocation through every supported route.
@@ -103,6 +104,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As the business administrator, I want staff access limited to their responsibilities and city.
 
 **Acceptance criteria**
+
 - Staff must authenticate before accessing administration functions.
 - The business administrator can manage both cities.
 - An Oulu cashier can access only authorised Oulu functions; the same city-scoping model supports Tampere.
@@ -116,6 +118,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As authorised staff, I want to maintain films so the programme contains usable, accurate information.
 
 **Acceptance criteria**
+
 - Staff can add and edit the film information required for browsing and scheduling.
 - The system can obtain film metadata from an external movie-data API and retain information needed for existing screenings locally.
 - External API failure does not delete existing information or make existing screenings unbookable.
@@ -128,6 +131,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As authorised staff, I want to assign films to screens and times so customers can book the programme.
 
 **Acceptance criteria**
+
 - A screening identifies its film, city, screen, date, and start time.
 - Staff can create and edit screenings within their permissions.
 - Conflicting screenings in one screen are rejected using agreed film-duration and turnaround rules.
@@ -141,6 +145,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As an administrator, I want to set prices so checkout charges the agreed amount.
 
 **Acceptance criteria**
+
 - Authorised staff can set the applicable adult base price.
 - Child tickets for ages 12 and under cost 50% of the applicable adult price.
 - Checkout identifies ticket categories, unit prices, and the total before payment.
@@ -154,6 +159,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As a customer, I want to browse upcoming films and screenings so I can choose a suitable visit.
 
 **Acceptance criteria**
+
 - Customers can select Oulu or Tampere and see relevant upcoming screenings.
 - Film details and screening choices are easy to reach; empty results have a clear message.
 - Before booking, customers can identify the film, city, screen, date, start time, and ticket prices.
@@ -166,6 +172,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As a customer, I want an understandable seating plan so I can choose suitable places.
 
 **Acceptance criteria**
+
 - The screen appears at the bottom, row 1 nearest it, with the wheelchair area in front of row 1.
 - Available, selected, and unavailable places are distinguishable without relying solely on colour.
 - Physical arrangement, snake numbering, skipped labels, and permanent seat 1 allocation are correct.
@@ -180,6 +187,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As a customer, I want selected places protected while paying so another booking cannot take them.
 
 **Acceptance criteria**
+
 - Starting checkout creates a time-limited hold with a visible expiry.
 - Competing requests cannot confirm the same place twice, including customer, company, and staff requests.
 - Abandoned or expired holds release their places.
@@ -193,6 +201,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As a guest, I want to buy tickets without an account so I can complete my purchase easily.
 
 **Acceptance criteria**
+
 - No registration or login is required.
 - The customer reviews the screening, places, ticket categories, and final amount before paying.
 - Only agreed contact information is collected.
@@ -208,6 +217,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As a customer, I want proof of my booking so I can identify it and attend the screening.
 
 **Acceptance criteria**
+
 - Confirmation shows a unique reference, film, city, screen, date/time, selected places, amount, and paid status.
 - Only a confirmed purchase is presented as paid.
 - The agreed delivery/retrieval method lets a guest retain the confirmation.
@@ -220,6 +230,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As authorised staff, I want a screening booking view and manual reservation controls so I can serve customers.
 
 **Acceptance criteria**
+
 - Staff can view available places and distinguish paid bookings, unpaid reservations, and temporary holds.
 - Staff can reserve available places within their city and role permissions.
 - Staff obey the isolated-seat rule and cannot release or allocate seat 1.
@@ -233,6 +244,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As the business administrator, I want numerical operating statistics so I can monitor the cinemas.
 
 **Acceptance criteria**
+
 - The dashboard displays agreed metrics for an identifiable reporting period and location scope.
 - Figures reconcile with underlying booking and payment states; invoice-confirmed bookings are not automatically treated as cash received.
 - Access respects staff roles and city restrictions.
@@ -246,6 +258,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As a customer, I want an account so I can reserve without immediate payment and view my reservations.
 
 **Acceptance criteria**
+
 - Customers can register, sign in, and sign out using the agreed account method.
 - Guest purchasing remains available.
 - Customers cannot access another customer's account or reservations.
@@ -258,6 +271,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As a signed-in customer, I want to reserve a small booking ahead of time so I can pay later.
 
 **Acceptance criteria**
+
 - Only signed-in customers can complete an unpaid reservation.
 - Pay-later is available only at least three hours before the screening and below the six-place threshold.
 - Six or more places, or a booking at/within the two-hour cutoff, requires immediate payment.
@@ -271,6 +285,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As a registered customer, I want to see my reservations and settle payment before the deadline.
 
 **Acceptance criteria**
+
 - Customers see their own reservation reference, screening, places, status, amount, and deadline.
 - Proposed flow: allow Stripe payment of a valid unpaid reservation before its deadline.
 - Successful payment changes the reservation to a paid booking without allocating places a second time.
@@ -284,6 +299,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As the cinema, I want overdue unpaid reservations cancelled so other customers can buy the places.
 
 **Acceptance criteria**
+
 - At two hours before the screening, an unpaid customer reservation becomes expired and releases its places.
 - Expired places become bookable without staff intervention.
 - Paid bookings and accepted invoice-based company bookings are not expired by this rule.
@@ -299,6 +315,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As a company representative, I want to request a group screening booking so staff can arrange it.
 
 **Acceptance criteria**
+
 - The form collects agreed company/contact information, film, city/screen, desired screening or date/time, and number of attendees.
 - Required fields are validated and the request appears in the authorised staff queue as pending.
 - Submission acknowledges receipt but does not claim seats are secured.
@@ -310,6 +327,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As authorised staff, I want to decide company requests so I can allocate suitable places or explain a refusal.
 
 **Acceptance criteria**
+
 - Staff can review pending requests within their permitted city scope.
 - Declining records a message for the company.
 - Acceptance requires available places in the agreed screening and immediately secures them.
@@ -324,6 +342,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As authorised staff, I want accepted company bookings linked to invoices so payment is handled separately from seat confirmation.
 
 **Acceptance criteria**
+
 - Acceptance generates an invoice using the agreed company pricing and invoicing details.
 - The booking remains secured while the invoice is outstanding and is exempt from ordinary two-hour expiry.
 - Booking confirmation and invoice payment status are recorded separately.
@@ -339,6 +358,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As an account customer, I want every tenth qualifying ticket discounted so repeat purchases are rewarded.
 
 **Acceptance criteria**
+
 - The counter and reward allocation follow the loyalty domain rules above.
 - A customer with progress 0 buying ten tickets earns one reward immediately and finishes at 0.
 - Progress 9 plus twelve tickets earns two rewards and finishes at 1.
@@ -354,6 +374,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As an account customer, I want to see progress and savings so I understand my reward.
 
 **Acceptance criteria**
+
 - The account shows current qualifying-ticket progress out of ten.
 - Checkout shows the number of rewards and which ticket prices they reduce before payment.
 - The customer can distinguish the ordinary child price from a loyalty reduction.
@@ -366,12 +387,13 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 **Story:** As the cinema operator, I want separate deployed customer and staff websites so each audience has its own experience.
 
 **Acceptance criteria**
+
 - The customer website and staff administration website are deployed separately and each has its own accessible address.
 - The customer website supports the customer booking flows delivered in the release.
 - The staff website provides the dashboard and control hub delivered in the release, protected by staff authentication, roles, and city scope.
 - Both websites use consistent screening and booking information; an allocation through either website prevents double booking through the other.
 
-**Release group:** A — Guest purchase and essential operations. **Dependencies:** The customer and staff features selected for that release. **Open:** Hosting targets, addresses, and deployment arrangements (O-15). Separate websites do not prescribe separate databases or backend services.
+**Release group:** A — Guest purchase and essential operations. **Dependencies:** The customer and staff features selected for that release. **Confirmed:** Rahti application hosting (18 November 2026), with PostgreSQL at CSC. **Open:** Actual addresses/project, intended database endpoint, and release arrangements (remaining O-15 fields). Separate websites do not prescribe separate databases or backend services.
 
 ## Cross-cutting acceptance and quality
 
@@ -387,23 +409,23 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 
 These are refinement tasks, not reasons to stop work on independent items. Customer-facing scope questions can go to the teacher; implementation details can be decided by the team within the delegated scope.
 
-| ID | Decision | Affects |
-| --- | --- | --- |
-| O-01 | Confirm RIO name. | Branding |
-| O-02 | Capacity includes seat 1 and W1–W10 identifiers are confirmed (16 November 2026); wheelchair places use adult/child prices (18 November 2026); loyalty eligibility remains open. | RIO-01, 05, 07, 20 |
-| O-03 | Define administrator/cashier permissions, city scope, staff provisioning, and who may set prices or reserve manually. | RIO-02, 05, 11 |
-| O-04 | Select movie-data provider and required metadata fields. | RIO-03, 06 |
-| O-05 | Define duration/turnaround and changes/cancellation of screenings with bookings. | RIO-04 |
-| O-06 | Define base-price scope, currency, rounding, and price changes during checkout; confirm or reject the proposed +15% premiere rule. | RIO-05, 09 |
-| O-07 | Checkout hold duration is five minutes (confirmed 16 November 2026); active holds count as occupied and only newly created internal gaps fail (confirmed 18 November 2026). Payment after hold expiry remains open. | RIO-07–09 |
-| O-08 | Agree guest contact fields, confirmation delivery/retrieval, ticket admission validation, and Stripe setup. | RIO-09–10 |
-| O-09 | Confirm six-place threshold counting; agree online/cinema settlement, manual reservation deadlines, and payment at the two-hour cutoff. | RIO-11, 14–16 |
-| O-10 | Select dashboard metrics and define reporting calculations, period filters, and city visibility. | RIO-12 |
-| O-11 | Choose account/contact fields, sign-in method, and recovery behaviour. | RIO-13 |
-| O-12 | Clarify doors opening 30 minutes before show and advertising 12 minutes before show: exact meaning and where the app displays this. | RIO-06, 10 |
-| O-13 | Define company request fields, screening selection, pricing, notifications, invoice terms/delivery/settlement, and external handoffs. | RIO-17–19 |
-| O-14 | Decide whether customer cancellation/refund flows are in scope; if added, specify seat release, money handling, and loyalty adjustments. | Future backlog refinement |
-| O-15 | Choose hosting targets, customer/staff website addresses, and separate deployment arrangements. | RIO-22 |
+| ID   | Decision                                                                                                                                                                                                                                                                                 | Affects                   |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| O-01 | Confirm RIO name.                                                                                                                                                                                                                                                                        | Branding                  |
+| O-02 | Capacity includes seat 1 and W1–W10 identifiers are confirmed (16 November 2026); wheelchair places use adult/child prices (18 November 2026); loyalty eligibility remains open.                                                                                                         | RIO-01, 05, 07, 20        |
+| O-03 | Define administrator/cashier permissions, city scope, staff provisioning, and who may set prices or reserve manually.                                                                                                                                                                    | RIO-02, 05, 11            |
+| O-04 | Select movie-data provider and required metadata fields.                                                                                                                                                                                                                                 | RIO-03, 06                |
+| O-05 | Define duration/turnaround and changes/cancellation of screenings with bookings.                                                                                                                                                                                                         | RIO-04                    |
+| O-06 | Define base-price scope, currency, rounding, and price changes during checkout; confirm or reject the proposed +15% premiere rule.                                                                                                                                                       | RIO-05, 09                |
+| O-07 | Checkout hold duration is five minutes (confirmed 16 November 2026); active holds count as occupied and only newly created internal gaps fail (confirmed 18 November 2026). Payment after hold expiry remains open.                                                                      | RIO-07–09                 |
+| O-08 | Agree guest contact fields, confirmation delivery/retrieval, ticket admission validation, and Stripe setup.                                                                                                                                                                              | RIO-09–10                 |
+| O-09 | Confirm six-place threshold counting; agree online/cinema settlement, manual reservation deadlines, and payment at the two-hour cutoff.                                                                                                                                                  | RIO-11, 14–16             |
+| O-10 | Select dashboard metrics and define reporting calculations, period filters, and city visibility.                                                                                                                                                                                         | RIO-12                    |
+| O-11 | Choose account/contact fields, sign-in method, and recovery behaviour.                                                                                                                                                                                                                   | RIO-13                    |
+| O-12 | Clarify doors opening 30 minutes before show and advertising 12 minutes before show: exact meaning and where the app displays this.                                                                                                                                                      | RIO-06, 10                |
+| O-13 | Define company request fields, screening selection, pricing, notifications, invoice terms/delivery/settlement, and external handoffs.                                                                                                                                                    | RIO-17–19                 |
+| O-14 | Decide whether customer cancellation/refund flows are in scope; if added, specify seat release, money handling, and loyalty adjustments.                                                                                                                                                 | Future backlog refinement |
+| O-15 | Rahti application hosting is confirmed (18 November 2026), superseding Azure; PostgreSQL remains at CSC. Record the Rahti project/namespace, customer/staff/API addresses, intended database endpoint and release arrangements. Live deployment verification remains open under #47/#67. | RIO-22                    |
 
 ## Scrum working agreement — proposed for team adoption
 
@@ -416,4 +438,4 @@ These are refinement tasks, not reasons to stop work on independent items. Custo
 
 ## Explicitly not yet committed
 
-Premiere surcharge, automated debt collection, cinema playback/equipment control, advanced company pricing, and customer refund/cancellation features are not agreed delivery commitments. They require refinement or a new backlog item if requested. Separate customer and staff websites and their separate deployments are required under RIO-22; hosting and deployment arrangements remain to be agreed.
+Premiere surcharge, automated debt collection, cinema playback/equipment control, advanced company pricing, and customer refund/cancellation features are not agreed delivery commitments. They require refinement or a new backlog item if requested. Separate customer and staff websites and their separate deployments are required under RIO-22. Rahti application hosting is confirmed; actual addresses, project/namespace, database endpoint and release arrangements remain to be recorded. See [the deployment guide](DEPLOYMENT.md).
