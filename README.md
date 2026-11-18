@@ -13,7 +13,15 @@ Planned technologies:
 | Frontend            | React, JavaScript                                |
 | Backend             | Node.js, Express                                 |
 | Database            | PostgreSQL, hosted at [CSC](https://www.csc.fi/) |
-| Application hosting | Microsoft Azure                                  |
+| Application hosting | Rahti (CSC), confirmed 18 November 2026          |
+
+## Deployment
+
+Rahti is the confirmed target for the customer frontend, future separate staff
+frontend and Express backend. PostgreSQL remains at CSC. See the
+[deployment guide](docs/DEPLOYMENT.md) for the current source/configuration audit,
+remaining runtime/CI work and required live verification. The merged deployment
+prototype is partial progress; live completion has not yet been demonstrated.
 
 ## Contributing
 
@@ -122,7 +130,6 @@ in the 100/200 seated capacity; ten wheelchair places are additional. Repeatable
 physical inventory is available through `npm run db:seed:inventory` from `backend/`; see
 the [inventory setup and API fields](docs/SCREEN-INVENTORY.md). See the [CEO reservation policy](docs/CEO-RESERVATIONS.md)
 for database/API behavior, verified scope and the deferred CEO-only release feature.
-
 
 ## Screening availability
 
