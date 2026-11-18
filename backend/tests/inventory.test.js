@@ -415,7 +415,7 @@ test(
                     legacyTicket.id,
                   ])
                 ).rows[0],
-                legacyTicket,
+                { ...legacyTicket, ticket_category: null },
               );
               assert.equal(
                 (

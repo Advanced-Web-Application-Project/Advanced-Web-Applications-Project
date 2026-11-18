@@ -30,7 +30,7 @@ The administration website includes a dashboard and a control hub. The customer 
 - The seat map places the screen at the bottom. Row 1 is the nearest seated row to the screen. A wheelchair area lies between row 1 and the screen. Side access and stairs to higher rows inform the layout.
 - Seat numbers continue across rows and skip label 13. Snake numbering alternates direction: row 1 runs left to right, row 2 right to left, and so on.
 - Row labels skip 13; physical rows are not omitted.
-- Every screen has ten wheelchair parking spaces in addition to its physical seats. Customers watch from their own wheelchairs. Space identifiers are W1–W10; ticket pricing remains open (confirmed 16 November 2026).
+- Every screen has ten wheelchair parking spaces in addition to its physical seats. Customers watch from their own wheelchairs. Space identifiers are W1–W10 (confirmed 16 November 2026). Wheelchair places use the same adult/child ticket prices as seated places (confirmed 18 November 2026).
 - Seat 1 starts reserved for the CEO through a system booking for every screening. Only the authenticated CEO administrator may later release that screening's reservation to customers; ordinary administrators, cashiers and customers cannot. CEO authentication/release is future work and release remains disabled until implemented. See [CEO reservation policy](CEO-RESERVATIONS.md) (confirmed 16 November 2026).
 - Working name RIO requires confirmation. UI colours are gold, red, and black.
 
@@ -50,7 +50,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 - Validate physical adjacency, not arithmetic differences between seat labels.
 - Customers and staff follow the same rule. Only an authenticated CEO administrator may explicitly release the default seat-1 reservation; no ordinary customer/staff override exists.
 - Example: if seats 5 and 6 are already booked, selecting 7 is allowed; selecting 8 alone is rejected because it isolates 7; selecting 9 alone is allowed because 7 and 8 remain together, assuming no other seats cause a violation.
-- Technical treatment of temporary checkout holds and pre-existing isolated gaps needs refinement; it must preserve the agreed customer-facing rule.
+- Active checkout holds count as occupied until their stored deadline. Reject only newly created isolated internal gaps; customers are not responsible for filling pre-existing gaps. Wheelchair spaces are exempt from the gap rule (confirmed 18 November 2026).
 
 ### Prices and reservations
 
@@ -173,7 +173,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 - The seat-selection rule is checked with an understandable explanation when a selection is rejected.
 - Selection works with keyboard input and readable labels.
 
-**Dependencies:** RIO-01, RIO-06. **Open:** Wheelchair ticket pricing and temporary-hold interaction (O-02, O-07).
+**Dependencies:** RIO-01, RIO-06. **Confirmed:** Wheelchair places use adult/child pricing; active holds count as occupied and only newly created internal gaps are rejected.
 
 ### RIO-08 — Protect selected places during checkout
 
@@ -390,12 +390,12 @@ These are refinement tasks, not reasons to stop work on independent items. Custo
 | ID | Decision | Affects |
 | --- | --- | --- |
 | O-01 | Confirm RIO name. | Branding |
-| O-02 | Capacity includes seat 1 and W1–W10 identifiers are confirmed (16 November 2026); wheelchair price category and loyalty eligibility remain open. | RIO-01, 05, 07, 20 |
+| O-02 | Capacity includes seat 1 and W1–W10 identifiers are confirmed (16 November 2026); wheelchair places use adult/child prices (18 November 2026); loyalty eligibility remains open. | RIO-01, 05, 07, 20 |
 | O-03 | Define administrator/cashier permissions, city scope, staff provisioning, and who may set prices or reserve manually. | RIO-02, 05, 11 |
 | O-04 | Select movie-data provider and required metadata fields. | RIO-03, 06 |
 | O-05 | Define duration/turnaround and changes/cancellation of screenings with bookings. | RIO-04 |
 | O-06 | Define base-price scope, currency, rounding, and price changes during checkout; confirm or reject the proposed +15% premiere rule. | RIO-05, 09 |
-| O-07 | Checkout hold duration is five minutes (confirmed 16 November 2026); define payment after hold expiry and isolated-seat validation with temporary holds or existing gaps. | RIO-07–09 |
+| O-07 | Checkout hold duration is five minutes (confirmed 16 November 2026); active holds count as occupied and only newly created internal gaps fail (confirmed 18 November 2026). Payment after hold expiry remains open. | RIO-07–09 |
 | O-08 | Agree guest contact fields, confirmation delivery/retrieval, ticket admission validation, and Stripe setup. | RIO-09–10 |
 | O-09 | Confirm six-place threshold counting; agree online/cinema settlement, manual reservation deadlines, and payment at the two-hour cutoff. | RIO-11, 14–16 |
 | O-10 | Select dashboard metrics and define reporting calculations, period filters, and city visibility. | RIO-12 |

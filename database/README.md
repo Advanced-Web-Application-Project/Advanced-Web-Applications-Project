@@ -268,3 +268,16 @@ now contains 600 seated plus 40 separate wheelchair places; earlier empty-invent
 statements above describe the historical #39/#52/#36 verification stages. See
 [the inventory guide](../docs/SCREEN-INVENTORY.md) and
 [recorded verification](verification/inventory.json) for current behavior.
+
+## Booking safeguards update — #82
+
+`0005_booking_safeguards.sql` adds private hold-token hashes, ticket-category
+snapshots and active allocation guards shared with availability reads. Apply it
+before running the updated backend. It refuses active duplicate allocations
+without changing booking history; resolve such records through a separate review.
+No prices, contacts or paid records are invented. Legacy categories stay NULL.
+See [the current booking contract and acceptance evidence](../docs/BOOKING-SAFEGUARDS.md).
+
+`0006_allocation_isolation.sql` requires READ COMMITTED for booking/ticket writes
+so waiting writers obtain fresh availability snapshots. The API selects that
+isolation explicitly. Read-only inspection may still use repeatable read.

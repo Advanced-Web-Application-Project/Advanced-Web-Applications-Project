@@ -1,4 +1,7 @@
 @baseUrl = http://localhost:3000
+# Replace with real IDs returned by browsing/seat endpoints.
+@bookingId = 123
+@holdToken = REPLACE_WITH_PRIVATE_TOKEN_FROM_CREATION
 //API TESTS
 
 ### 1. GET ALL FILMS
@@ -47,7 +50,7 @@ GET {{baseUrl}}/api/prices
 
 
 
-### Post A NEW BOOKING 
+### CREATE AN UNPAID FIVE-MINUTE HOLD (201; requires configured adult price)
 POST {{baseUrl}}/api/bookings
 Content-Type: application/json
 
@@ -57,7 +60,7 @@ Content-Type: application/json
     "clientEmail": "test@client.com"
 }
 
-### Post a new booking with different ages
+### CREATE A HOLD WITH ADULT/CHILD PRICES (child is half adult)
 POST http://localhost:3000/api/bookings
 Content-Type: application/json
 
@@ -76,8 +79,9 @@ GET {{baseUrl}}/api/bookings?screeningId=1
 ### GET ALL BOOKINGS 
 GET {{baseUrl}}/api/bookings
 
-### DELETE BOOKING BY ID 
-DELETE {{baseUrl}}/api/bookings/28
+### RELEASE ONLY YOUR UNPAID HOLD (history retained; missing token returns 401)
+DELETE {{baseUrl}}/api/bookings/{{bookingId}}
+Authorization: Bearer {{holdToken}}
 
 
 ### 4. INVALID TEST MISSING seatID (returns 400)

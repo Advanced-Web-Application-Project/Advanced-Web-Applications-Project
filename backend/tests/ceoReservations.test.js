@@ -299,6 +299,11 @@ test(
               ),
               { code: "P0001" },
             );
+            // Each role reuses the ordinary place only after its prior sale expires.
+            await client.query(
+              "UPDATE bookings SET status='expired' WHERE id=$1",
+              [booking.id],
+            );
           }
           for (const sql of [
             "UPDATE bookings SET status='expired' WHERE id=$1",
@@ -694,7 +699,7 @@ test(
                     "SELECT count(*)::int AS count FROM rio_schema_migrations",
                   )
                 ).rows[0].count,
-                conflict ? 1 : 4,
+                conflict ? 1 : 6,
               );
             } finally {
               await rm(directory, { recursive: true, force: true });

@@ -10,7 +10,9 @@ import {
 try {
   const databaseUrl = readDatabaseUrl();
   assertIsolatedDevelopment(databaseUrl, process.env.RIO_DATABASE_MODE);
-  const child = spawn(process.execPath, ["--test"], {
+  // Database suites create/drop many databases; run suites serially while their
+  // explicit competing-request tests still exercise real concurrent connections.
+  const child = spawn(process.execPath, ["--test", "--test-concurrency=1"], {
     stdio: "inherit",
     env: {
       ...process.env,
@@ -22,6 +24,7 @@ try {
       TEST_CEO_DATABASE_URL: databaseUrl,
       TEST_INVENTORY_DATABASE_URL: databaseUrl,
       TEST_AVAILABILITY_DATABASE_URL: databaseUrl,
+      TEST_BOOKING_DATABASE_URL: databaseUrl,
     },
   });
   const [code] = await once(child, "exit");
