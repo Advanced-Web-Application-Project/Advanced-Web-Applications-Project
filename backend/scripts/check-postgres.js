@@ -25,6 +25,7 @@ try {
       TEST_INVENTORY_DATABASE_URL: databaseUrl,
       TEST_AVAILABILITY_DATABASE_URL: databaseUrl,
       TEST_BOOKING_DATABASE_URL: databaseUrl,
+      TEST_SELECTION_DATABASE_URL: databaseUrl,
     },
   });
   const [code] = await once(child, "exit");

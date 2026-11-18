@@ -104,3 +104,23 @@ GET {{baseUrl}}/api/screenings?cityId=1&screenId=1&filmId=1
 ### INVALID SCREEN FILTER (expected 400)
 GET {{baseUrl}}/api/screenings?screenId=1.5
 
+
+### PREVIEW A COMPLETE SELECTION (no allocation; replace with matching real IDs)
+POST {{baseUrl}}/api/seats/validate
+Content-Type: application/json
+
+{
+  "screenId": 1,
+  "screeningId": 9,
+  "seatIds": [2, 3]
+}
+
+### PREVIEW MALFORMED DUPLICATE SELECTION (expected 400)
+POST {{baseUrl}}/api/seats/validate
+Content-Type: application/json
+
+{
+  "screenId": 1,
+  "screeningId": 9,
+  "seatIds": [2, 2]
+}

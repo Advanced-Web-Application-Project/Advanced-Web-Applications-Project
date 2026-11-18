@@ -1,0 +1,637 @@
+{
+  "date": "2026-11-18",
+  "verifiedAt": "2026-11-18T17:59:59.478Z",
+  "issue": 27,
+  "endpoint": "POST /api/seats/validate",
+  "target": "isolated local development; all API queries on a read-only database transaction; connection omitted",
+  "baseMerge": "0a2bfea (PR83)",
+  "transactionReadOnly": "on",
+  "policy": {
+    "activeHoldsCountUntilStoredExpiry": true,
+    "rejectOnlyNewGaps": true,
+    "wheelchairsHaveNoGapRule": true
+  },
+  "databaseUnchanged": {
+    "tables": ["seats", "screenings", "bookings", "tickets"],
+    "beforeSha256": "b7b2727061ee2660e33fe3cc71365d46ea16703729df6cac007bda2dccf7d7a5",
+    "afterSha256": "b7b2727061ee2660e33fe3cc71365d46ea16703729df6cac007bda2dccf7d7a5",
+    "verified": true
+  },
+  "examples": [
+    {
+      "city": "Oulu",
+      "city_id": 1,
+      "screen_id": 1,
+      "capacity": 100,
+      "film_id": 1,
+      "film_title": "RIO demo: Northern Lights",
+      "screening_id": 9,
+      "screening_time": "2026-11-19T16:00:00.000Z",
+      "cases": [
+        {
+          "labels": [2, 3],
+          "request": {
+            "screenId": 1,
+            "screeningId": 9,
+            "seatIds": [2, 3]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 1,
+              "screening_id": 9,
+              "as_of": "2026-11-18T17:59:59.387Z",
+              "seat_ids": [2, 3],
+              "valid": true,
+              "errors": []
+            }
+          }
+        },
+        {
+          "labels": [3],
+          "request": {
+            "screenId": 1,
+            "screeningId": 9,
+            "seatIds": [3]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 1,
+              "screening_id": 9,
+              "as_of": "2026-11-18T17:59:59.391Z",
+              "seat_ids": [3],
+              "valid": false,
+              "errors": [
+                {
+                  "code": "ISOLATED_SEAT_GAP",
+                  "message": "This selection leaves seat 2 alone in row 1. Choose an adjacent place or change the selection.",
+                  "seat_ids": [2],
+                  "row_label": 1
+                }
+              ]
+            }
+          }
+        },
+        {
+          "labels": [1],
+          "request": {
+            "screenId": 1,
+            "screeningId": 9,
+            "seatIds": [1]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 1,
+              "screening_id": 9,
+              "as_of": "2026-11-18T17:59:59.395Z",
+              "seat_ids": [1],
+              "valid": false,
+              "errors": [
+                {
+                  "code": "CEO_RESERVED",
+                  "message": "The CEO-reserved place is unavailable for this screening.",
+                  "seat_ids": [1]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "labels": ["W1", "W3"],
+          "request": {
+            "screenId": 1,
+            "screeningId": 9,
+            "seatIds": [101, 103]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 1,
+              "screening_id": 9,
+              "as_of": "2026-11-18T17:59:59.399Z",
+              "seat_ids": [101, 103],
+              "valid": true,
+              "errors": []
+            }
+          }
+        },
+        {
+          "labels": [14, 11],
+          "request": {
+            "screenId": 1,
+            "screeningId": 9,
+            "seatIds": [18, 20]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 1,
+              "screening_id": 9,
+              "as_of": "2026-11-18T17:59:59.403Z",
+              "seat_ids": [18, 20],
+              "valid": false,
+              "errors": [
+                {
+                  "code": "ISOLATED_SEAT_GAP",
+                  "message": "This selection leaves seat 12 alone in row 2. Choose an adjacent place or change the selection.",
+                  "seat_ids": [19],
+                  "row_label": 2
+                }
+              ]
+            }
+          }
+        },
+        {
+          "labels": [14, 12],
+          "request": {
+            "screenId": 1,
+            "screeningId": 9,
+            "seatIds": [18, 19]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 1,
+              "screening_id": 9,
+              "as_of": "2026-11-18T17:59:59.406Z",
+              "seat_ids": [18, 19],
+              "valid": true,
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "city": "Oulu",
+      "city_id": 1,
+      "screen_id": 2,
+      "capacity": 200,
+      "film_id": 1,
+      "film_title": "RIO demo: Northern Lights",
+      "screening_id": 11,
+      "screening_time": "2026-11-19T16:00:00.000Z",
+      "cases": [
+        {
+          "labels": [2, 3],
+          "request": {
+            "screenId": 2,
+            "screeningId": 11,
+            "seatIds": [112, 113]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 2,
+              "screening_id": 11,
+              "as_of": "2026-11-18T17:59:59.415Z",
+              "seat_ids": [112, 113],
+              "valid": true,
+              "errors": []
+            }
+          }
+        },
+        {
+          "labels": [3],
+          "request": {
+            "screenId": 2,
+            "screeningId": 11,
+            "seatIds": [113]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 2,
+              "screening_id": 11,
+              "as_of": "2026-11-18T17:59:59.419Z",
+              "seat_ids": [113],
+              "valid": false,
+              "errors": [
+                {
+                  "code": "ISOLATED_SEAT_GAP",
+                  "message": "This selection leaves seat 2 alone in row 1. Choose an adjacent place or change the selection.",
+                  "seat_ids": [112],
+                  "row_label": 1
+                }
+              ]
+            }
+          }
+        },
+        {
+          "labels": [1],
+          "request": {
+            "screenId": 2,
+            "screeningId": 11,
+            "seatIds": [111]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 2,
+              "screening_id": 11,
+              "as_of": "2026-11-18T17:59:59.423Z",
+              "seat_ids": [111],
+              "valid": false,
+              "errors": [
+                {
+                  "code": "CEO_RESERVED",
+                  "message": "The CEO-reserved place is unavailable for this screening.",
+                  "seat_ids": [111]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "labels": ["W1", "W3"],
+          "request": {
+            "screenId": 2,
+            "screeningId": 11,
+            "seatIds": [311, 313]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 2,
+              "screening_id": 11,
+              "as_of": "2026-11-18T17:59:59.426Z",
+              "seat_ids": [311, 313],
+              "valid": true,
+              "errors": []
+            }
+          }
+        },
+        {
+          "labels": [14, 11],
+          "request": {
+            "screenId": 2,
+            "screeningId": 11,
+            "seatIds": [128, 130]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 2,
+              "screening_id": 11,
+              "as_of": "2026-11-18T17:59:59.429Z",
+              "seat_ids": [128, 130],
+              "valid": false,
+              "errors": [
+                {
+                  "code": "ISOLATED_SEAT_GAP",
+                  "message": "This selection leaves seat 12 alone in row 2. Choose an adjacent place or change the selection.",
+                  "seat_ids": [129],
+                  "row_label": 2
+                }
+              ]
+            }
+          }
+        },
+        {
+          "labels": [14, 12],
+          "request": {
+            "screenId": 2,
+            "screeningId": 11,
+            "seatIds": [128, 129]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 2,
+              "screening_id": 11,
+              "as_of": "2026-11-18T17:59:59.431Z",
+              "seat_ids": [128, 129],
+              "valid": true,
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "city": "Tampere",
+      "city_id": 2,
+      "screen_id": 3,
+      "capacity": 100,
+      "film_id": 1,
+      "film_title": "RIO demo: Northern Lights",
+      "screening_id": 13,
+      "screening_time": "2026-11-19T16:00:00.000Z",
+      "cases": [
+        {
+          "labels": [2, 3],
+          "request": {
+            "screenId": 3,
+            "screeningId": 13,
+            "seatIds": [322, 323]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 3,
+              "screening_id": 13,
+              "as_of": "2026-11-18T17:59:59.439Z",
+              "seat_ids": [322, 323],
+              "valid": true,
+              "errors": []
+            }
+          }
+        },
+        {
+          "labels": [3],
+          "request": {
+            "screenId": 3,
+            "screeningId": 13,
+            "seatIds": [323]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 3,
+              "screening_id": 13,
+              "as_of": "2026-11-18T17:59:59.442Z",
+              "seat_ids": [323],
+              "valid": false,
+              "errors": [
+                {
+                  "code": "ISOLATED_SEAT_GAP",
+                  "message": "This selection leaves seat 2 alone in row 1. Choose an adjacent place or change the selection.",
+                  "seat_ids": [322],
+                  "row_label": 1
+                }
+              ]
+            }
+          }
+        },
+        {
+          "labels": [1],
+          "request": {
+            "screenId": 3,
+            "screeningId": 13,
+            "seatIds": [321]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 3,
+              "screening_id": 13,
+              "as_of": "2026-11-18T17:59:59.444Z",
+              "seat_ids": [321],
+              "valid": false,
+              "errors": [
+                {
+                  "code": "CEO_RESERVED",
+                  "message": "The CEO-reserved place is unavailable for this screening.",
+                  "seat_ids": [321]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "labels": ["W1", "W3"],
+          "request": {
+            "screenId": 3,
+            "screeningId": 13,
+            "seatIds": [421, 423]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 3,
+              "screening_id": 13,
+              "as_of": "2026-11-18T17:59:59.447Z",
+              "seat_ids": [421, 423],
+              "valid": true,
+              "errors": []
+            }
+          }
+        },
+        {
+          "labels": [14, 11],
+          "request": {
+            "screenId": 3,
+            "screeningId": 13,
+            "seatIds": [338, 340]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 3,
+              "screening_id": 13,
+              "as_of": "2026-11-18T17:59:59.449Z",
+              "seat_ids": [338, 340],
+              "valid": false,
+              "errors": [
+                {
+                  "code": "ISOLATED_SEAT_GAP",
+                  "message": "This selection leaves seat 12 alone in row 2. Choose an adjacent place or change the selection.",
+                  "seat_ids": [339],
+                  "row_label": 2
+                }
+              ]
+            }
+          }
+        },
+        {
+          "labels": [14, 12],
+          "request": {
+            "screenId": 3,
+            "screeningId": 13,
+            "seatIds": [338, 339]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 3,
+              "screening_id": 13,
+              "as_of": "2026-11-18T17:59:59.452Z",
+              "seat_ids": [338, 339],
+              "valid": true,
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "city": "Tampere",
+      "city_id": 2,
+      "screen_id": 4,
+      "capacity": 200,
+      "film_id": 1,
+      "film_title": "RIO demo: Northern Lights",
+      "screening_id": 15,
+      "screening_time": "2026-11-19T16:00:00.000Z",
+      "cases": [
+        {
+          "labels": [2, 3],
+          "request": {
+            "screenId": 4,
+            "screeningId": 15,
+            "seatIds": [432, 433]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 4,
+              "screening_id": 15,
+              "as_of": "2026-11-18T17:59:59.459Z",
+              "seat_ids": [432, 433],
+              "valid": true,
+              "errors": []
+            }
+          }
+        },
+        {
+          "labels": [3],
+          "request": {
+            "screenId": 4,
+            "screeningId": 15,
+            "seatIds": [433]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 4,
+              "screening_id": 15,
+              "as_of": "2026-11-18T17:59:59.464Z",
+              "seat_ids": [433],
+              "valid": false,
+              "errors": [
+                {
+                  "code": "ISOLATED_SEAT_GAP",
+                  "message": "This selection leaves seat 2 alone in row 1. Choose an adjacent place or change the selection.",
+                  "seat_ids": [432],
+                  "row_label": 1
+                }
+              ]
+            }
+          }
+        },
+        {
+          "labels": [1],
+          "request": {
+            "screenId": 4,
+            "screeningId": 15,
+            "seatIds": [431]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 4,
+              "screening_id": 15,
+              "as_of": "2026-11-18T17:59:59.467Z",
+              "seat_ids": [431],
+              "valid": false,
+              "errors": [
+                {
+                  "code": "CEO_RESERVED",
+                  "message": "The CEO-reserved place is unavailable for this screening.",
+                  "seat_ids": [431]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "labels": ["W1", "W3"],
+          "request": {
+            "screenId": 4,
+            "screeningId": 15,
+            "seatIds": [631, 633]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 4,
+              "screening_id": 15,
+              "as_of": "2026-11-18T17:59:59.469Z",
+              "seat_ids": [631, 633],
+              "valid": true,
+              "errors": []
+            }
+          }
+        },
+        {
+          "labels": [14, 11],
+          "request": {
+            "screenId": 4,
+            "screeningId": 15,
+            "seatIds": [448, 450]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 4,
+              "screening_id": 15,
+              "as_of": "2026-11-18T17:59:59.471Z",
+              "seat_ids": [448, 450],
+              "valid": false,
+              "errors": [
+                {
+                  "code": "ISOLATED_SEAT_GAP",
+                  "message": "This selection leaves seat 12 alone in row 2. Choose an adjacent place or change the selection.",
+                  "seat_ids": [449],
+                  "row_label": 2
+                }
+              ]
+            }
+          }
+        },
+        {
+          "labels": [14, 12],
+          "request": {
+            "screenId": 4,
+            "screeningId": 15,
+            "seatIds": [448, 449]
+          },
+          "httpStatus": 200,
+          "response": {
+            "success": true,
+            "data": {
+              "screen_id": 4,
+              "screening_id": 15,
+              "as_of": "2026-11-18T17:59:59.473Z",
+              "seat_ids": [448, 449],
+              "valid": true,
+              "errors": []
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "tests": {
+    "command": "npm run test:postgres",
+    "passed": 98,
+    "failed": 0,
+    "skipped": 0,
+    "independentRowArrangements": 59049
+  }
+}
