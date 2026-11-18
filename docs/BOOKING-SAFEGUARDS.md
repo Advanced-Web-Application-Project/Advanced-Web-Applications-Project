@@ -1,7 +1,8 @@
 # Booking API safeguards (#82)
 
 This corrects the prototype merged in #80. It does not complete checkout,
-Stripe, account reservations, or the read-only #27 preview endpoint.
+Stripe or account reservations. The read-only #27 preview endpoint is documented
+separately in [seat-selection validation](API-SEAT-SELECTION.md).
 
 ## Setup and verification
 
@@ -171,8 +172,9 @@ capacities, snake rows, skipped labels/physical row 13, old gaps, edges and
 wheelchair exemptions. Existing migration, inventory, availability and CEO suites
 remain part of `npm run test:postgres`.
 
-Remaining work belongs to its existing tasks: #27 public preview and its UI
-integration; #62 account ownership/idempotency and all other allocation writers;
+The #27 public preview now exposes the same rules without allocation; its
+frontend integration remains separate. Remaining work belongs to existing tasks:
+#62 account ownership/idempotency and all other allocation writers;
 #63 verified payment versus expiry races; #41 Stripe; #61 authorised price
 settings and rounding; #76 CEO-only release; seat map and checkout UI. No paid
 state or payment simulation is exposed by this patch. A checkout hold itself is

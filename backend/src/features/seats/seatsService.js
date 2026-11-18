@@ -1,6 +1,10 @@
-export class SeatRequestError extends Error {}
+import {
+  MAX_DATABASE_ID,
+  parseSelectionRequest,
+  validateSeatSelection,
+} from "./seatSelectionValidation.js";
 
-const MAX_DATABASE_ID = 2147483647;
+export class SeatRequestError extends Error {}
 
 export function parseSeatQuery(query, { requireScreening = false } = {}) {
   const result = {};
@@ -78,6 +82,13 @@ export function createSeatsService(repository) {
           (!seat.is_wheelchair && seat.seat_label === 1) ||
           Boolean(seat.is_ceo_reserved),
       }));
+    },
+    async validateSelection(body) {
+      const { screenId, screeningId, seatIds } = parseSelectionRequest(body);
+      return validateSeatSelection(
+        await readScreening({ screenId, screeningId }),
+        seatIds,
+      );
     },
     async getAvailability(query) {
       return summarizeAvailability(

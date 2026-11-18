@@ -131,3 +131,11 @@ deadlines. `GET /api/seats/availability` with both IDs returns separate seated
 and wheelchair available/total counts and a server snapshot time. See the
 [availability contract](docs/API-SEAT-AVAILABILITY.md) for states, errors,
 confirmed five-minute checkout policy and verification. Reads create no holds.
+
+## Seat-selection preview
+
+`POST /api/seats/validate` checks the complete selection against current screening
+availability and physical gap rules, without creating a booking or hold. See
+[the request contract and examples](docs/API-SEAT-SELECTION.md). Checkout hold
+creation already repeats these shared rules transactionally; preview does not
+secure places. Frontend integration remains separate.

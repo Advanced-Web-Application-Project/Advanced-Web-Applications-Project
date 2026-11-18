@@ -38,6 +38,14 @@ adult/child pricing, confirmed by the user today. See
 [the booking contract](BOOKING-SAFEGUARDS.md). The public #27 preview endpoint,
 Stripe and account pay-later reservations remain separate.
 
+## Selection-validation update — 18 November 2026
+
+#27 exposes read-only whole-selection validation using the same pure rules that
+#82 already enforces for allocation. Active holds count until stored expiry; only
+new internal single-seat gaps fail; wheelchair spaces follow availability only.
+See [the validation contract](API-SEAT-SELECTION.md) for errors, commands and fresh
+verification. A valid preview does not secure places.
+
 ## Status and scope
 
 Reviewed on 8 November 2026 against local commit

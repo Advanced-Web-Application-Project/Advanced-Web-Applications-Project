@@ -6,6 +6,7 @@ export function registerSeatRoutes(app, pool) {
   const controller = createSeatsController(
     createSeatsService(createSeatsRepository(pool)),
   );
+  app.post("/api/seats/validate", controller.validateSelection);
   app.get("/api/seats", controller.listSeats);
   app.get("/api/seats/availability", controller.getAvailability);
 }

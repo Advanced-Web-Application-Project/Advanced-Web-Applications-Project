@@ -150,3 +150,11 @@ account/reservation scope. #27 owns complete selection validation, #56 the map,
 These writes must reuse the same deadline/state meanings and recheck availability
 inside the allocation transaction. Prices, ownership, payment and concurrency
 safeguards are not implemented merely by adding a read endpoint.
+
+## Selection-validation follow-up (#27)
+
+The [read-only whole-selection validator](API-SEAT-SELECTION.md) reuses this
+availability snapshot. Active holds count as unavailable for adjacency until
+expiry; pre-existing gaps are ignored and wheelchair spaces have no gap rule.
+Previews introduce no deadline calculation or booking/hold creation. The booking
+route also revalidates these shared rules inside its allocation transaction.
