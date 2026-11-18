@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ens10/rahti-frontend:1.0.0
+          image: ens10/frontend:v1
           ports:
             - containerPort: 8080

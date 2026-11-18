@@ -1,0 +1,55 @@
+﻿apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: frontend-build
+  labels:
+    app: frontend
+spec:
+  triggers:
+  - type: GitHub
+    github:
+      secret: secret101
+  - type: ImageChange
+    imageChange: {}
+  - type: ConfigChange
+  source:
+    type: Git
+    git:
+      uri: https://github.com/Santsu4/Advanced-Web-Applications-Project
+      contextDir: frontend/
+  strategy:
+    type: Docker
+    dockerStrategy: {} 
+  output:
+    to:
+      kind: ImageStreamTag
+      name: frontend:latest
+
+---
+
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: backend-build
+  labels:
+    app: backend
+spec:
+  triggers:
+  - type: GitHub
+    github:
+      secret: secret101
+  - type: ImageChange
+    imageChange: {}
+  - type: ConfigChange
+  source:
+    type: Git
+    git:
+      uri: https://github.com/Santsu4/Advanced-Web-Applications-Project
+      contextDir: backend/
+  strategy:
+    type: Docker
+    dockerStrategy: {} 
+  output:
+    to:
+      kind: ImageStreamTag
+      name: backend:latest
