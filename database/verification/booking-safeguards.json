@@ -1,0 +1,130 @@
+{
+  "verifiedAt": "2026-11-18T17:44:31.431Z",
+  "environment": "disposable local PostgreSQL; synthetic adult=1200/legacy child=500 cents",
+  "workflow": [
+    {
+      "city": "Oulu",
+      "screenId": 1,
+      "capacity": 100,
+      "film": "RIO demo: Northern Lights",
+      "screeningId": 1,
+      "selected": [
+        {
+          "id": 2,
+          "label": "2"
+        },
+        {
+          "id": 3,
+          "label": "3"
+        }
+      ],
+      "checkoutStatus": 201,
+      "bookingStatus": "hold",
+      "paymentStatus": "unpaid",
+      "expiresAt": "2026-11-18T17:49:31.129Z",
+      "totalCents": 1800,
+      "availableBefore": 99,
+      "availableDuring": 97,
+      "conflictStatus": 409,
+      "releaseStatus": 200,
+      "availableAfter": 99,
+      "history": {
+        "status": "expired",
+        "tickets": 2
+      }
+    },
+    {
+      "city": "Oulu",
+      "screenId": 2,
+      "capacity": 200,
+      "film": "RIO demo: Northern Lights",
+      "screeningId": 3,
+      "selected": [
+        {
+          "id": 112,
+          "label": "2"
+        },
+        {
+          "id": 113,
+          "label": "3"
+        }
+      ],
+      "checkoutStatus": 201,
+      "bookingStatus": "hold",
+      "paymentStatus": "unpaid",
+      "expiresAt": "2026-11-18T17:49:31.230Z",
+      "totalCents": 1800,
+      "availableBefore": 199,
+      "availableDuring": 197,
+      "conflictStatus": 409,
+      "releaseStatus": 200,
+      "availableAfter": 199,
+      "history": {
+        "status": "expired",
+        "tickets": 2
+      }
+    },
+    {
+      "city": "Tampere",
+      "screenId": 3,
+      "capacity": 100,
+      "film": "RIO demo: Northern Lights",
+      "screeningId": 5,
+      "selected": [
+        {
+          "id": 322,
+          "label": "2"
+        },
+        {
+          "id": 323,
+          "label": "3"
+        }
+      ],
+      "checkoutStatus": 201,
+      "bookingStatus": "hold",
+      "paymentStatus": "unpaid",
+      "expiresAt": "2026-11-18T17:49:31.304Z",
+      "totalCents": 1800,
+      "availableBefore": 99,
+      "availableDuring": 97,
+      "conflictStatus": 409,
+      "releaseStatus": 200,
+      "availableAfter": 99,
+      "history": {
+        "status": "expired",
+        "tickets": 2
+      }
+    },
+    {
+      "city": "Tampere",
+      "screenId": 4,
+      "capacity": 200,
+      "film": "RIO demo: Northern Lights",
+      "screeningId": 7,
+      "selected": [
+        {
+          "id": 432,
+          "label": "2"
+        },
+        {
+          "id": 433,
+          "label": "3"
+        }
+      ],
+      "checkoutStatus": 201,
+      "bookingStatus": "hold",
+      "paymentStatus": "unpaid",
+      "expiresAt": "2026-11-18T17:49:31.394Z",
+      "totalCents": 1800,
+      "availableBefore": 199,
+      "availableDuring": 197,
+      "conflictStatus": 409,
+      "releaseStatus": 200,
+      "availableAfter": 199,
+      "history": {
+        "status": "expired",
+        "tickets": 2
+      }
+    }
+  ]
+}

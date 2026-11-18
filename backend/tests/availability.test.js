@@ -343,8 +343,8 @@ test(
               [12, "hold", "2026-12-01 15:00:00"],
             ])
               await book(c, show, seat(label), status, expiry);
-            // Historical duplicate allocations count the place once, not each ticket.
-            await book(c, show, seat(2), "paid", null);
+            // Historical inactive tickets remain; new active duplicates are guarded.
+            await book(c, show, seat(2), "expired", null);
             await book(c, show, wheel(1), "paid", null);
             await book(c, show, wheel(2), "expired", "2026-12-01 17:00:00");
             const before = (

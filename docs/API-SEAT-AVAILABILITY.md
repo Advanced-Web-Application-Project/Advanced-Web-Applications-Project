@@ -1,5 +1,12 @@
 # Screening seat availability (#55)
 
+## Allocation integration update — #82
+
+Apply migrations 0005–0006 before running this version. Reads and database write guards
+now share the same active-state SQL function. The corrected booking route creates
+five-minute unpaid holds; see [booking safeguards](BOOKING-SAFEGUARDS.md).
+The availability response and stored-deadline meanings below are unchanged.
+
 ## Requests and compatibility
 
 ```http

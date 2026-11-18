@@ -112,6 +112,8 @@ test(
               "0002_ceo_reservations.sql",
               "0003_guard_ceo_seat_conversion.sql",
               "0004_screen_inventory.sql",
+              "0005_booking_safeguards.sql",
+              "0006_allocation_isolation.sql",
             ],
             previouslyApplied: 0,
           });
@@ -124,7 +126,7 @@ test(
           );
           assert.equal(
             schema.constraints.filter((row) => row.type === "c").length,
-            15,
+            17,
           );
           assert.equal(
             schema.constraints.filter((row) => row.type === "p").length,
@@ -135,25 +137,33 @@ test(
             [
               ["trg_ensure_ceo_for_inventory", "O"],
               ["trg_ensure_ceo_for_screening", "O"],
+              ["trg_guard_active_ticket_allocation", "O"],
+              ["trg_guard_booking_allocation", "O"],
               ["trg_guard_inventory_place", "O"],
               ["trg_guard_screen_inventory_capacity", "O"],
               ["trg_prevent_ceo_seat_booking", "O"],
               ["trg_protect_ceo_booking", "O"],
               ["trg_protect_ceo_screening", "O"],
               ["trg_protect_ceo_seat_config", "O"],
+              ["trg_require_booking_isolation", "O"],
+              ["trg_require_ticket_isolation", "O"],
             ],
           );
           assert.deepEqual(
             schema.functions.map((row) => row.name),
             [
+              "booking_blocks_place",
               "ensure_ceo_after_inventory_or_screening",
               "ensure_ceo_reservation",
+              "guard_active_ticket_allocation",
+              "guard_booking_allocation",
               "guard_inventory_place",
               "guard_screen_inventory_capacity",
               "prevent_ceo_screening_relocation",
               "prevent_ceo_seat_booking",
               "protect_ceo_booking",
               "protect_ceo_seat_config",
+              "require_allocation_isolation",
             ],
           );
           assert.ok(
@@ -173,9 +183,9 @@ test(
             users:
               "id role permitted_city_id email password_hash loyalty_progress",
             bookings:
-              "id user_id guest_email screening_id status booking_time expiry_time booking_type",
+              "id user_id guest_email screening_id status booking_time expiry_time booking_type hold_token_hash",
             tickets:
-              "id booking_id seat_id price_id is_loyalty_rewarded amount_charged",
+              "id booking_id seat_id price_id is_loyalty_rewarded amount_charged ticket_category",
             company_requests:
               "id company_name contact_email film_id screening_id attendee_count status message",
             invoices: "id booking_id company_name is_paid",
@@ -297,7 +307,7 @@ test(
           const records = await snapshot();
           assert.deepEqual(await migrate(url), {
             applied: [],
-            previouslyApplied: 4,
+            previouslyApplied: 6,
           });
           assert.deepEqual(await snapshot(), records);
           assert.equal(
@@ -324,10 +334,10 @@ test(
                 "SELECT count(*)::int AS count FROM rio_schema_migrations",
               )
             ).rows[0].count,
-            4,
+            6,
           );
           console.log(
-            "Schema evidence: empty → 11 application tables, 13 foreign keys, 15 checks, 8 enabled triggers; linked IDs survive rerun.",
+            "Schema evidence: empty → 11 application tables, 13 foreign keys, 17 checks, 12 enabled triggers; linked IDs survive rerun.",
           );
         });
       },
@@ -340,7 +350,7 @@ test(
           const results = await Promise.all([migrate(url), migrate(url)]);
           assert.equal(
             results.reduce((count, result) => count + result.applied.length, 0),
-            4,
+            6,
           );
           assert.equal((await inspectDatabase(url)).tables.length, 12);
         });

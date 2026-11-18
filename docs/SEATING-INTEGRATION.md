@@ -28,6 +28,16 @@ Creation/validation of those deadlines remains future allocation work. See
 [the current availability contract](API-SEAT-AVAILABILITY.md). Historical ticket-
 only occupancy findings below are superseded; reads do not secure places.
 
+## Booking safeguards update — 18 November 2026
+
+#82 replaces the merged paid-booking prototype with private five-minute unpaid
+holds, transactional complete-selection validation and retained-history release.
+Shared rules count active holds, reject only new internal single-seat gaps and
+exempt wheelchair spaces from the gap rule. Wheelchair places use the same
+adult/child pricing, confirmed by the user today. See
+[the booking contract](BOOKING-SAFEGUARDS.md). The public #27 preview endpoint,
+Stripe and account pay-later reservations remain separate.
+
 ## Status and scope
 
 Reviewed on 8 November 2026 against local commit

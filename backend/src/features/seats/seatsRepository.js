@@ -25,10 +25,7 @@ export function createSeatsRepository(pool) {
           SELECT DISTINCT t.seat_id, b.booking_type
           FROM listing l JOIN public.bookings b ON b.screening_id = l.screening_id
           JOIN public.tickets t ON t.booking_id = b.id CROSS JOIN clock
-          WHERE b.booking_type = 'ceo'
-            OR b.status IN ('paid', 'company_invoiced')
-            OR (b.status IN ('hold', 'reserved')
-              AND (b.expiry_time IS NULL OR b.expiry_time > clock.local_now))
+          WHERE public.booking_blocks_place(b.booking_type,b.status,b.expiry_time,clock.local_now)
         )
         SELECT l.screen_id, l.screening_id, l.capacity, l.wheelchair_capacity, clock.as_of,
           COALESCE((SELECT jsonb_agg(to_jsonb(s) || jsonb_build_object(

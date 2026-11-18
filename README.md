@@ -36,6 +36,12 @@ Join the [RIO Discord server](https://discord.gg/jJTps5kC9F) for team discussion
 In development. Customers can choose a city, screen, movie and showtime using
 live data. Seat selection and booking remain under development.
 
+## Booking allocation safeguards
+
+The corrected booking API creates owned five-minute unpaid holds and retains
+history on release. Apply migrations 0005–0006 before running this backend version.
+See [the contract, verification and remaining work](docs/BOOKING-SAFEGUARDS.md).
+
 ## Backend development
 
 On the configured development machine, PostgreSQL data is retained in ignored
