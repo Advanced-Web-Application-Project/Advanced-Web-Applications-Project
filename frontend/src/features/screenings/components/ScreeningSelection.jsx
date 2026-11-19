@@ -36,7 +36,7 @@ function RequestFeedback({ request, subject }) {
   );
 }
 
-export default function ScreeningSelection() {
+export default function ScreeningSelection({ renderSeatSelection } = {}) {
   const [selection, dispatch] = useReducer(selectionReducer, initialSelection);
   const [now, setNow] = useState(() => Date.now());
   const requests = useScreeningOptions(selection);
@@ -235,6 +235,11 @@ export default function ScreeningSelection() {
           </p>
         )}
       </section>
+      {options.screening &&
+        renderSeatSelection?.({
+          screen: options.screen,
+          screening: options.screening,
+        })}
     </section>
   );
 }

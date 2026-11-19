@@ -8,9 +8,22 @@ export class ApiError extends Error {
 
 export function createApiClient(baseUrl) {
   const base = baseUrl.replace(/\/+$/, "");
-  return async function apiGet(path, { signal } = {}) {
+  return async function apiRequest(
+    path,
+    { signal, method = "GET", body: requestBody, cache } = {},
+  ) {
     const response = await fetch(`${base}/${path.replace(/^\/+/, "")}`, {
-      headers: { Accept: "application/json" },
+      method,
+      headers: {
+        Accept: "application/json",
+        ...(requestBody === undefined
+          ? {}
+          : { "Content-Type": "application/json" }),
+      },
+      ...(requestBody === undefined
+        ? {}
+        : { body: JSON.stringify(requestBody) }),
+      ...(cache === undefined ? {} : { cache }),
       signal,
     });
     let body;
@@ -41,6 +54,9 @@ export function createApiClient(baseUrl) {
   };
 }
 
-export const apiGet = createApiClient(
+export const apiRequest = createApiClient(
   import.meta.env?.VITE_API_BASE_URL || "/api",
 );
+
+// Existing read services retain their public import.
+export const apiGet = apiRequest;

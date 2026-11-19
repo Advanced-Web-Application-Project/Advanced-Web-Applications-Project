@@ -1,3 +1,4 @@
+import SeatSelection from "../features/seats/components/SeatSelection.jsx";
 import ScreeningSelection from "../features/screenings/components/ScreeningSelection.jsx";
 
 export default function HomePage() {
@@ -43,7 +44,11 @@ export default function HomePage() {
             <span className="art-note">Lights down. Stories on.</span>
           </div>
         </section>
-        <ScreeningSelection />
+        <ScreeningSelection
+          renderSeatSelection={({ screen, screening }) => (
+            <SeatSelection screen={screen} screening={screening} />
+          )}
+        />
       </main>
       <footer className="site-footer shell">
         <span className="footer-brand">RIO</span>
