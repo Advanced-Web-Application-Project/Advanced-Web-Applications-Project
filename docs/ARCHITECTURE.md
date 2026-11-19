@@ -50,6 +50,7 @@ RIO/
 │   │   │   │   └── utils/         # Only when feature helpers are needed
 │   │   │   ├── cinemas/
 │   │   │   ├── screenings/
+│   │   │   ├── seats/
 │   │   │   ├── bookings/
 │   │   │   └── payments/
 │   │   ├── shared/

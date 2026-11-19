@@ -169,3 +169,11 @@ runs independent unit/HTTP checks and skips PostgreSQL tests unless configured;
 Frontend seat maps/listing integration, other allocation workflows, payment handling,
 CEO release and shared/CSC deployment remain separate work. Only isolated local
 PostgreSQL and the local Express workflow are verified here.
+
+## Frontend consumer — #56
+
+The [accessible seat map](SEAT-MAP.md) now builds complete selections and displays
+this endpoint's validation feedback. Selection edits/availability refreshes
+invalidate its checked result, and only a current valid response opens its
+optional downstream callback. #57 still owns full summary/navigation integration;
+this preview never secures places.

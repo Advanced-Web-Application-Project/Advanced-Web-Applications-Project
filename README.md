@@ -42,7 +42,8 @@ Join the [RIO Discord server](https://discord.gg/jJTps5kC9F) for team discussion
 ## Status
 
 In development. Customers can choose a city, screen, movie and showtime using
-live data. Seat selection and booking remain under development.
+live data. Customers can inspect/select seats and check the complete selection.
+The complete selection summary, checkout and payment remain under development.
 
 ## Booking allocation safeguards
 
@@ -146,3 +147,10 @@ availability and physical gap rules, without creating a booking or hold. See
 [the request contract and examples](docs/API-SEAT-SELECTION.md). Checkout hold
 creation already repeats these shared rules transactionally; preview does not
 secure places. Frontend integration remains separate.
+
+## Accessible seat map
+
+After selecting a showtime, the customer app renders the actual 100/200-seat
+layout with a separate wheelchair zone and read-only backend validation. See
+[seat-map behavior, verification and scope](docs/SEAT-MAP.md). Availability updates
+on refresh/focus/every 30 seconds. A successful check does not reserve places.

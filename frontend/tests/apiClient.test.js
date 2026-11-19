@@ -10,6 +10,25 @@ before(async () => {
   server = createServer((request, response) => {
     response.setHeader("Content-Type", "application/json");
     const path = new URL(request.url, "http://localhost").pathname;
+    if (path === "/api/selection") {
+      let body = "";
+      request.on("data", (chunk) => {
+        body += chunk;
+      });
+      request.on("end", () =>
+        response.end(
+          JSON.stringify({
+            success: true,
+            data: {
+              method: request.method,
+              contentType: request.headers["content-type"],
+              body: JSON.parse(body),
+            },
+          }),
+        ),
+      );
+      return;
+    }
     if (path === "/api/success")
       return response.end(
         JSON.stringify({
@@ -90,4 +109,12 @@ test("passes cancellation through as AbortError", async () => {
   await assert.rejects(get("success", { signal: controller.signal }), {
     name: "AbortError",
   });
+});
+
+test("sends a JSON POST with complete numeric seat IDs through the shared transport", async () => {
+  const body = { screenId: 11, screeningId: 111, seatIds: [11002, 11003] };
+  assert.deepEqual(
+    await get("selection", { method: "POST", body, cache: "no-store" }),
+    { method: "POST", contentType: "application/json", body },
+  );
 });

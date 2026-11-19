@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-19",
+  "timezone": "Europe/Helsinki",
+  "issue": 56,
+  "branch": "feature/56-accessible-seat-map",
+  "base": "c935035 (PR85)",
+  "tests": {
+    "frontendUnitAndHttp": 26,
+    "frontendComponent": 28,
+    "total": 54,
+    "failed": 0,
+    "skipped": 0,
+    "lint": "passed",
+    "productionBuild": "passed",
+    "frontendFormatting": "passed"
+  },
+  "workflow": {
+    "issue": 56,
+    "environment": "One local browser tab, disposable PostgreSQL, read-only backend pool",
+    "cases": [
+      {
+        "city": "Oulu",
+        "capacity": 100,
+        "screenId": 1,
+        "screeningId": 1,
+        "gapSelection": [8],
+        "gapRejectedAt": 7,
+        "acceptedSelection": [7, 8]
+      },
+      {
+        "city": "Oulu",
+        "capacity": 200,
+        "screenId": 2,
+        "screeningId": 3,
+        "acceptedSelection": [20, "W3"],
+        "keyboard": "Row2seat21 ArrowRight focused seat20, Enter selected it",
+        "renderedPlaces": 210,
+        "physicalRows": 20
+      },
+      {
+        "city": "Tampere",
+        "capacity": 100,
+        "screenId": 3,
+        "screeningId": 5,
+        "acceptedSelection": [2, 3],
+        "ceoPlaceUnavailable": true
+      },
+      {
+        "city": "Tampere",
+        "capacity": 200,
+        "screenId": 4,
+        "screeningId": 7,
+        "acceptedSelection": [2, 3, "W3"],
+        "renderedPlaces": 210
+      }
+    ],
+    "switching": "City/screen changes removed the old map and reset selection to zero",
+    "mobile": {
+      "pageWidth": 375,
+      "mapClientWidth": 335,
+      "mapScrollWidth": 358,
+      "minPlaceWidth": 30.1953125,
+      "minPlaceHeight": 44,
+      "pageHasHorizontalOverflow": false
+    },
+    "screenshots": [
+      "rio-56-gap-feedback.jpg",
+      "rio-56-seat-map-desktop.jpg",
+      "rio-56-seat-map-mobile.jpg",
+      "rio-56-seat-map-200.jpg",
+      "rio-56-tampere-200.jpg"
+    ]
+  },
+  "databaseCheck": {
+    "beforeSha256": "c569f90c582f94034a776aabd6fcd78d206918188153cec751adc7a34dbbdcc4",
+    "afterSha256": "c569f90c582f94034a776aabd6fcd78d206918188153cec751adc7a34dbbdcc4",
+    "unchanged": true,
+    "disposableDatabaseRemoved": true
+  },
+  "commands": [
+    "cd frontend && npm test",
+    "cd frontend && npm run lint",
+    "cd frontend && npm run build",
+    "cd frontend && npm run format:check"
+  ],
+  "sharedDatabaseModified": false,
+  "productionDeploymentVerified": false,
+  "acceptance": {
+    "bothLayoutsAndWheelchairs": true,
+    "protectedAndOccupiedPlacesDisabled": true,
+    "keyboardAndNonColourStates": true,
+    "serverValidationAndCurrentValidCallbackGate": true,
+    "wholeSelectionAndAnnouncements": true,
+    "switchingAndStaleResponseProtection": true,
+    "focusedInteractionTests": true
+  },
+  "remaining": ["User commit/push/PR/review/merge"],
+  "deferred": {
+    "57": "Complete summary, back navigation and broader end-to-end release workflow",
+    "77": "Screening listing availability counts",
+    "checkout": "Holds/payment/account/staff workflow integration remains in its own tasks",
+    "deployment": "Rahti verification remains #47/#67",
+    "optional": "Manual screen-reader assessment, roving tab order and push updates"
+  }
+}

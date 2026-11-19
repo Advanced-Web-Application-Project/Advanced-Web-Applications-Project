@@ -46,6 +46,15 @@ new internal single-seat gaps fail; wheelchair spaces follow availability only.
 See [the validation contract](API-SEAT-SELECTION.md) for errors, commands and fresh
 verification. A valid preview does not secure places.
 
+## Frontend seat-map update — 19 November 2026
+
+#56 adds the accessible reusable map beneath a selected screening, using the
+existing inventory/availability API and #27's read-only preview. It preserves
+physical positions and server labels; active occupancy disables selection.
+Periodic/focus/manual refresh and context/request guards protect against stale
+results. See [the seat-map contract and evidence](SEAT-MAP.md). The full selection
+summary and navigation remain #57; no UI hold/payment is created by this slice.
+
 ## Status and scope
 
 Reviewed on 8 November 2026 against local commit
