@@ -13,7 +13,8 @@
     "verify:browsing": "node scripts/verify-browsing.js",
     "test:postgres": "node scripts/check-postgres.js",
     "db:seed:inventory": "node scripts/db-seed-inventory.js",
-    "verify:inventory": "node scripts/verify-inventory.js"
+    "verify:inventory": "node scripts/verify-inventory.js",
+    "db:import:tmdb": "node src/features/films/importTmdbCli.js"
   },
   "keywords": [],
   "author": "",
@@ -28,4 +29,5 @@
   "devDependencies": {
     "nodemon": "^3.1.14"
   }
+  
 }
