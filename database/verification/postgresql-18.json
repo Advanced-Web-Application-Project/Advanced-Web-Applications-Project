@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-19",
+  "timezone": "Europe/Helsinki",
+  "scope": "Native isolated development PostgreSQL18 validation; container/Rahti configuration not executed",
+  "postgres": {
+    "version": "18.7",
+    "version_number": "180007",
+    "port": "55452",
+    "cities": 2,
+    "screens": 4,
+    "bookings": 24
+  },
+  "tests": {
+    "command": "cd backend && npm run test:postgres",
+    "passed": 98,
+    "failed": 0,
+    "skipped": 0
+  },
+  "runningBackend": {
+    "citiesHttpStatus": 200,
+    "cities": ["Oulu", "Tampere"]
+  },
+  "mainReview": {
+    "pr": 88,
+    "title": "Test Rahti webhook",
+    "mergeCommit": "519f350",
+    "changedFiles": 0,
+    "sourceTreeUnchangedByMerge": true
+  },
+  "containerTarget": {
+    "image": "postgres:18-alpine",
+    "pgdata": "/var/lib/postgresql/18/docker",
+    "volumeMount": "/var/lib/postgresql",
+    "newVolumeOrPvc": "postgres18-data",
+    "executed": false
+  },
+  "historicalVerificationPreserved": true,
+  "sharedDatabaseUpgraded": false,
+  "existingDataReset": false,
+  "notes": [
+    "Native server was restarted using PostgreSQL18 tools after crash recovery.",
+    "Expired local browsing fixtures were refreshed through the existing repeatable seed; old screenings/bookings were preserved.",
+    "Docker/oc are unavailable; container and Rahti runtime behavior remains #67.",
+    "Compose backend DATABASE_URL and production frontend API routing remain separate #67 fixes."
+  ]
+}
