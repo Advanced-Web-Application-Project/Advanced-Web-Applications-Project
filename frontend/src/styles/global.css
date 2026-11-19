@@ -561,3 +561,38 @@ h3 {
     padding: 16px;
   }
 }
+
+.availability-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+.availability-list li {
+  border-left: 3px solid #c69c55;
+  padding: 0.5rem 1rem;
+}
+.availability-list p {
+  margin: 0.5rem 0;
+}
+.selection-review {
+  margin-top: 2rem;
+}
+.selection-review time {
+  display: block;
+  color: #baad9a;
+}
+.selection-review h3:focus {
+  outline: 2px solid #eabd56;
+  outline-offset: 0.3rem;
+}
+
+.wheelchair-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  background-color: currentColor;
+  mask: url("../assets/disability.svg") center / contain no-repeat;
+  vertical-align: middle;
+}

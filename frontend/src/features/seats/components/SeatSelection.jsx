@@ -1,8 +1,14 @@
+import WheelchairIcon from "./WheelchairIcon.jsx";
 import { useId } from "react";
 import { useSeatSelection } from "../hooks/useSeatSelection.js";
 import SeatMap from "./SeatMap.jsx";
 
-function ScreeningPlaces({ screen, screening, onValidatedSelection }) {
+function ScreeningPlaces({
+  screen,
+  screening,
+  onValidatedSelection,
+  renderSummary,
+}) {
   const id = useId();
   const state = useSeatSelection({
     screenId: screen.id,
@@ -22,7 +28,9 @@ function ScreeningPlaces({ screen, screening, onValidatedSelection }) {
       <div className="section-heading">
         <div>
           <p className="eyebrow">Choose your places</p>
-          <h3 id={`${id}-title`}>Seats for this screening</h3>
+          <h3 tabIndex={-1} id={`${id}-title`}>
+            Seats for this screening
+          </h3>
         </div>
         <button
           type="button"
@@ -58,7 +66,9 @@ function ScreeningPlaces({ screen, screening, onValidatedSelection }) {
           </span>
           Unavailable
         </li>
-        <li>♿ Wheelchair space</li>
+        <li>
+          <WheelchairIcon /> Wheelchair space
+        </li>
       </ul>
       <p className="seat-feedback" role="status" aria-atomic="true">
         {state.notice}
@@ -130,6 +140,16 @@ function ScreeningPlaces({ screen, screening, onValidatedSelection }) {
           ✓ Selection checked. These places are not reserved.
         </p>
       )}
+      {checked &&
+        result.valid &&
+        renderSummary?.({
+          selected,
+          result,
+          edit: () => {
+            state.edit();
+            document.getElementById(`${id}-title`)?.focus();
+          },
+        })}
       <p className="selection-note">
         Availability refreshes every 30 seconds and when you return to this
         window. Seat choices and checks do not create a booking or hold.

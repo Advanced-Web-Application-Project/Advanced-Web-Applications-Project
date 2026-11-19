@@ -1,5 +1,9 @@
 # Accessible seat map (#56)
 
+Current integration: #57/#77 now compose this map with listing counts and a
+validated review. See [selection workflow](SELECTION-SUMMARY.md). The #56
+verification and scope below describe that earlier milestone.
+
 ## Delivered scope
 
 After choosing a city, screen, movie and future showtime, customers can inspect

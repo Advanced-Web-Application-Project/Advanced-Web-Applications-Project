@@ -64,6 +64,12 @@ function reducer(state, action) {
         notice: `${place.is_wheelchair ? "Wheelchair space" : "Seat"} ${place.display_label} ${removing ? "removed" : "selected"}. ${selected.length} ${selected.length === 1 ? "place" : "places"} selected.`,
       };
     }
+    case "edit":
+      return {
+        ...state,
+        validation: { status: "idle" },
+        notice: "Review your places, then check the selection again.",
+      };
     case "checking":
       return {
         ...state,
@@ -147,6 +153,10 @@ export function useSeatSelection({
   }
   return {
     ...state,
+    edit() {
+      invalidate();
+      dispatch({ type: "edit" });
+    },
     toggle(id) {
       invalidate();
       dispatch({ type: "toggle", id });

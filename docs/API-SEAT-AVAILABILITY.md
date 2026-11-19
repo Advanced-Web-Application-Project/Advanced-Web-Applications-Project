@@ -145,8 +145,9 @@ Real PostgreSQL HTTP examples are recorded in the linked evidence.
 
 #62/#63 own atomic hold creation, deadline validation, expiry/write races and
 payment reconciliation; registered pay-later creation belongs to its future
-account/reservation scope. #27 owns complete selection validation, #56 the map,
-#77 listing count display, #57 the full selection summary, and #76 CEO release.
+account/reservation scope. #27 owns complete selection validation and #56 owns
+the map. #77 listing count display and #57 review are now integrated in the customer
+[selection workflow](SELECTION-SUMMARY.md). CEO release remains #76.
 These writes must reuse the same deadline/state meanings and recheck availability
 inside the allocation transaction. Prices, ownership, payment and concurrency
 safeguards are not implemented merely by adding a read endpoint.
