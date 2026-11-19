@@ -8,12 +8,12 @@ The project aims to help customers browse screenings, choose seats, and purchase
 
 Planned technologies:
 
-| Area                | Technology                                       |
-| ------------------- | ------------------------------------------------ |
-| Frontend            | React, JavaScript                                |
-| Backend             | Node.js, Express                                 |
-| Database            | PostgreSQL, hosted at [CSC](https://www.csc.fi/) |
-| Application hosting | Rahti (CSC), confirmed 18 November 2026          |
+| Area                | Technology                                                 |
+| ------------------- | ---------------------------------------------------------- |
+| Frontend            | React, JavaScript                                          |
+| Backend             | Node.js, Express                                           |
+| Database            | PostgreSQL 18 target, hosted at [CSC](https://www.csc.fi/) |
+| Application hosting | Rahti (CSC), confirmed 18 November 2026                    |
 
 ## Deployment
 
@@ -54,12 +54,12 @@ See [the contract, verification and remaining work](docs/BOOKING-SAFEGUARDS.md).
 ## Backend development
 
 On the configured development machine, PostgreSQL data is retained in ignored
-`.local/postgres`. Start it using the [database guide](database/README.md), then
+`.local/postgres` (PostgreSQL 18). Use `/Library/PostgreSQL/18/bin/pg_ctl`; start it using the [database guide](database/README.md), then
 run `npm start` from `backend/`. In another terminal, run
 `npm run verify:browsing` from `backend/` to verify both cities and all four
 screens against the running API. These commands use your ignored `.env`.
 
-Requires Node.js 22 and access to a PostgreSQL development database. From the
+Requires Node.js 22 and access to a PostgreSQL 18 development database. From the
 repository root:
 
 ```bash

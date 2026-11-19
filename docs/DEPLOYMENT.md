@@ -4,7 +4,8 @@
 
 On 18 November 2026 the user confirmed Rahti as the application hosting target,
 superseding the earlier Azure direction. This applies to the customer frontend,
-future separate staff frontend and Express backend. PostgreSQL remains at CSC.
+future separate staff frontend and Express backend. PostgreSQL remains at CSC, with version 18 as the current target. Verify the actual
+shared server version before a separately reviewed major-version upgrade.
 Customer and staff websites require separate deployments and addresses; they may
 share the backend and authoritative database.
 
@@ -55,22 +56,23 @@ variable names in a manifest. API origins and CORS must agree end to end.
 
 ## Existing artifact classification
 
-Files are retained in this documentation change. “Revise” means tracked work in
-#47/#67, not that this update has fixed or deployed the configuration.
+Files are retained. The table distinguishes current source updates from runtime
+work still tracked in #47/#67; no entry claims that a configuration was deployed.
 
-| Artifact                                                                     | Disposition / known gap                                                                                                                                                                                                                                                      |
-| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `backend/Dockerfile`                                                         | Retain and verify on Rahti. Entry point and Node version were corrected by #81. Check the image's build context, permissions and secret exclusion.                                                                                                                           |
-| `frontend/Dockerfile`                                                        | Retain and revise production API build configuration/routing; verify serving on 8080.                                                                                                                                                                                        |
-| `k8s/backend_deployment.yaml`                                                | Revise: currently exports separate `DB_*` variables rather than the required backend connection/origin settings. Verify exact image identity and service mapping.                                                                                                            |
-| `k8s/frontend_deployment.yaml`                                               | Retain/revise: prove the image contains the intended API origin and works with its actual service/route.                                                                                                                                                                     |
-| `k8s/backend_service.yaml`, `frontend_service.yaml`                          | Retain and verify selectors, listener/target ports and routes against the running images. Source presence alone proves no connectivity.                                                                                                                                      |
-| `k8s/backend_route.yaml`, `frontend_route.yaml`                              | Retain and verify the actual HTTPS hostnames/TLS and service-port mappings; record resulting addresses.                                                                                                                                                                      |
-| `k8s/buildconfig-docker-build-example.yaml`                                  | Example requiring revision: canonical organization Git source, reviewed branch/build trigger, secret references and verified artifact identity. Do not copy embedded webhook values into live configuration.                                                                 |
-| `k8s/configmap.yaml`                                                         | Legacy `DB_*` configuration example. Reconcile consumers with the intended database and current runtime; do not blindly reuse it for Express.                                                                                                                                |
-| `k8s/postgres_deployment.yaml`, `postgres_service.yaml`, `postgres_pvc.yaml` | Legacy/unverified database deployment examples. Confirm the real database endpoint, ownership, persistence and backups before deciding whether to retain, replace or retire them. Hosting approval does not authorise applying/deleting them or replacing shared PostgreSQL. |
-| `k8s/secret.yaml`, local `.env` and real build configuration                 | Local/ignored secret-bearing configuration is not committed evidence. Review references without printing values. Verify Docker build contexts exclude local secrets; `.gitignore` alone does not define a Docker build context.                                              |
-| CI and staff app                                                             | No tracked `.github` workflow directory or staff app is present in the audited tree. #47 must implement relevant automation; staff checks/deployment remain dependent on staff initialization.                                                                               |
+| Artifact                                                                     | Disposition / known gap                                                                                                                                                                                                                                                                                                                              |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `backend/Dockerfile`                                                         | Retain and verify on Rahti. Entry point and Node version were corrected by #81. Check the image's build context, permissions and secret exclusion.                                                                                                                                                                                                   |
+| `frontend/Dockerfile`                                                        | Retain and revise production API build configuration/routing; verify serving on 8080.                                                                                                                                                                                                                                                                |
+| `k8s/backend_deployment.yaml`                                                | Revise: currently exports separate `DB_*` variables rather than the required backend connection/origin settings. Verify exact image identity and service mapping.                                                                                                                                                                                    |
+| `k8s/frontend_deployment.yaml`                                               | Retain/revise: prove the image contains the intended API origin and works with its actual service/route.                                                                                                                                                                                                                                             |
+| `k8s/backend_service.yaml`, `frontend_service.yaml`                          | Retain and verify selectors, listener/target ports and routes against the running images. Source presence alone proves no connectivity.                                                                                                                                                                                                              |
+| `k8s/backend_route.yaml`, `frontend_route.yaml`                              | Retain and verify the actual HTTPS hostnames/TLS and service-port mappings; record resulting addresses.                                                                                                                                                                                                                                              |
+| `k8s/buildconfig-docker-build-example.yaml`                                  | Example requiring revision: canonical organization Git source, reviewed branch/build trigger, secret references and verified artifact identity. Do not copy embedded webhook values into live configuration.                                                                                                                                         |
+| `docker-compose.yaml`                                                        | PostgreSQL 18 fresh-volume example with required local password input. The backend `DATABASE_URL` and frontend production API routing still need revision; the complete Compose stack remains unverified.                                                                                                                                            |
+| `k8s/configmap.yaml`                                                         | `DB_*` keys supply the PostgreSQL 18 image mappings, but do not configure the current Express runtime. Reconcile consumers with the intended database; do not blindly reuse these keys for Express.                                                                                                                                                  |
+| `k8s/postgres_deployment.yaml`, `postgres_service.yaml`, `postgres_pvc.yaml` | Updated PostgreSQL 18 examples (`postgres:18-alpine`, official `POSTGRES_*` names, versioned PGDATA and distinct `postgres18-data` PVC), still unverified on Rahti. Confirm endpoint, image/UID policy, persistence, backups and tested upgrade/restore before application. Preserve existing PostgreSQL data/PVCs; this is not an in-place upgrade. |
+| `k8s/secret.yaml`, local `.env` and real build configuration                 | Local/ignored secret-bearing configuration is not committed evidence. Review references without printing values. Verify Docker build contexts exclude local secrets; `.gitignore` alone does not define a Docker build context.                                                                                                                      |
+| CI and staff app                                                             | No tracked `.github` workflow directory or staff app is present in the audited tree. #47 must implement relevant automation; staff checks/deployment remain dependent on staff initialization.                                                                                                                                                       |
 
 Do not use a blanket `oc apply -f k8s/`: these files mix unverified database and
 application examples, old variable names and build placeholders.
@@ -132,6 +134,15 @@ Incomplete: actual namespace/addresses/database target, deployed runtime/API/COR
 verification, complete CI/release automation, separate staff delivery and an
 executed application rollback. No live deployment completion is claimed.
 
-Deferred from this docs-only change: repairing runtime/build manifests, adding
-CI, staff application work, live deployment, secret/permission changes and shared
-PostgreSQL migration. They remain assigned to their existing implementation tasks.
+Remaining work includes other runtime/build manifest repairs, CI, staff app
+delivery, live deployment, secret/permission changes and shared PostgreSQL
+migration. The PostgreSQL 18 source alignment below does not complete those tasks.
+
+## PostgreSQL 18 source alignment — 19 November 2026
+
+Current native commands and Compose/Kubernetes database examples now target
+PostgreSQL 18. The retained local PG18 cluster was restarted and its Express cities
+request verified. See [database setup and upgrade boundaries](../database/README.md).
+Container/Rahti execution and the actual shared PostgreSQL version are not proven
+by this source update; #67 still owns that verification. Historical evidence keeps
+its recorded server version.

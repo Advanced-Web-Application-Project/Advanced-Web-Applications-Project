@@ -3,7 +3,10 @@ kind: Deployment
 metadata:
   name: db
 spec:
+  # Fresh PostgreSQL 18 target only; do not apply over existing data without a reviewed upgrade/restore.
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: db
@@ -14,19 +17,21 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: centos/postgresql-13-centos7
+          image: postgres:18-alpine
           env:
-            - name: POSTGRESQL_DATABASE
+            - name: PGDATA
+              value: /var/lib/postgresql/18/docker
+            - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:
                   name: app-config
                   key: DB_NAME
-            - name: POSTGRESQL_USER
+            - name: POSTGRES_USER
               valueFrom:
                 configMapKeyRef:
                   name: app-config
                   key: DB_USER
-            - name: POSTGRESQL_PASSWORD
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
@@ -35,8 +40,8 @@ spec:
             - containerPort: 5432
           volumeMounts:
             - name: postgres-storage
-              mountPath: /var/lib/pgsql/data
+              mountPath: /var/lib/postgresql
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
-            claimName: postgres-data
+            claimName: postgres18-data

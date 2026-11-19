@@ -4,6 +4,21 @@ Schema setup for #39 uses a small Node.js migration runner built on the existing
 `pg` dependency. It adds no runtime dependencies. Ordered SQL files live in
 `database/migrations/`; commands run from `backend/`.
 
+## Current version — PostgreSQL 18
+
+PostgreSQL 18 is the current development/container target (confirmed 19 November
+2026). The retained local cluster is already version 18 and uses the installed
+`/Library/PostgreSQL/18/bin` tools. Historical PostgreSQL 17 verification and the
+ignored `.local/postgres-pg17-backup` remain historical records; do not relabel or
+reuse them as version 18 data.
+
+Existing data from another major version needs a reviewed `pg_upgrade` or logical
+dump/restore into a separate 18 cluster. Updating a binary/image path alone is not
+a major-version data migration. Preserve the source/backup and validate linked
+records before adopting the new target. See
+[PostgreSQL's upgrade guide](https://www.postgresql.org/docs/18/upgrading.html).
+No shared/CSC upgrade is performed by this repository update.
+
 ## Commands and target
 
 Set `DATABASE_URL` in your local `backend/.env`, or export it in your shell.
@@ -62,7 +77,7 @@ does not create a database, provision roles or enable writes to the CSC database
 - Checksums protect migration history. They do not detect manual changes to
   tables or triggers; use inspection and focused database checks for that.
 
-## Reproduce verification with PostgreSQL 17
+## Reproduce verification with PostgreSQL 18
 
 The following macOS recipe creates a new disposable local cluster. It does not
 use an existing PostgreSQL service. Choose another unused port if 55439 is busy.
@@ -70,7 +85,7 @@ Run from `backend/`; if PostgreSQL is installed elsewhere, adjust `RIO_PG_BIN`.
 The `trust` authentication here is only for this temporary loopback test cluster.
 
 ```bash
-export RIO_PG_BIN=/Library/PostgreSQL/17/bin
+export RIO_PG_BIN=/Library/PostgreSQL/18/bin
 export RIO_PG_DATA="$(mktemp -d /tmp/rio-schema.XXXXXX)"
 "$RIO_PG_BIN/initdb" -D "$RIO_PG_DATA" -U rio_test -A trust --no-locale --encoding=UTF8
 "$RIO_PG_BIN/pg_ctl" -D "$RIO_PG_DATA" -l "$RIO_PG_DATA/server.log" -o "-h 127.0.0.1 -p 55439 -k $RIO_PG_DATA" -w start
@@ -96,7 +111,7 @@ databases, applies SQL, exercises constraints and drops only those test database
 Its role needs `CREATEDB`; the temporary cluster role above has that permission.
 Do not point test variables at a shared database.
 
-## Verified scope and remaining work
+## Historical baseline verification — PostgreSQL 17
 
 [Recorded verification](verification/initial-schema.json) contains the read-only
 before/after summary for a disposable PostgreSQL 17.0 cluster on 13 November 2026.
@@ -124,7 +139,7 @@ This baseline is the existing schema, not the final seating design:
 
 The configured development machine now has a dedicated PostgreSQL cluster in
 ignored `.local/postgres`, listening on loopback port 55452, with database and
-role `rio_dev`. It uses password authentication. Its generated connection URL is
+role `rio_dev`. Its current PG_VERSION is 18 and it uses password authentication. Its generated connection URL is
 stored only in ignored `backend/.env`, alongside `FRONTEND_URL`,
 `RIO_DATABASE_MODE=isolated-development`, and `TZ=Europe/Helsinki`.
 It was created separately from the installed PostgreSQL service and from CSC.
@@ -132,13 +147,17 @@ It was created separately from the installed PostgreSQL service and from CSC.
 From the repository root, check/start/stop this cluster with:
 
 ```bash
-/Library/PostgreSQL/17/bin/pg_ctl -D "$PWD/.local/postgres" status
-/Library/PostgreSQL/17/bin/pg_ctl -D "$PWD/.local/postgres" -l "$PWD/.local/postgres.log" -w start
-/Library/PostgreSQL/17/bin/pg_ctl -D "$PWD/.local/postgres" -m fast -w stop
+/Library/PostgreSQL/18/bin/pg_ctl -D "$PWD/.local/postgres" status
+/Library/PostgreSQL/18/bin/pg_ctl -D "$PWD/.local/postgres" -l "$PWD/.local/postgres.log" -w start
+/Library/PostgreSQL/18/bin/pg_ctl -D "$PWD/.local/postgres" -m fast -w stop
 ```
 
 Use `start` only when it is stopped. Data survives stopping the server.
-Start the database before running the backend or PostgreSQL checks.
+Start the database before running the backend or PostgreSQL checks. After an
+interrupted shutdown, startup may take longer while PostgreSQL performs crash
+recovery. Wait for readiness instead of deleting lock files or running `initdb`
+over the retained data. Restart `npm run dev` if it exited while the database was
+unavailable. `pg_ctl` status checks do not reset data.
 
 For a new checkout, provision a separate local database. On macOS with the same
 PostgreSQL installation, run the following from the repository root, choosing
@@ -148,14 +167,14 @@ choose a password and put its URL-encoded value in your ignored `.env`.
 
 ```bash
 mkdir -p .local
-/Library/PostgreSQL/17/bin/initdb -D "$PWD/.local/postgres" -U rio_dev -A scram-sha-256 -W --no-locale --encoding=UTF8
+/Library/PostgreSQL/18/bin/initdb -D "$PWD/.local/postgres" -U rio_dev -A scram-sha-256 -W --no-locale --encoding=UTF8
 cat >> .local/postgres/postgresql.conf <<'CONFIG'
 listen_addresses = '127.0.0.1'
 port = 55452
 unix_socket_directories = ''
 CONFIG
-/Library/PostgreSQL/17/bin/pg_ctl -D "$PWD/.local/postgres" -l "$PWD/.local/postgres.log" -w start
-/Library/PostgreSQL/17/bin/createdb -h 127.0.0.1 -p 55452 -U rio_dev -W rio_dev
+/Library/PostgreSQL/18/bin/pg_ctl -D "$PWD/.local/postgres" -l "$PWD/.local/postgres.log" -w start
+/Library/PostgreSQL/18/bin/createdb -h 127.0.0.1 -p 55452 -U rio_dev -W rio_dev
 cd backend
 cp -n .env.example .env
 ```
@@ -289,3 +308,33 @@ under #67. This decision authorises no database relocation, reset or automatic
 production migration. Existing `k8s/postgres_*` examples are unverified against
 that target and must not be applied or deleted by assumption. See
 [deployment configuration and verification](../docs/DEPLOYMENT.md).
+
+## Current PostgreSQL 18 verification — 19 November 2026
+
+The retained native cluster reports PostgreSQL 18.7 on loopback port 55452. All 98
+backend tests pass with no skips using disposable databases on that server, and
+a fresh Express startup/cities request passed. The user's running backend also
+returns future demo screenings after rerunning the existing browsing seed. See
+[the current verification record](verification/postgresql-18.json).
+
+## PostgreSQL 18 container examples
+
+`docker-compose.yaml` and `k8s/postgres_deployment.yaml` now target
+`postgres:18-alpine`. The official image uses `POSTGRES_DB`, `POSTGRES_USER` and
+`POSTGRES_PASSWORD`, with `PGDATA=/var/lib/postgresql/18/docker` inside a volume
+mounted at `/var/lib/postgresql`. See the
+[official image documentation](https://hub.docker.com/_/postgres).
+
+The Compose volume and Kubernetes PVC use the distinct name `postgres18-data`
+so old data is not mounted as if it were already upgraded. Keep any existing
+`postgres-data` PVC/old volume until backup, upgrade/restore and record verification
+are complete. These are fresh-target examples, not an in-place upgrade procedure.
+Compose requires `POSTGRES_PASSWORD` from local environment; there is no committed
+default password.
+
+Container/Rahti execution remains unverified under #67. The Compose backend still
+needs its current `DATABASE_URL` contract and the frontend production API routing;
+a PostgreSQL image update does not complete that stack. The guarded native-local
+migration commands do not automatically adopt a container/shared server: retain
+the existing target checks and use a separately reviewed setup path. No Docker,
+Rahti or shared database is started, replaced or reset by these source changes.

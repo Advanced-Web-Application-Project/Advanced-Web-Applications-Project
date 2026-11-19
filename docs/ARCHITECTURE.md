@@ -10,13 +10,14 @@ This document explains where code belongs and the intended application boundarie
 | ------------------- | ---------------------------------------- |
 | Frontend            | React with JavaScript (`.jsx` and `.js`) |
 | Backend             | Node.js with Express                     |
-| Database            | PostgreSQL hosted at CSC (csc.fi)        |
+| Database            | PostgreSQL 18 target at CSC (csc.fi)     |
 | Application hosting | Rahti (CSC), confirmed 18 November 2026  |
 
 The customer frontend, future separate staff frontend and Express backend will
 be deployed on Rahti at CSC, confirmed by the user on 18 November 2026. This
 supersedes the former Azure application-hosting direction. PostgreSQL remains at
-CSC; application hosting does not change or reset the existing database. Browsers
+CSC; PostgreSQL 18 is the current target, while the live CSC version/adoption must
+be verified separately. Application hosting does not change or reset the existing database. Browsers
 access data through Express rather than connecting directly to PostgreSQL.
 
 Customer and staff remain separate deployable websites with distinct addresses;
