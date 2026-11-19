@@ -1,5 +1,13 @@
 # RIO Seating Integration
 
+## Selection-summary update — 20 November 2026
+
+#57/#77 connect listing counts, the seat map and backend-validated review.
+Back navigation preserves current choices; edits, availability refresh and
+context changes invalidate review. See [the workflow and evidence](SELECTION-SUMMARY.md).
+This is a selection MVP; checkout, payment and the later frontend redesign remain
+separate. Historical findings below retain their stated baseline.
+
 ## Policy update — 16 November 2026
 
 The user has confirmed that 100/200 includes seat 1 and wheelchair labels are

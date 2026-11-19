@@ -1,0 +1,155 @@
+{
+  "database": "rio_test_ui_57_40996",
+  "fixtures": [
+    {
+      "screening_id": 1,
+      "screen_id": 1,
+      "city_id": 1,
+      "name": "Oulu",
+      "capacity": 100,
+      "film_id": 1,
+      "screening_time": "2026-11-21T16:00:00.000Z"
+    },
+    {
+      "screening_id": 2,
+      "screen_id": 1,
+      "city_id": 1,
+      "name": "Oulu",
+      "capacity": 100,
+      "film_id": 2,
+      "screening_time": "2026-11-21T18:00:00.000Z"
+    },
+    {
+      "screening_id": 3,
+      "screen_id": 2,
+      "city_id": 1,
+      "name": "Oulu",
+      "capacity": 200,
+      "film_id": 1,
+      "screening_time": "2026-11-21T16:00:00.000Z"
+    },
+    {
+      "screening_id": 4,
+      "screen_id": 2,
+      "city_id": 1,
+      "name": "Oulu",
+      "capacity": 200,
+      "film_id": 2,
+      "screening_time": "2026-11-21T18:00:00.000Z"
+    },
+    {
+      "screening_id": 5,
+      "screen_id": 3,
+      "city_id": 2,
+      "name": "Tampere",
+      "capacity": 100,
+      "film_id": 1,
+      "screening_time": "2026-11-21T16:00:00.000Z"
+    },
+    {
+      "screening_id": 6,
+      "screen_id": 3,
+      "city_id": 2,
+      "name": "Tampere",
+      "capacity": 100,
+      "film_id": 2,
+      "screening_time": "2026-11-21T18:00:00.000Z"
+    },
+    {
+      "screening_id": 7,
+      "screen_id": 4,
+      "city_id": 2,
+      "name": "Tampere",
+      "capacity": 200,
+      "film_id": 1,
+      "screening_time": "2026-11-21T16:00:00.000Z"
+    },
+    {
+      "screening_id": 8,
+      "screen_id": 4,
+      "city_id": 2,
+      "name": "Tampere",
+      "capacity": 200,
+      "film_id": 2,
+      "screening_time": "2026-11-21T18:00:00.000Z"
+    }
+  ],
+  "before": "208dc2af1230426e2d12c3992d41cc4f76e6f75f4dfd0e263e00ccfee787734d",
+  "after": "208dc2af1230426e2d12c3992d41cc4f76e6f75f4dfd0e263e00ccfee787734d",
+  "unchanged": true,
+  "issues": [57, 77],
+  "verified_at": "2026-11-20",
+  "postgresql": "18.7",
+  "frontend_tests": {
+    "unit": 26,
+    "component": 34,
+    "skipped": 0,
+    "environment": "Exact temporary source/config copy with clean offline lockfile install; original dependency reads stalled"
+  },
+  "checks": [
+    "frontend lint",
+    "frontend formatting",
+    "repository production build",
+    "git diff --check"
+  ],
+  "backend_mode": "default_transaction_read_only=on",
+  "browser": {
+    "cities": ["Oulu", "Tampere"],
+    "capacities": [100, 200],
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "page_width": 375
+    },
+    "examples": [
+      {
+        "screening_id": 1,
+        "screen_id": 1,
+        "city_id": 1,
+        "film_id": 1,
+        "selected_ids": [8, 7, 103],
+        "labels": ["8", "7", "W3"],
+        "seated_available": 97,
+        "seated_total": 100,
+        "wheelchair_available": 10,
+        "wheelchair_total": 10
+      },
+      {
+        "screening_id": 7,
+        "screen_id": 4,
+        "city_id": 2,
+        "film_id": 1,
+        "selected_ids": [432, 633],
+        "labels": ["2", "W3"],
+        "seated_available": 199,
+        "seated_total": 200,
+        "wheelchair_available": 10,
+        "wheelchair_total": 10
+      }
+    ],
+    "invalid_example": "Screening 1, seat 8 alone rejected for new gap 7; 7+8+W3 accepted",
+    "navigation": [
+      "back preserves choices and clears validation",
+      "change screening clears showtime and focuses city",
+      "city/screen/movie changes clear obsolete selection"
+    ],
+    "screenshots": [
+      "selection-summary-mobile.jpg",
+      "selection-summary-desktop.jpg"
+    ]
+  },
+  "cleanup": {
+    "disposable_database_dropped": true,
+    "dedicated_servers_stopped": true
+  },
+  "deferred": [
+    "checkout/payment",
+    "review pricing",
+    "CEO administration",
+    "staff UI",
+    "TMDB import",
+    "live deployment",
+    "future frontend redesign",
+    "manual screen-reader assessment"
+  ]
+}

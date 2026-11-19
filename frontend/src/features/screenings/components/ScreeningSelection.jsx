@@ -1,3 +1,4 @@
+import ScreeningAvailability from "./ScreeningAvailability.jsx";
 import { useEffect, useReducer, useState } from "react";
 import { useScreeningOptions } from "../hooks/useScreeningOptions.js";
 import {
@@ -194,6 +195,21 @@ export default function ScreeningSelection({ renderSeatSelection } = {}) {
           </p>
         </div>
       </div>
+      {options.showtimes.length > 0 && (
+        <section aria-label="Showtime availability">
+          <h3>Available places by showtime</h3>
+          <p>Availability can change. These counts do not hold places.</p>
+          <ul className="availability-list">
+            {options.showtimes.map((screening) => (
+              <ScreeningAvailability
+                key={`${options.screen.id}:${screening.id}`}
+                screen={options.screen}
+                screening={screening}
+              />
+            ))}
+          </ul>
+        </section>
+      )}
       <section
         className="selection-summary"
         aria-labelledby="summary-title"
@@ -237,6 +253,13 @@ export default function ScreeningSelection({ renderSeatSelection } = {}) {
       </section>
       {options.screening &&
         renderSeatSelection?.({
+          city: options.city,
+          film: options.film,
+          showtime: formatShowtime(options.screening.screening_time),
+          changeScreening: () => {
+            dispatch({ type: "screening", id: null });
+            document.getElementById("city")?.focus();
+          },
           screen: options.screen,
           screening: options.screening,
         })}

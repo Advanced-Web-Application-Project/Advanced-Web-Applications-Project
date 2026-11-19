@@ -1,3 +1,4 @@
+import WheelchairIcon from "./WheelchairIcon.jsx";
 import { useRef } from "react";
 import { isUnavailable } from "../utils/seatLayout.js";
 
@@ -57,7 +58,15 @@ export default function SeatMap({
         onKeyDown={(event) => navigate(event, place, zone)}
       >
         <span aria-hidden="true" className="seat-state-symbol">
-          {unavailable ? "×" : selected ? "✓" : place.is_wheelchair ? "♿" : ""}
+          {unavailable ? (
+            "×"
+          ) : selected ? (
+            "✓"
+          ) : place.is_wheelchair ? (
+            <WheelchairIcon />
+          ) : (
+            ""
+          )}
         </span>
         <span>{place.display_label}</span>
       </button>

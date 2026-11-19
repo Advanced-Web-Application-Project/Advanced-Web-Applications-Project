@@ -1,3 +1,4 @@
+import SelectionSummary from "../features/seats/components/SelectionSummary.jsx";
 import SeatSelection from "../features/seats/components/SeatSelection.jsx";
 import ScreeningSelection from "../features/screenings/components/ScreeningSelection.jsx";
 
@@ -45,8 +46,14 @@ export default function HomePage() {
           </div>
         </section>
         <ScreeningSelection
-          renderSeatSelection={({ screen, screening }) => (
-            <SeatSelection screen={screen} screening={screening} />
+          renderSeatSelection={(context) => (
+            <SeatSelection
+              screen={context.screen}
+              screening={context.screening}
+              renderSummary={(selection) => (
+                <SelectionSummary {...context} {...selection} />
+              )}
+            />
           )}
         />
       </main>
