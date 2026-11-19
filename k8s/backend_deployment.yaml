@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ens10/backend:v1
+          image: ens10/backend:v2
           ports:
             - containerPort: 3000
           env:
@@ -38,3 +38,7 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: DB_PASSWORD
+            - name: DATABASE_URL
+              value: "postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):5432/$(DB_NAME)"
+            - name: FRONTEND_URL
+              value: "https://frontend-awap-rio.2.rahtiapp.fi"
