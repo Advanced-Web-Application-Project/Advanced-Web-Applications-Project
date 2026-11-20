@@ -19,6 +19,40 @@ export function createBookingsRepository(pool) {
         await client.query("SET LOCAL lock_timeout = '5s'");
         await client.query("SET LOCAL statement_timeout = '15s'");
         const transaction = {
+          async lockRequestKey(hash) {
+            await client.query(
+              "SELECT pg_advisory_xact_lock(hashtextextended($1,62))",
+              [hash],
+            );
+          },
+          async findHoldByTokenHash(hash) {
+            return (
+              (
+                await client.query(
+                  "SELECT id,hold_request_fingerprint FROM bookings WHERE hold_token_hash=$1",
+                  [hash],
+                )
+              ).rows[0] ?? null
+            );
+          },
+          async isHoldActive(id) {
+            return (
+              (
+                await client.query(
+                  "SELECT expiry_time > clock_timestamp() AT TIME ZONE 'Europe/Helsinki' AS active FROM bookings WHERE id=$1",
+                  [id],
+                )
+              ).rows[0]?.active === true
+            );
+          },
+          async readHoldTickets(id) {
+            return (
+              await client.query(
+                `SELECT seat_id AS "seatId",ticket_category AS category,amount_charged AS "amountCharged" FROM tickets WHERE booking_id=$1 ORDER BY id`,
+                [id],
+              )
+            ).rows;
+          },
           async lockScreening(id) {
             const reference = (
               await client.query(
@@ -60,7 +94,8 @@ export function createBookingsRepository(pool) {
             return (
               (
                 await client.query(
-                  "SELECT * FROM bookings WHERE id=$1 FOR NO KEY UPDATE",
+                  `SELECT *, expiry_time AT TIME ZONE 'Europe/Helsinki' AS expires_at
+                   FROM bookings WHERE id=$1 FOR NO KEY UPDATE`,
                   [id],
                 )
               ).rows[0] ?? null
@@ -73,14 +108,14 @@ export function createBookingsRepository(pool) {
               )
             ).rows;
           },
-          async insertHold(screeningId, email, hash) {
+          async insertHold(screeningId, email, hash, fingerprint = null) {
             return (
               await client.query(
-                `INSERT INTO bookings (screening_id,guest_email,status,booking_time,expiry_time,hold_token_hash)
+                `INSERT INTO bookings (screening_id,guest_email,status,booking_time,expiry_time,hold_token_hash,hold_request_fingerprint)
               VALUES ($1,$2,'hold',statement_timestamp() AT TIME ZONE 'Europe/Helsinki',
-                (statement_timestamp()+interval '5 minutes') AT TIME ZONE 'Europe/Helsinki',$3)
+                (statement_timestamp()+interval '5 minutes') AT TIME ZONE 'Europe/Helsinki',$3,$4)
               RETURNING id,screening_id,expiry_time AT TIME ZONE 'Europe/Helsinki' AS expires_at`,
-                [screeningId, email, hash],
+                [screeningId, email, hash, fingerprint],
               )
             ).rows[0];
           },
