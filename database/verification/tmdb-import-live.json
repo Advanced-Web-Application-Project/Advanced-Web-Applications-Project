@@ -1,0 +1,46 @@
+{
+  "verifiedAt": "2026-11-20T00:06:55.111Z",
+  "scope": "Live TMDB to disposable local PostgreSQL, actual CLI twice, then actual Express API with upstream disabled; database removed after verification.",
+  "commands": [
+    "npm run verify:tmdb",
+    "node src/features/films/importTmdbCli.js --ids 550,603 (twice in disposable database)"
+  ],
+  "rowCounts": {
+    "before": 2,
+    "afterFirst": 4,
+    "afterRerun": 4
+  },
+  "films": [
+    {
+      "localId": 3,
+      "providerId": "tmdb:550",
+      "title": "Fight Club",
+      "descriptionPresent": true,
+      "artworkUrl": "https://image.tmdb.org/t/p/w500/jSziioSwPVrOy9Yow3XhWIBDjq1.jpg"
+    },
+    {
+      "localId": 4,
+      "providerId": "tmdb:603",
+      "title": "The Matrix",
+      "descriptionPresent": true,
+      "artworkUrl": "https://image.tmdb.org/t/p/w500/dXNAPwY7VrqMAo51EKhhCJfaGb5.jpg"
+    }
+  ],
+  "rerunPreservedLocalIds": true,
+  "demoRowsUnchanged": true,
+  "screening": {
+    "id": 9,
+    "filmId": 3,
+    "linkPreserved": true
+  },
+  "offlineApi": {
+    "listStatus": 200,
+    "detailStatuses": [
+      200,
+      200
+    ],
+    "tokenUnset": true,
+    "upstreamFetchBlocked": true,
+    "upstreamAttempts": 0
+  }
+}

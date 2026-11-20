@@ -124,7 +124,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 - External API failure does not delete existing information or make existing screenings unbookable.
 - Unavailable optional artwork or metadata has a usable fallback.
 
-**Dependencies/open decisions:** Movie API/provider and required metadata fields (O-04). No specific provider has been selected.
+**Dependencies/open decisions:** TMDB was selected on 19 November 2026 (O-04). The initial import retains title, overview as description and optional poster URL in English (`en-US`); remaining staff metadata/editing scope stays separate.
 
 ### RIO-04 — Manage the screening schedule
 
@@ -414,7 +414,7 @@ These are refinement tasks, not reasons to stop work on independent items. Custo
 | O-01 | Confirm RIO name.                                                                                                                                                                                                                                                                        | Branding                  |
 | O-02 | Capacity includes seat 1 and W1–W10 identifiers are confirmed (16 November 2026); wheelchair places use adult/child prices (18 November 2026); loyalty eligibility remains open.                                                                                                         | RIO-01, 05, 07, 20        |
 | O-03 | Define administrator/cashier permissions, city scope, staff provisioning, and who may set prices or reserve manually.                                                                                                                                                                    | RIO-02, 05, 11            |
-| O-04 | Select movie-data provider and required metadata fields.                                                                                                                                                                                                                                 | RIO-03, 06                |
+| O-04 | TMDB selected 19 November 2026; initial import fields: title, description (overview), optional artwork URL, English/en-US. Further staff metadata requirements remain open.                                                                                                              | RIO-03, 06                |
 | O-05 | Define duration/turnaround and changes/cancellation of screenings with bookings.                                                                                                                                                                                                         | RIO-04                    |
 | O-06 | Define base-price scope, currency, rounding, and price changes during checkout; confirm or reject the proposed +15% premiere rule.                                                                                                                                                       | RIO-05, 09                |
 | O-07 | Checkout hold duration is five minutes (confirmed 16 November 2026); active holds count as occupied and only newly created internal gaps fail (confirmed 18 November 2026). Payment after hold expiry remains open.                                                                      | RIO-07–09                 |

@@ -699,7 +699,7 @@ test(
                     "SELECT count(*)::int AS count FROM rio_schema_migrations",
                   )
                 ).rows[0].count,
-                conflict ? 1 : 6,
+                conflict ? 1 : 7,
               );
             } finally {
               await rm(directory, { recursive: true, force: true });
