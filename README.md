@@ -53,9 +53,18 @@ redesign remain future work.
 ## Booking allocation safeguards
 
 The corrected booking API creates owned five-minute unpaid holds and retains
-history on release. Apply current migrations through 0008 before running this backend version.
+history on release. The booking API requires migrations through 0008; local staff
+provisioning additionally requires 0009. Apply current migrations only to the
+explicit development target described in the database guide.
 See [the contract, verification and remaining work](docs/BOOKING-SAFEGUARDS.md).
 Optional private request keys now support [retry-safe hold creation](docs/CHECKOUT-HOLD-RETRIES.md).
+
+## Staff identity foundation
+
+[Staff provisioning](docs/STAFF-PROVISIONING.md) adds role/city/email constraints
+and hidden-terminal local account management through migration 0009. Commands
+are repeatable without resetting credentials. HTTP sign-in, sessions and staff
+route authorization remain #35; no staff frontend is introduced here.
 
 ## Presentation movie data
 

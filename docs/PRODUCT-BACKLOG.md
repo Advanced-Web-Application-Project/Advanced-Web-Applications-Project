@@ -111,7 +111,12 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 - Restrictions are enforced on data access and actions, including direct requests, rather than only hiding controls.
 - Unauthenticated customers cannot access administrative data or actions.
 
-**Dependencies/open decisions:** Agree the minimum permission matrix and staff-account provisioning before implementation (O-03).
+**Confirmed 20 November 2026:** email/password and server-managed sessions;
+administrator across both cities with film/schedule/price controls; cashier
+operational reads and eligible manual reservations in one assigned city. Local
+provisioning, credential reset and disable are operator CLI operations, with no
+public staff registration. See [the #33 identity/provisioning contract](STAFF-PROVISIONING.md).
+HTTP enforcement remains #35; the schema/CLI alone does not complete RIO-02.
 
 ### RIO-03 — Maintain film information
 
@@ -418,7 +423,7 @@ These are refinement tasks, not reasons to stop work on independent items. Custo
 | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
 | O-01 | Confirm RIO name.                                                                                                                                                                                                                                                                        | Branding                  |
 | O-02 | Capacity includes seat 1 and W1–W10 identifiers are confirmed (16 November 2026); wheelchair places use adult/child prices (18 November 2026); loyalty eligibility remains open.                                                                                                         | RIO-01, 05, 07, 20        |
-| O-03 | Define administrator/cashier permissions, city scope, staff provisioning, and who may set prices or reserve manually.                                                                                                                                                                    | RIO-02, 05, 11            |
+| O-03 | Confirmed 20 November 2026: administrator both cities and film/schedule/price writes; cashier own-city operational reads/manual reservations; email/password with server-managed sessions and operator CLI provisioning. #33 provides the identity foundation; HTTP enforcement remains #35. No ordinary staff CEO release. | RIO-02, 05, 11 |
 | O-04 | TMDB selected 19 November 2026; initial import fields: title, description (overview), optional artwork URL, English/en-US. Further staff metadata requirements remain open.                                                                                                              | RIO-03, 06                |
 | O-05 | Define duration/turnaround and changes/cancellation of screenings with bookings.                                                                                                                                                                                                         | RIO-04                    |
 | O-06 | Guest checkout uses EUR and re-review on price/context changes (confirmed 20 November 2026); local demo prices are adult €12/child €6. Production base-price scope/permissions and odd-cent rounding remain open; no unconfirmed premiere surcharge.                                                                                                                                                       | RIO-05, 09                |

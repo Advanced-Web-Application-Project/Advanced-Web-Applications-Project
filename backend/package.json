@@ -18,7 +18,8 @@
     "verify:tmdb": "node scripts/verify-tmdb-import.js",
     "db:seed:presentation": "node scripts/db-seed-presentation.js",
     "verify:presentation": "node scripts/verify-presentation.js",
-    "db:seed:demo-prices": "node scripts/db-seed-demo-prices.js"
+    "db:seed:demo-prices": "node scripts/db-seed-demo-prices.js",
+    "staff:manage": "node scripts/staff-manage.js"
   },
   "keywords": [],
   "author": "",
