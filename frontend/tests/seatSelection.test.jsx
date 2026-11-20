@@ -132,9 +132,9 @@ test("whole selection is checked only on request; valid callbacks and feedback e
   expect(requests.length).toBe(0);
   expect(check().disabled).toBe(false);
   await user.click(check());
-  await screen.findByText(
-    "✓ Selection checked. These places are not reserved.",
-  );
+  await screen.findByText("Selection checked. These places are not reserved.", {
+    selector: ".selection-valid",
+  });
   expect(requests[0]).toEqual({
     screenId: 11,
     screeningId: 111,
@@ -143,7 +143,9 @@ test("whole selection is checked only on request; valid callbacks and feedback e
   expect(validated.mock.calls.filter(([value]) => value).length).toBe(1);
   await user.click(seat(3));
   expect(
-    screen.queryByText("✓ Selection checked. These places are not reserved."),
+    screen.queryByText("Selection checked. These places are not reserved.", {
+      selector: ".selection-valid",
+    }),
   ).toBe(null);
   expect(validated.mock.calls.at(-1)[0]).toBe(null);
   expect(selectedText()).toContain("(1)");
@@ -182,9 +184,9 @@ test("backend gap errors explain unselected gap places; transport failures suppo
     "could not be checked",
   );
   await user.click(check());
-  await screen.findByText(
-    "✓ Selection checked. These places are not reserved.",
-  );
+  await screen.findByText("Selection checked. These places are not reserved.", {
+    selector: ".selection-valid",
+  });
 });
 
 test("refresh announces and removes a newly unavailable selected place and invalidates success", async () => {
@@ -195,9 +197,9 @@ test("refresh announces and removes a newly unavailable selected place and inval
   await screen.findByRole("button", { name: /Row 1, seat 2,/ });
   await user.click(seat(2));
   await user.click(check());
-  await screen.findByText(
-    "✓ Selection checked. These places are not reserved.",
-  );
+  await screen.findByText("Selection checked. These places are not reserved.", {
+    selector: ".selection-valid",
+  });
   await user.click(screen.getByRole("button", { name: "Refresh seats" }));
   await waitFor(() =>
     expect(seat(2).getAttribute("aria-disabled")).toBe("true"),
@@ -208,7 +210,9 @@ test("refresh announces and removes a newly unavailable selected place and inval
   expect(selectedText()).toContain("(0)");
   expect(check().disabled).toBe(true);
   expect(
-    screen.queryByText("✓ Selection checked. These places are not reserved."),
+    screen.queryByText("Selection checked. These places are not reserved.", {
+      selector: ".selection-valid",
+    }),
   ).toBe(null);
 });
 
@@ -238,7 +242,9 @@ test("stale validation cannot approve edited choices or a different screening, e
   await act(async () => old.resolve(response(selectionResponse(requests[0]))));
   expect(validated.mock.calls.filter(([value]) => value).length).toBe(0);
   expect(
-    screen.queryByText("✓ Selection checked. These places are not reserved."),
+    screen.queryByText("Selection checked. These places are not reserved.", {
+      selector: ".selection-valid",
+    }),
   ).toBe(null);
   await user.click(check());
   expect(

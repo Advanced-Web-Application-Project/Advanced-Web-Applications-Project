@@ -1,4 +1,4 @@
-import WheelchairIcon from "./WheelchairIcon.jsx";
+import Icon from "../../../shared/components/Icon.jsx";
 import { useRef } from "react";
 import { isUnavailable } from "../utils/seatLayout.js";
 
@@ -59,11 +59,11 @@ export default function SeatMap({
       >
         <span aria-hidden="true" className="seat-state-symbol">
           {unavailable ? (
-            "×"
+            <Icon name="cross" />
           ) : selected ? (
-            "✓"
+            <Icon name="check" />
           ) : place.is_wheelchair ? (
-            <WheelchairIcon />
+            <Icon name="wheelchair" />
           ) : (
             ""
           )}
@@ -101,7 +101,6 @@ export default function SeatMap({
           role="group"
           aria-label="Wheelchair spaces, between row 1 and the screen"
         >
-          <p>Wheelchair spaces</p>
           <div className="seat-row">
             <span className="seat-row-label" aria-hidden="true">
               W
