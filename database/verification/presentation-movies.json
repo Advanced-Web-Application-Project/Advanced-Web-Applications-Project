@@ -1,0 +1,273 @@
+{
+  "verifiedAt": "2026-11-20T03:17:12.743Z",
+  "database": "rio_dev",
+  "startDate": "2026-11-21",
+  "source": {
+    "provider": "TMDB",
+    "endpoint": "movie/now_playing",
+    "region": "FI",
+    "selectedOn": "2026-11-20"
+  },
+  "films": [
+    {
+      "id": 3,
+      "title": "Ramayana: Rise of a Legend",
+      "metadata_api_id": "tmdb:656908",
+      "has_description": true,
+      "has_artwork": true
+    },
+    {
+      "id": 4,
+      "title": "Hope",
+      "metadata_api_id": "tmdb:1058424",
+      "has_description": true,
+      "has_artwork": true
+    },
+    {
+      "id": 5,
+      "title": "Street Fighter",
+      "metadata_api_id": "tmdb:1153576",
+      "has_description": true,
+      "has_artwork": true
+    },
+    {
+      "id": 6,
+      "title": "The Hunger Games: Sunrise on the Reaping",
+      "metadata_api_id": "tmdb:1300968",
+      "has_description": true,
+      "has_artwork": true
+    },
+    {
+      "id": 7,
+      "title": "Godzilla Minus Zero",
+      "metadata_api_id": "tmdb:1381071",
+      "has_description": true,
+      "has_artwork": true
+    },
+    {
+      "id": 8,
+      "title": "Clayface",
+      "metadata_api_id": "tmdb:1400940",
+      "has_description": true,
+      "has_artwork": true
+    },
+    {
+      "id": 9,
+      "title": "LA BOLA NEGRA",
+      "metadata_api_id": "tmdb:1422041",
+      "has_description": true,
+      "has_artwork": true
+    },
+    {
+      "id": 10,
+      "title": "How to Rob a Bank",
+      "metadata_api_id": "tmdb:1437511",
+      "has_description": true,
+      "has_artwork": true
+    },
+    {
+      "id": 11,
+      "title": "Ebenezer",
+      "metadata_api_id": "tmdb:1567605",
+      "has_description": true,
+      "has_artwork": true
+    },
+    {
+      "id": 12,
+      "title": "You Can See Everything",
+      "metadata_api_id": "tmdb:1765072",
+      "has_description": true,
+      "has_artwork": true
+    }
+  ],
+  "screenings": 120,
+  "screeningTimesPerMoviePerScreen": 3,
+  "timezone": "Europe/Helsinki",
+  "examples": [
+    {
+      "city": "Oulu",
+      "cityId": 1,
+      "capacity": 100,
+      "screenId": 1,
+      "filmId": 4,
+      "title": "Hope",
+      "screeningId": 25,
+      "localTime": "2026-11-21T12:00:00",
+      "seated": {
+        "total": 100,
+        "available": 99
+      },
+      "wheelchair": {
+        "total": 10,
+        "available": 10
+      },
+      "selected": [
+        {
+          "id": 2,
+          "label": "2"
+        },
+        {
+          "id": 103,
+          "label": "W3"
+        }
+      ],
+      "previewValid": true
+    },
+    {
+      "city": "Oulu",
+      "cityId": 1,
+      "capacity": 200,
+      "screenId": 2,
+      "filmId": 4,
+      "title": "Hope",
+      "screeningId": 55,
+      "localTime": "2026-11-21T12:00:00",
+      "seated": {
+        "total": 200,
+        "available": 199
+      },
+      "wheelchair": {
+        "total": 10,
+        "available": 10
+      },
+      "selected": [
+        {
+          "id": 112,
+          "label": "2"
+        },
+        {
+          "id": 313,
+          "label": "W3"
+        }
+      ],
+      "previewValid": true
+    },
+    {
+      "city": "Tampere",
+      "cityId": 2,
+      "capacity": 100,
+      "screenId": 3,
+      "filmId": 4,
+      "title": "Hope",
+      "screeningId": 85,
+      "localTime": "2026-11-21T12:00:00",
+      "seated": {
+        "total": 100,
+        "available": 99
+      },
+      "wheelchair": {
+        "total": 10,
+        "available": 10
+      },
+      "selected": [
+        {
+          "id": 322,
+          "label": "2"
+        },
+        {
+          "id": 423,
+          "label": "W3"
+        }
+      ],
+      "previewValid": true
+    },
+    {
+      "city": "Tampere",
+      "cityId": 2,
+      "capacity": 200,
+      "screenId": 4,
+      "filmId": 4,
+      "title": "Hope",
+      "screeningId": 115,
+      "localTime": "2026-11-21T12:00:00",
+      "seated": {
+        "total": 200,
+        "available": 199
+      },
+      "wheelchair": {
+        "total": 10,
+        "available": 10
+      },
+      "selected": [
+        {
+          "id": 432,
+          "label": "2"
+        },
+        {
+          "id": 633,
+          "label": "W3"
+        }
+      ],
+      "previewValid": true
+    }
+  ],
+  "verificationDidNotChangeRows": true,
+  "setup": {
+    "firstRunCreatedScreenings": 120,
+    "rerunCreatedScreenings": 0,
+    "rerunRetainedScreenings": 120,
+    "preservation": {
+      "films": {
+        "before": 2,
+        "after": 12,
+        "existingRowsUnchanged": true
+      },
+      "seats": {
+        "before": 640,
+        "after": 640,
+        "existingRowsUnchanged": true
+      },
+      "screenings": {
+        "before": 24,
+        "after": 144,
+        "existingRowsUnchanged": true
+      },
+      "bookings": {
+        "before": 24,
+        "after": 144,
+        "existingRowsUnchanged": true
+      },
+      "tickets": {
+        "before": 24,
+        "after": 144,
+        "existingRowsUnchanged": true
+      }
+    }
+  },
+  "tests": {
+    "command": "npm run test:postgres",
+    "passed": 118,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "verified": true,
+    "examples": [
+      {
+        "city": "Oulu",
+        "capacity": 100,
+        "filmId": 4,
+        "title": "Hope",
+        "screenId": 1,
+        "screeningId": 25,
+        "showtime": "2026-11-21T12:00:00",
+        "selectedIds": [2, 103],
+        "labels": ["2", "W3"]
+      },
+      {
+        "city": "Tampere",
+        "capacity": 200,
+        "filmId": 6,
+        "title": "The Hunger Games: Sunrise on the Reaping",
+        "screenId": 4,
+        "screeningId": 119,
+        "showtime": "2026-11-22T16:00:00",
+        "selectedIds": [432, 633],
+        "labels": ["2", "W3"]
+      }
+    ],
+    "showtimesPerMovie": 3,
+    "contextSwitchClearedSelection": true,
+    "screenshot": "presentation-real-movies.jpg"
+  }
+}

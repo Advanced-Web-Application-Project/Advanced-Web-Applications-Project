@@ -54,6 +54,13 @@ The corrected booking API creates owned five-minute unpaid holds and retains
 history on release. Apply migrations 0005–0006 before running this backend version.
 See [the contract, verification and remaining work](docs/BOOKING-SAFEGUARDS.md).
 
+## Presentation movie data
+
+Ten real movies selected from TMDB's Finland now-playing list on 20 November 2026
+are available through a repeatable local setup. Each has three showtimes on each
+of the four screens, from 21–30 November. The schedule is synthetic demo data,
+not actual cinema listings. See [presentation setup and verification](docs/PRESENTATION-DATA.md).
+
 ## Backend development
 
 On the configured development machine, PostgreSQL data is retained in ignored
