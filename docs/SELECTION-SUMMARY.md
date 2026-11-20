@@ -8,9 +8,10 @@ components unmount while checkout is active, so polling cannot erase its private
 state. After release/back navigation the screening context reloads with fresh,
 empty seat choices. The #57/#77 evidence below describes its earlier slice.
 
-The functional MVP is city → screen → movie → showtime → places → validated
-selection review. It uses the existing gold/red/black theme. This milestone does
-not redesign the later customer journey or connect checkout/payment.
+The original #57/#77 selection slice was city → screen → movie → showtime →
+places → validated selection review. It uses the existing gold/red/black theme.
+Guest checkout was subsequently integrated as described above; retained movie
+details and the current #8 closure assessment are in [the browsing guide](API-BROWSING.md).
 
 ## Behaviour and boundaries
 
@@ -82,7 +83,11 @@ See [fixture IDs and machine-readable evidence](../database/verification/selecti
 The disposable database was dropped and dedicated test servers stopped. Shared
 and retained development data were untouched. These checks do not verify Rahti.
 
-## Incomplete and deliberately deferred
+## Historical #57/#77 scope and deferrals
+
+The paragraphs below record that slice before its later merge and integrations.
+They are not the current checkout/TMDB/browsing implementation status; use the
+current guides linked above.
 
 The #57/#77 selection slice is implemented and verified locally, pending user
 commit, PR review and merge. GitHub tasks must remain open until merge.

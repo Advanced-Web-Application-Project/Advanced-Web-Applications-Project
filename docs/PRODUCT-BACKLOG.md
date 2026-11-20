@@ -165,7 +165,12 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 - Before booking, customers can identify the film, city, screen, date, start time, and ticket prices.
 - The selected screening stays visible through seat selection and checkout.
 
-**Dependencies:** RIO-03–05. **Open:** Required film fields and operational timing copy (O-04, O-12).
+**Dependencies:** RIO-03–05. **Confirmed for customer browsing:** retained title and
+description, with loading/retry and missing-description states (20 November
+2026). Posters/trailers remain separate media scope. Operational timing copy
+(O-12) remains open and is not invented in the UI. See [the local #8 acceptance
+assessment](API-BROWSING.md); review/merge and issue closure remain separate from
+local verification.
 
 ### RIO-07 — Choose seats and wheelchair spaces
 

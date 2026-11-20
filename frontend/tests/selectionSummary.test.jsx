@@ -35,6 +35,12 @@ function install({ availability, validate, seats } = {}) {
       screeningId = Number(url.searchParams.get("screeningId"));
     const capacity = screenId % 10 === 1 ? 100 : 200;
     switch (url.pathname) {
+      case "/api/films/31":
+        return response({
+          id: 31,
+          title: "Northern Lights",
+          description: "Retained synopsis",
+        });
       case "/api/cities":
         return response([
           { id: 1, name: "Oulu" },

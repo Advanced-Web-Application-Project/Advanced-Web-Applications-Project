@@ -1,0 +1,101 @@
+{
+  "version": "18.7",
+  "migrations": [
+    "0001_initial_schema.sql",
+    "0002_ceo_reservations.sql",
+    "0003_guard_ceo_seat_conversion.sql",
+    "0004_screen_inventory.sql",
+    "0005_booking_safeguards.sql",
+    "0006_allocation_isolation.sql",
+    "0007_add_tmdb_metadata_unique_index.sql",
+    "0008_checkout_request_identity.sql"
+  ],
+  "unchangedData": true,
+  "before": {
+    "cities": "f9c7a206bc9315a3ccf56eeed8c20b83",
+    "screens": "a91c84467952cdb7b388fbe14681d815",
+    "films": "c7a6bc588cd77efbac2100bc7fce49b2",
+    "screenings": "da6feb13642e82c071907d2732db8c00",
+    "seats": "482e56d87fe87241454b493b357681ce",
+    "bookings": "c5537ead887b11f47c97d295e8cdfc36",
+    "tickets": "dead002b4057490610715f8ddb557260",
+    "prices": "4689682b726b1e5365906c2526ee5d2f"
+  },
+  "after": {
+    "cities": "f9c7a206bc9315a3ccf56eeed8c20b83",
+    "screens": "a91c84467952cdb7b388fbe14681d815",
+    "films": "c7a6bc588cd77efbac2100bc7fce49b2",
+    "screenings": "da6feb13642e82c071907d2732db8c00",
+    "seats": "482e56d87fe87241454b493b357681ce",
+    "bookings": "c5537ead887b11f47c97d295e8cdfc36",
+    "tickets": "dead002b4057490610715f8ddb557260",
+    "prices": "4689682b726b1e5365906c2526ee5d2f"
+  },
+  "date": "2026-11-20",
+  "fixtureKind": "synthetic local browsing movies and relative-future screenings",
+  "backendTests": {
+    "passed": 143,
+    "failed": 0,
+    "skipped": 0
+  },
+  "frontendTests": {
+    "nodePassed": 27,
+    "reactPassed": 53,
+    "failed": 0
+  },
+  "frontendCheckEnvironment": "exact temporary source/config/fixture copy with fresh cached dependencies; real repository build also passed",
+  "browserWorkflows": [
+    {
+      "city": "Oulu",
+      "capacity": 100,
+      "selectedPlaces": ["2", "W3"],
+      "reached": "validated summary and server checkout quote",
+      "adultTotalCents": 2400
+    },
+    {
+      "city": "Oulu",
+      "capacity": 200,
+      "selectedPlaces": ["2", "W3"],
+      "reached": "validated summary and server checkout quote",
+      "adultTotalCents": 2400
+    },
+    {
+      "city": "Tampere",
+      "capacity": 100,
+      "selectedPlaces": ["2", "W3"],
+      "reached": "validated summary and server checkout quote",
+      "adultTotalCents": 2400
+    },
+    {
+      "city": "Tampere",
+      "capacity": 200,
+      "selectedPlaces": ["2", "W3"],
+      "reached": "validated summary and server checkout quote",
+      "adultTotalCents": 2400
+    }
+  ],
+  "mixedCategoryQuote": {
+    "city": "Oulu",
+    "capacity": 100,
+    "adultCents": 1200,
+    "childCents": 600,
+    "totalCents": 1800
+  },
+  "postDetailsBrowserChecks": [
+    "both retained movie descriptions and switching",
+    "Oulu 100 keyboard seat selection, validation, checkout context",
+    "Tampere 200 movie details"
+  ],
+  "mobile": {
+    "viewportWidth": 390,
+    "viewportHeight": 844,
+    "pageWidth": 375,
+    "detailsWidth": 335,
+    "horizontalOverflow": false
+  },
+  "customerHoldsCreated": 0,
+  "disposableServersStopped": true,
+  "disposableDatabaseDropped": true,
+  "externalProvidersVerified": false,
+  "deploymentVerified": false
+}

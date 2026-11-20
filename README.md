@@ -42,7 +42,7 @@ Join the [RIO Discord server](https://discord.gg/jJTps5kC9F) for team discussion
 ## Status
 
 In development. Customers can choose a city, screen, movie and showtime using
-live data. Customers can inspect/select seats and check the complete selection.
+live data. Customers can read retained movie titles/descriptions, inspect/select seats and check the complete selection.
 Customers can review a validated selection with back navigation and separate
 seated/wheelchair availability counts, then enter guest checkout with ticket
 categories, a server quote and an owned five-minute unpaid hold. See [the selection workflow](docs/SELECTION-SUMMARY.md)
@@ -113,9 +113,9 @@ a disposable PostgreSQL recipe and explains the migration target safeguards.
 Application setup lives in `backend/src/app.js` and has no listening side effect.
 Runtime orchestration lives in `backend/src/server.js`; `backend/server.js` loads
 the environment and handles process signals. Shared configuration is in
-`backend/src/config/`. Other prototype SQL/routes remain in `backend/api.js`, with the pool passed in
-explicitly; screening and seat reads now follow their feature layers in
-`backend/src/features/`. See the [screening API contract](docs/API-SCREENINGS.md). New business logic should follow the feature
+`backend/src/config/`. `backend/api.js` composes the feature routes and retains the legacy price read.
+City/screen reads, film reads, screenings, seats and bookings follow their feature
+layers in `backend/src/features/`. See the [browsing contracts and closure evidence](docs/API-BROWSING.md). See the [screening API contract](docs/API-SCREENINGS.md). New business logic should follow the feature
 boundaries in the architecture guide as those features are implemented.
 
 The Dockerfiles and Kubernetes files remain deployment scaffolding; runtime

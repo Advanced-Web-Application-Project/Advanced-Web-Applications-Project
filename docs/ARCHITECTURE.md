@@ -33,6 +33,15 @@ is not evidence that the deployed workflow is complete.
 
 One repository does not require one deployment or an npm workspace. Keep frontend and backend dependencies in their own `package.json` files initially. Introduce root-level tooling only when it solves a concrete need.
 
+## Implemented browsing boundaries
+
+City/screen reads live in `backend/src/features/cinemas/`; film reads share the
+existing `films/` feature with the separate metadata importer. Each follows
+route → controller → service → repository. `backend/api.js` composes feature
+routes and retains only the legacy price read. Customer `features/movies/`
+provides retained title/description details through the shared API client; it
+does not request third-party media. See [the current browsing contract](API-BROWSING.md).
+
 ## 2. Proposed structure
 
 **The following is a target directory tree.** Optional directories should remain absent until needed.

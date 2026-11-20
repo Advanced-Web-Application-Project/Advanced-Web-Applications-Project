@@ -19,6 +19,14 @@ records before adopting the new target. See
 [PostgreSQL's upgrade guide](https://www.postgresql.org/docs/18/upgrading.html).
 No shared/CSC upgrade is performed by this repository update.
 
+## Browsing contract regression suite
+
+`npm run test:postgres` from `backend/` now also covers baseline city/screen/film/
+screening contracts against a disposable database. Its actual permission-failure
+checks create and remove a unique NOLOGIN test role; the isolated local test
+connection needs `CREATEDB` and `CREATEROLE` (or superuser). Existing development
+records are not seeded or migrated by that suite. See [commands and evidence](../docs/API-BROWSING.md).
+
 ## Commands and target
 
 Set `DATABASE_URL` in your local `backend/.env`, or export it in your shell.
@@ -335,7 +343,6 @@ migration commands do not automatically adopt a container/shared server: retain
 the existing target checks and use a separately reviewed setup path. No Docker,
 Rahti or shared database is started, replaced or reset by these source changes.
 
-
 ## Real-movie presentation fixtures
 
 For the 21 November presentation, [the dedicated setup](../docs/PRESENTATION-DATA.md)
@@ -352,7 +359,6 @@ existing runner, ensures locations/inventory without adding new synthetic-film
 screenings, imports the pinned TMDB IDs, then transactionally adds the schedule.
 Existing data is retained. Repeat with the same date to keep screening IDs; no
 reset is needed. Do not use this local fixture command on CSC/shared databases.
-
 
 ## Approved guest checkout demo prices
 

@@ -1,0 +1,333 @@
+{
+  "database": "disposable PostgreSQL",
+  "checks": [
+    {
+      "path": "/cities",
+      "status": 404
+    },
+    {
+      "path": "/films",
+      "status": 200
+    },
+    {
+      "path": "/screens",
+      "status": 200
+    },
+    {
+      "path": "/screenings",
+      "status": 200
+    },
+    {
+      "path": "/screens?cityId=1",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=1",
+      "status": 200
+    },
+    {
+      "path": "/cities/2147483647",
+      "status": 404
+    },
+    {
+      "path": "/screens/2147483647",
+      "status": 404
+    },
+    {
+      "path": "/films/2147483647",
+      "status": 404
+    },
+    {
+      "path": "/cities",
+      "status": 200
+    },
+    {
+      "path": "/films",
+      "status": 200
+    },
+    {
+      "path": "/cities/001",
+      "status": 200
+    },
+    {
+      "path": "/screens?cityId=001",
+      "status": 200
+    },
+    {
+      "path": "/screens/001",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=1&screenId=1",
+      "status": 200
+    },
+    {
+      "path": "/screenings?filmId=1",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=1&filmId=1",
+      "status": 200
+    },
+    {
+      "path": "/screenings?screenId=1&filmId=1",
+      "status": 200
+    },
+    {
+      "path": "/seats/availability?screenId=1&screeningId=1",
+      "status": 200
+    },
+    {
+      "path": "/screenings?filmId=2",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=1&filmId=2",
+      "status": 200
+    },
+    {
+      "path": "/screenings?screenId=1&filmId=2",
+      "status": 200
+    },
+    {
+      "path": "/seats/availability?screenId=1&screeningId=2",
+      "status": 200
+    },
+    {
+      "path": "/screens/002",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=1&screenId=2",
+      "status": 200
+    },
+    {
+      "path": "/screenings?filmId=1",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=1&filmId=1",
+      "status": 200
+    },
+    {
+      "path": "/screenings?screenId=2&filmId=1",
+      "status": 200
+    },
+    {
+      "path": "/seats/availability?screenId=2&screeningId=3",
+      "status": 200
+    },
+    {
+      "path": "/screenings?filmId=2",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=1&filmId=2",
+      "status": 200
+    },
+    {
+      "path": "/screenings?screenId=2&filmId=2",
+      "status": 200
+    },
+    {
+      "path": "/seats/availability?screenId=2&screeningId=4",
+      "status": 200
+    },
+    {
+      "path": "/cities/002",
+      "status": 200
+    },
+    {
+      "path": "/screens?cityId=002",
+      "status": 200
+    },
+    {
+      "path": "/screens/003",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=2&screenId=3",
+      "status": 200
+    },
+    {
+      "path": "/screenings?filmId=1",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=2&filmId=1",
+      "status": 200
+    },
+    {
+      "path": "/screenings?screenId=3&filmId=1",
+      "status": 200
+    },
+    {
+      "path": "/seats/availability?screenId=3&screeningId=5",
+      "status": 200
+    },
+    {
+      "path": "/screenings?filmId=2",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=2&filmId=2",
+      "status": 200
+    },
+    {
+      "path": "/screenings?screenId=3&filmId=2",
+      "status": 200
+    },
+    {
+      "path": "/seats/availability?screenId=3&screeningId=6",
+      "status": 200
+    },
+    {
+      "path": "/screens/004",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=2&screenId=4",
+      "status": 200
+    },
+    {
+      "path": "/screenings?filmId=1",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=2&filmId=1",
+      "status": 200
+    },
+    {
+      "path": "/screenings?screenId=4&filmId=1",
+      "status": 200
+    },
+    {
+      "path": "/seats/availability?screenId=4&screeningId=7",
+      "status": 200
+    },
+    {
+      "path": "/screenings?filmId=2",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=2&filmId=2",
+      "status": 200
+    },
+    {
+      "path": "/screenings?screenId=4&filmId=2",
+      "status": 200
+    },
+    {
+      "path": "/seats/availability?screenId=4&screeningId=8",
+      "status": 200
+    },
+    {
+      "path": "/films/001",
+      "status": 200
+    },
+    {
+      "path": "/films/002",
+      "status": 200
+    },
+    {
+      "path": "/cities/2147483647",
+      "status": 404
+    },
+    {
+      "path": "/screens/2147483647",
+      "status": 404
+    },
+    {
+      "path": "/films/2147483647",
+      "status": 404
+    },
+    {
+      "path": "/screens?cityId=2147483647",
+      "status": 200
+    },
+    {
+      "path": "/screenings?filmId=2147483647",
+      "status": 200
+    },
+    {
+      "path": "/screens?cityId=2",
+      "status": 200
+    },
+    {
+      "path": "/screenings?cityId=1&screenId=3",
+      "status": 200
+    },
+    {
+      "path": "/films?unrecognized=ignored",
+      "status": 200
+    },
+    {
+      "path": "/films",
+      "status": 200
+    },
+    {
+      "path": "/cities?unrecognized=ignored",
+      "status": 200
+    },
+    {
+      "path": "/cities",
+      "status": 200
+    },
+    {
+      "path": "/screens?unrecognized=ignored",
+      "status": 200
+    },
+    {
+      "path": "/screens",
+      "status": 200
+    },
+    {
+      "path": "/cities/1e2",
+      "status": 400
+    },
+    {
+      "path": "/screens/-1",
+      "status": 400
+    },
+    {
+      "path": "/films/2147483648",
+      "status": 400
+    },
+    {
+      "path": "/screens?cityId[]=1",
+      "status": 400
+    },
+    {
+      "path": "/screenings?filmId=1&filmId=2",
+      "status": 400
+    },
+    {
+      "path": "/cities",
+      "status": 500
+    },
+    {
+      "path": "/cities/1",
+      "status": 500
+    },
+    {
+      "path": "/screens",
+      "status": 500
+    },
+    {
+      "path": "/screens/1",
+      "status": 500
+    },
+    {
+      "path": "/films",
+      "status": 500
+    },
+    {
+      "path": "/films/1",
+      "status": 500
+    },
+    {
+      "path": "/screenings",
+      "status": 500
+    }
+  ]
+}

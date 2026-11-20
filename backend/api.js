@@ -1,167 +1,27 @@
 import { registerBookingRoutes } from "./src/features/bookings/bookingsRoutes.js";
+import { registerCinemaRoutes } from "./src/features/cinemas/cinemasRoutes.js";
+import { registerFilmRoutes } from "./src/features/films/filmsRoutes.js";
 import { registerSeatRoutes } from "./src/features/seats/seatsRoutes.js";
 import { registerScreeningRoutes } from "./src/features/screenings/screeningsRoutes.js";
 
-export default function(app, pool) {
+export default function registerApiRoutes(app, pool) {
+  registerCinemaRoutes(app, pool);
+  registerFilmRoutes(app, pool);
+  registerScreeningRoutes(app, pool);
+  registerSeatRoutes(app, pool);
+  registerBookingRoutes(app, pool);
 
-
-
-    registerSeatRoutes(app, pool);
-
-//get all screens
-    app.get('/api/screens', async (req, res) => {
-        try{
-            const cityId = req.query.cityId;
-            let query = `
-            SELECT screens.id,
-            screens.capacity,
-            screens.wheelchair_capacity,
-            screens.city_id,
-            cities.name AS city_name
-            FROM screens
-            JOIN cities ON screens.city_id = cities.id
-            `;
-
-
-            let params = [];
-            if(cityId){
-                query += ` WHERE screens.city_id = $1`
-                params.push(cityId)}
-            
-                query += ` ORDER BY screens.id ASC`
-
-                    const queryResult = await pool.query(query, params)
-            res.status(200).json({success: true, data: queryResult.rows})
-        }catch(error){
-            console.error('Error while fetching screens')
-            res.status(500).json({success: false, error: 'There was an internal error while fetching screens'})
-        }
-    })
-
-    //Get screen by id
-
-    app.get('/api/screens/:id', async (req, res) =>{
-        try{
-            const id = req.params.id;
-            //const cityId = req.query.cityId
-            let query = await pool.query(`
-                SELECT screens.id,
-                screens.capacity,
-                screens.wheelchair_capacity,
-                screens.city_id,
-                cities.name AS city_name
-                FROM screens
-                JOIN cities ON screens.city_id = cities.id
-                WHERE screens.id = $1`, [id]);
-
-            if(query.rows.length === 0){
-                return res.status(404).json({success: false, error: 'Screen not found'})
-            }
-
-            res.status(200).json({success: true, data: query.rows[0]})
-        }catch(error){
-            console.error('There was error while fetching screen')
-            res.status(500).json({success: false, error: 'There was an inside error while fetching screen'})
-        }
-    })
-
-
-
-
-    //GET ALL FILMS
-
-    app.get('/api/films', async (req, res)=>{
-        try{
-            const result = await pool.query('SELECT * FROM films')
-            res.status(200).json({success: true, data: result.rows})
-        }catch(error){
-            res.status(500).json({success: false, error: 'There was a inside error while fetching films'})
-        }
-    })
-
-    //GET FILM BY ID 
-
-    app.get('/api/films/:id', async (req, res)=>{
-        try{
-
-            const idToSearch = req.params.id;
-
-            const queryResult = await pool.query(`
-                SELECT * 
-                FROM films
-                WHERE films.id = $1`, [idToSearch] )
-
-                if(queryResult.rows.length === 0){
-                    return res.status(404).json({success: false, error: 'Film not found'})
-                }
-
-                res.status(200).json({success: true, data: queryResult.rows[0]})
-
-        }catch(error){
-            console.error('There was an inside error while fetching the film')
-            res.status(500).json({success: false, error: ' There was an inside error while fetching film'})
-        }
-    })
-    
-
-    //GET CITIEES
-
-    app.get('/api/cities', async (req, res) => {
-        try{
-            const cities = await pool.query(`SELECT * FROM cities`)
-            if(cities.rows.length == 0){
-                return res.status(404).json({success: false, error: 'No cities found'})
-            }
-            const result = cities.rows
-
-            res.status(200).json({success: true, data: result})
-
-        }catch(error){
-            console.error('There was an inside error while fetching cities')
-            res.status(500).json({success: false, error: 'There was an inside error while fetching cities'})
-        }
-
-    })
-    
-    //GET CITY BY ID
-
-    app.get('/api/cities/:id', async (req, res) => {
-        try{
-        const cityIdToFind = req.params.id;
-
-        const queryResult = await pool.query('SELECT * FROM cities WHERE id = $1', [cityIdToFind])
-
-        if(queryResult.rows.length == 0){
-           return res.status(404).json({success: false, error: 'City not found'})
-        }
-
-            res.status(200).json({success: true, data: queryResult.rows[0] })
-    }catch(error){
-            console.error('There was an inside error while fetching cities')
-            res.status(500).json({success: false, error: 'There was an inside error while fetching cities'})
+  // Pricing administration remains separate; checkout quotes own charged prices.
+  app.get("/api/prices", async (req, res) => {
+    try {
+      const result = await pool.query("SELECT * FROM prices");
+      res.status(200).json({ success: true, data: result.rows });
+    } catch {
+      console.error("There was an inside error while fetching prices");
+      res.status(500).json({
+        success: false,
+        error: "There was an inside error while fetching prices",
+      });
     }
-
-    })
-
-    // Screening reads are composed in the screenings feature.
-    registerScreeningRoutes(app, pool);
-
-    // GET PRICES
-
-    app.get('/api/prices', async (req, res) => {
-
-       try{
-         const priceQueryResult = await pool.query(`SELECT * FROM prices`)
-
-        res.status(200).json({success: true, data: priceQueryResult.rows})
-       }catch(error){
-        console.error('There was an inside error while fetching prices')
-        res.status(500).json({success: false, error: 'There was an inside error while fetching prices'})
-       }
-
-    })
-
-    
-// Booking reads and owned hold writes are composed in the bookings feature.
-registerBookingRoutes(app, pool);
+  });
 }
