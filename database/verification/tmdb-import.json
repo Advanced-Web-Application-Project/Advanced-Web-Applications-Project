@@ -1,0 +1,84 @@
+{
+  "date": "2026-11-20",
+  "baseCommit": "61a149d5ed8156862b5cb88692a2c3be065c7189",
+  "branch": "fix/tmdb-database-import",
+  "milestoneStatus": "All agreed milestone acceptance criteria verified",
+  "commands": [
+    {
+      "command": "node --test tests/tmdbImport.unit.test.js tests/tmdbImport.cli.test.js",
+      "cwd": "backend",
+      "passed": 10,
+      "failed": 0
+    },
+    {
+      "command": "npm run test:postgres (DOTENV_CONFIG_PATH points to existing local isolated development configuration)",
+      "cwd": "backend",
+      "results": {
+        "tests": 115,
+        "pass": 115,
+        "fail": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "command": "Prettier --check on changed JavaScript, JSON and Markdown",
+      "result": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    },
+    {
+      "command": "node --check backend/scripts/verify-tmdb-import.js",
+      "result": "passed"
+    },
+    {
+      "command": "npm run verify:tmdb",
+      "result": "passed: two live TMDB imports, stable rerun IDs, preserved demo/screening records and upstream-disabled API reads; disposable database removed"
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "criterion": "CLI works in paths with spaces; bad arguments/configuration exit nonzero",
+      "status": "verified",
+      "evidence": "tmdbImport.cli.test.js executes real child processes from a copied path containing spaces; unit checks reject repeated flags and invalid IDs"
+    },
+    {
+      "criterion": "Shared isolated target checks, payload validation, safe errors and atomic writes",
+      "status": "verified",
+      "evidence": "Shared URL/connected-target guards; tests cover missing/wrong IDs, title limits, null bytes, HTTP/network/body timeout/malformed failures and real PostgreSQL rollback"
+    },
+    {
+      "criterion": "Reruns/concurrency preserve IDs, screening links and demo rows in disposable PostgreSQL tests",
+      "status": "verified",
+      "evidence": "tmdbImport.postgres.test.js passes all six subtests, including concurrent reversed batches and a real late SQL error"
+    },
+    {
+      "criterion": "Two live TMDB IDs imported, rerun, then stored API reads with upstream unavailable",
+      "status": "verified",
+      "evidence": "tmdb-import-live.json: tmdb:550 -> local 3; tmdb:603 -> local 4; film row counts 2 -> 4 -> 4; screening 9 retains film 3; list/detail HTTP 200 with API token unset, upstream blocked and zero upstream attempts"
+    },
+    {
+      "criterion": "Migration integration, setup/field/attribution docs, provider decision and removal of unused Compose scaffolding",
+      "status": "verified",
+      "evidence": "Full migration/CEO tests pass with seven migrations; docs/TMDB-IMPORT.md, README, .env.example and O-04 updated; unused docker-compose.yaml removed as requested, with current setup/deployment references updated"
+    }
+  ],
+  "liveVerification": {
+    "verified": true,
+    "verifiedAt": "2026-11-20T00:06:55.111Z",
+    "command": "npm run verify:tmdb",
+    "evidencePath": "database/verification/tmdb-import-live.json",
+    "disposableDatabaseRemoved": true
+  },
+  "deferred": {
+    "frontendCreditsAndArtwork": "Separate UI work; provider attribution requirement documented",
+    "catalogSyncStaffControlsSchedulingDeployment": "Outside agreed importer milestone; import does not schedule screenings",
+    "containerRuntimeValidation": "Rahti/container execution is separate deployment work; local development uses native commands and deployment uses k8s manifests"
+  },
+  "originalCheckout": "No implementation files modified by this task; fixes remain in the separate RIO-tmdb clone",
+  "deliveryAtVerification": {
+    "committed": false,
+    "pushed": false
+  }
+}

@@ -1,16 +1,19 @@
-import { extractImageConfig, mapTmdbMovieToFilm } from './tmdbFilmMapper.js';
+import { FilmImportValidationError } from "./filmImportError.js";
+import { extractImageConfig, mapTmdbMovieToFilm } from "./tmdbFilmMapper.js";
 
 const POSITIVE_INT_PATTERN = /^[1-9]\d*$/;
 
 export function parseAndValidateTmdbIds(rawIds) {
   const parts = Array.isArray(rawIds)
     ? rawIds.map((v) => String(v))
-    : typeof rawIds === 'string'
-      ? rawIds.split(',')
+    : typeof rawIds === "string"
+      ? rawIds.split(",")
       : [];
 
   if (parts.length === 0) {
-    throw new Error('At least one positive integer TMDB movie ID is required (--ids <id1,id2>).');
+    throw new FilmImportValidationError(
+      "At least one positive integer TMDB movie ID is required (--ids <id1,id2>).",
+    );
   }
 
   const seen = new Set();
@@ -19,14 +22,16 @@ export function parseAndValidateTmdbIds(rawIds) {
   for (const rawPart of parts) {
     const token = rawPart.trim();
     if (!POSITIVE_INT_PATTERN.test(token)) {
-      throw new Error(
-        `Invalid TMDB movie ID "${rawPart}". Expected comma-separated positive integers.`
+      throw new FilmImportValidationError(
+        "Invalid TMDB movie ID. Expected comma-separated positive integers.",
       );
     }
 
     const parsed = Number(token);
     if (!Number.isSafeInteger(parsed) || parsed <= 0) {
-      throw new Error(`TMDB movie ID "${token}" is outside the safe positive integer range.`);
+      throw new FilmImportValidationError(
+        "TMDB movie ID is outside the safe positive integer range.",
+      );
     }
 
     if (!seen.has(parsed)) {
@@ -38,7 +43,11 @@ export function parseAndValidateTmdbIds(rawIds) {
   return validated;
 }
 
-export async function importTmdbFilms({ rawIds, tmdbClient, filmImportRepository }) {
+export async function importTmdbFilms({
+  rawIds,
+  tmdbClient,
+  filmImportRepository,
+}) {
   const requestedIds = parseAndValidateTmdbIds(rawIds);
 
   // 1. Fetch TMDB image configuration once per batch.
@@ -56,13 +65,14 @@ export async function importTmdbFilms({ rawIds, tmdbClient, filmImportRepository
   const orderedForWrite = [...mappedFilms].sort((a, b) => a.tmdbId - b.tmdbId);
 
   // 4. Persist the entire batch inside one atomic transaction.
-  const persisted = await filmImportRepository.upsertBatchInTransaction(orderedForWrite);
+  const persisted =
+    await filmImportRepository.upsertBatchInTransaction(orderedForWrite);
 
   return {
-    language: 'en-US',
+    language: "en-US",
     requestedCount: requestedIds.length,
-    insertedCount: persisted.filter((r) => r.action === 'inserted').length,
-    updatedCount: persisted.filter((r) => r.action === 'updated').length,
+    insertedCount: persisted.filter((r) => r.action === "inserted").length,
+    updatedCount: persisted.filter((r) => r.action === "updated").length,
     films: persisted,
   };
 }

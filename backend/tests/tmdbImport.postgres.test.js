@@ -1,176 +1,299 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import { Pool } from 'pg';
+import test from "node:test";
+import assert from "node:assert/strict";
+import { Pool } from "pg";
+import { createFilmImportRepository } from "../src/features/films/filmImportRepository.js";
+import { importTmdbFilms } from "../src/features/films/filmImportService.js";
+import {
+  assertIsolatedDevelopment,
+  assertConnectedLocalTarget,
+  createClient,
+} from "../scripts/database/connection.js";
+import { migrateDatabase } from "../scripts/database/migrate.js";
+import { seedBrowsing } from "../scripts/database/seed-browsing.js";
+import { startServer } from "../src/server.js";
+import { readFile } from "node:fs/promises";
 
-import { createFilmImportRepository } from '../src/features/films/filmImportRepository.js';
-import { importTmdbFilms } from '../src/features/films/filmImportService.js';
-
-const testDatabaseUrl = process.env.TEST_DATABASE_URL;
-
-function makeStubTmdbClient(moviesById) {
-  return {
-    async fetchConfiguration() {
-      return {
-        images: {
-          secure_base_url: 'https://image.tmdb.org/t/p/',
-          poster_sizes: ['w500', 'original'],
-        },
-      };
-    },
-    async fetchMovieDetails(id) {
-      const movie = moviesById[id];
-      if (!movie) throw new Error(`Missing stub movie ${id}`);
-      return movie;
-    },
-  };
-}
+const databaseUrl = process.env.TEST_DATABASE_URL;
+const mode = "isolated-development";
+const movie = (id, title = `Movie ${id}`) => ({
+  id,
+  title,
+  overview: "Retained description",
+  poster_path: "/poster.jpg",
+});
+const stub = (movies) => ({
+  async fetchConfiguration() {
+    return {
+      images: {
+        secure_base_url: "https://image.tmdb.org/t/p/",
+        poster_sizes: ["w500"],
+      },
+    };
+  },
+  async fetchMovieDetails(id) {
+    return movies[id];
+  },
+});
 
 test(
-  'PostgreSQL TMDB import: idempotency, field preservation, concurrency, screening links, and rollback',
-  { skip: !testDatabaseUrl },
+  "isolated PostgreSQL TMDB import and retained-data API workflow",
+  { skip: !databaseUrl, timeout: 45000 },
   async (t) => {
-    const pool = new Pool({ connectionString: testDatabaseUrl });
-    const repo = createFilmImportRepository(pool);
-
+    const sourceDatabase = assertIsolatedDevelopment(databaseUrl, mode);
+    const admin = createClient(databaseUrl);
+    await admin.connect();
+    await assertConnectedLocalTarget(admin, sourceDatabase);
+    const database = `rio_test_tmdb_${process.pid}`;
+    const url = new URL(databaseUrl);
+    url.pathname = `/${database}`;
+    await admin.query(`CREATE DATABASE ${database}`);
+    let pool;
     t.after(async () => {
-      await pool.query("DELETE FROM films WHERE metadata_api_id IN ('tmdb:550', 'tmdb:603', 'tmdb:999001', 'tmdb:999002')");
-      await pool.end();
-    });
-
-    await t.test('rerunning preserves films.id, creates no duplicates, and retains optional fields', async () => {
-      const initial = await importTmdbFilms({
-        rawIds: '550,603',
-        tmdbClient: makeStubTmdbClient({
-          550: { id: 550, title: 'Fight Club', overview: 'Initial overview', poster_path: '/fc.jpg' },
-          603: { id: 603, title: 'The Matrix', overview: 'Reality is a simulation.', poster_path: null },
-        }),
-        filmImportRepository: repo,
-      });
-
-      const firstIds = Object.fromEntries(initial.films.map((f) => [f.metadataApiId, f.localId]));
-
-      // Rerun with missing overview/poster on 550: must NOT erase retained description/artwork
-      const rerun = await importTmdbFilms({
-        rawIds: '550,603',
-        tmdbClient: makeStubTmdbClient({
-          550: { id: 550, title: 'Fight Club (Updated)', overview: '', poster_path: null },
-          603: { id: 603, title: 'The Matrix', overview: 'Reality is a simulation.', poster_path: '/mx.jpg' },
-        }),
-        filmImportRepository: repo,
-      });
-
-      assert.equal(rerun.insertedCount, 0);
-      assert.equal(rerun.updatedCount, 2);
-
-      const fc = rerun.films.find((f) => f.metadataApiId === 'tmdb:550');
-      assert.equal(fc.localId, firstIds['tmdb:550']);
-      assert.equal(fc.title, 'Fight Club (Updated)');
-      assert.equal(fc.description, 'Initial overview');
-      assert.equal(fc.posterUrl, 'https://image.tmdb.org/t/p/w500/fc.jpg');
-
-      const countRes = await pool.query(
-        "SELECT COUNT(*)::INT AS c FROM films WHERE metadata_api_id IN ('tmdb:550', 'tmdb:603')"
-      );
-      assert.equal(countRes.rows[0].c, 2);
-    });
-
-    await t.test('concurrent imports with reversed ID order produce zero duplicates and no deadlocks', async () => {
-      const stub = makeStubTmdbClient({
-        999001: { id: 999001, title: 'Concurrent One', overview: 'A', poster_path: '/a.jpg' },
-        999002: { id: 999002, title: 'Concurrent Two', overview: 'B', poster_path: '/b.jpg' },
-      });
-
-      const [runA, runB] = await Promise.all([
-        importTmdbFilms({ rawIds: '999001,999002', tmdbClient: stub, filmImportRepository: repo }),
-        importTmdbFilms({ rawIds: '999002,999001', tmdbClient: stub, filmImportRepository: repo }),
-      ]);
-
-      assert.deepEqual(
-        runA.films.map((f) => f.localId),
-        runB.films.map((f) => f.localId)
-      );
-
-      const { rows } = await pool.query(
-        "SELECT COUNT(*)::INT AS c FROM films WHERE metadata_api_id IN ('tmdb:999001', 'tmdb:999002')"
-      );
-      assert.equal(rows[0].c, 2);
-    });
-
-    await t.test('late database failure rolls back entire batch with zero partial writes', async () => {
-      const failingRepo = createFilmImportRepository({
-        async connect() {
-          const realClient = await pool.connect();
-          let upsertCount = 0;
-          return {
-            async query(sql, params) {
-              if (typeof sql === 'string' && sql.includes('INSERT INTO films')) {
-                upsertCount += 1;
-                if (upsertCount === 2) {
-                  throw new Error('Simulated late database write failure');
-                }
-              }
-              return realClient.query(sql, params);
-            },
-            release() {
-              realClient.release();
-            },
-          };
-        },
-      });
-
-      await assert.rejects(
-        () =>
-          failingRepo.upsertBatchInTransaction([
-            { tmdbId: 888001, metadataApiId: 'tmdb:888001', title: 'Should Rollback 1', description: null, posterUrl: null },
-            { tmdbId: 888002, metadataApiId: 'tmdb:888002', title: 'Should Rollback 2', description: null, posterUrl: null },
-          ]),
-        /Simulated late database write failure/
-      );
-
-      const { rows } = await pool.query(
-        "SELECT COUNT(*)::INT AS c FROM films WHERE metadata_api_id IN ('tmdb:888001', 'tmdb:888002')"
-      );
-      assert.equal(rows[0].c, 0);
-    });
-
-    await t.test('screening FK link survives refresh and rio-demo rows remain untouched', async () => {
-      // Assumes an existing screen row (e.g., seeded inventory/browsing data) exists in TEST_DATABASE_URL.
-      const screenRes = await pool.query('SELECT id FROM screens ORDER BY id LIMIT 1');
-      if (screenRes.rows.length === 0) return;
-
-      const demoBefore = await pool.query(
-        "SELECT id, title, metadata_api_id FROM films WHERE metadata_api_id LIKE 'rio-demo%' ORDER BY id"
-      );
-
-      const filmRes = await pool.query("SELECT id FROM films WHERE metadata_api_id = 'tmdb:550'");
-      const filmId = filmRes.rows[0].id;
-
-      // Insert a temporary screening referencing the TMDB film (adjust columns if your schema requires extras)
-      const screeningRes = await pool.query(
-        'INSERT INTO screenings (film_id, screen_id, screening_time) VALUES ($1, $2, NOW() + INTERVAL \'7 days\') RETURNING id',
-        [filmId, screenRes.rows[0].id]
-      );
-      const screeningId = screeningRes.rows[0].id;
-
       try {
-        await importTmdbFilms({
-          rawIds: '550',
-          tmdbClient: makeStubTmdbClient({
-            550: { id: 550, title: 'Fight Club (Refreshed)', overview: 'Refreshed', poster_path: '/fc2.jpg' },
-          }),
-          filmImportRepository: repo,
-        });
-
-        const check = await pool.query('SELECT film_id FROM screenings WHERE id = $1', [screeningId]);
-        assert.equal(check.rows[0].film_id, filmId);
-
-        const demoAfter = await pool.query(
-          "SELECT id, title, metadata_api_id FROM films WHERE metadata_api_id LIKE 'rio-demo%' ORDER BY id"
-        );
-        assert.deepEqual(demoAfter.rows, demoBefore.rows);
+        await pool?.end();
+        await admin.query(`DROP DATABASE ${database} WITH (FORCE)`);
       } finally {
-        await pool.query('DELETE FROM screenings WHERE id = $1', [screeningId]);
+        await admin.end();
       }
     });
-  }
+    await migrateDatabase({ databaseUrl: url.href, mode });
+    await seedBrowsing({ databaseUrl: url.href, mode });
+    pool = new Pool({ connectionString: url.href });
+    const repo = createFilmImportRepository(pool, { database });
+    const run = (rawIds, movies) =>
+      importTmdbFilms({
+        rawIds,
+        tmdbClient: stub(movies),
+        filmImportRepository: repo,
+      });
+    const snapshot = async () =>
+      (await pool.query("SELECT * FROM films ORDER BY id")).rows;
+    const demoBefore = await snapshot();
+    let initial;
+
+    await t.test(
+      "reruns preserve local IDs and optional fields; demo rows are untouched",
+      async () => {
+        initial = await run("550,603", {
+          550: movie(550, "Fight Club"),
+          603: movie(603, "The Matrix"),
+        });
+        assert.equal(initial.insertedCount, 2);
+        const rerun = await run("550,603", {
+          550: {
+            id: 550,
+            title: "Fight Club refreshed",
+            overview: "",
+            poster_path: null,
+          },
+          603: movie(603, "The Matrix"),
+        });
+        assert.equal(rerun.insertedCount, 0);
+        assert.equal(rerun.updatedCount, 2);
+        assert.deepEqual(
+          rerun.films.map((f) => f.localId),
+          initial.films.map((f) => f.localId),
+        );
+        assert.equal(rerun.films[0].description, "Retained description");
+        assert.equal(
+          rerun.films[0].posterUrl,
+          "https://image.tmdb.org/t/p/w500/poster.jpg",
+        );
+        assert.deepEqual(
+          (await snapshot()).filter(
+            (f) => !f.metadata_api_id.startsWith("tmdb:"),
+          ),
+          demoBefore,
+        );
+      },
+    );
+
+    await t.test(
+      "concurrent reversed batches share IDs without duplicates",
+      async () => {
+        const movies = { 999001: movie(999001), 999002: movie(999002) };
+        const results = await Promise.all([
+          run("999001,999002", movies),
+          run("999002,999001", movies),
+        ]);
+        assert.deepEqual(
+          results[0].films.map((f) => f.localId),
+          results[1].films.map((f) => f.localId),
+        );
+        assert.equal(
+          (
+            await pool.query(
+              "SELECT COUNT(*)::int AS n FROM films WHERE metadata_api_id IN ('tmdb:999001','tmdb:999002')",
+            )
+          ).rows[0].n,
+          2,
+        );
+      },
+    );
+
+    await t.test(
+      "failed upstream validation leaves all retained rows unchanged",
+      async () => {
+        const before = await snapshot();
+        await assert.rejects(
+          run("550,777", {
+            550: movie(550, "Must not persist"),
+            777: { id: 777, title: "" },
+          }),
+          /title/,
+        );
+        assert.deepEqual(await snapshot(), before);
+      },
+    );
+
+    await t.test(
+      "a real late PostgreSQL error rolls back both updates and inserts",
+      async () => {
+        const before = await snapshot();
+        await assert.rejects(
+          repo.upsertBatchInTransaction([
+            {
+              tmdbId: 550,
+              metadataApiId: "tmdb:550",
+              title: "Must roll back",
+              description: null,
+              posterUrl: null,
+            },
+            {
+              tmdbId: 888001,
+              metadataApiId: "tmdb:888001",
+              title: "x".repeat(256),
+              description: null,
+              posterUrl: null,
+            },
+          ]),
+          { code: "22001" },
+        );
+        assert.deepEqual(await snapshot(), before);
+      },
+    );
+
+    await t.test(
+      "refresh preserves screening FK; stored film APIs work without upstream",
+      async () => {
+        const screen = (
+          await pool.query("SELECT id FROM screens ORDER BY id LIMIT 1")
+        ).rows[0];
+        assert.ok(screen, "test must create its own screen fixture");
+        const filmId = initial.films[0].localId;
+        const screening = (
+          await pool.query(
+            "INSERT INTO screenings (film_id,screen_id,screening_time) VALUES ($1,$2,NOW()+INTERVAL '7 days') RETURNING id",
+            [filmId, screen.id],
+          )
+        ).rows[0];
+        await run("550", { 550: movie(550, "Fight Club linked refresh") });
+        assert.equal(
+          (
+            await pool.query("SELECT film_id FROM screenings WHERE id=$1", [
+              screening.id,
+            ])
+          ).rows[0].film_id,
+          filmId,
+        );
+        const runtime = await startServer({
+          config: {
+            databaseUrl: url.href,
+            frontendUrl: "http://localhost:5173",
+            port: 0,
+          },
+          host: "127.0.0.1",
+        });
+        const originalFetch = globalThis.fetch;
+        const token = process.env.TMDB_API_READ_ACCESS_TOKEN;
+        delete process.env.TMDB_API_READ_ACCESS_TOKEN;
+        let upstreamAttempts = 0;
+        globalThis.fetch = (input, options) => {
+          if (new URL(input).hostname !== "127.0.0.1") {
+            upstreamAttempts++;
+            throw new Error("TMDB unavailable during retained-data test");
+          }
+          return originalFetch(input, options);
+        };
+        try {
+          const base = `http://127.0.0.1:${runtime.server.address().port}`;
+          const list = await (await fetch(`${base}/api/films`)).json();
+          const detail = await (
+            await fetch(`${base}/api/films/${filmId}`)
+          ).json();
+          assert.equal(list.success, true);
+          assert.equal(detail.success, true);
+          assert.deepEqual(
+            detail.data,
+            list.data.find((f) => f.id === filmId),
+          );
+          assert.equal(detail.data.title, "Fight Club linked refresh");
+          assert.equal(detail.data.metadata_api_id, "tmdb:550");
+          assert.deepEqual(
+            Object.keys(detail.data).sort(),
+            [
+              "id",
+              "title",
+              "description",
+              "artwork_url",
+              "metadata_api_id",
+            ].sort(),
+          );
+          assert.equal(upstreamAttempts, 0);
+        } finally {
+          globalThis.fetch = originalFetch;
+          if (token === undefined)
+            delete process.env.TMDB_API_READ_ACCESS_TOKEN;
+          else process.env.TMDB_API_READ_ACCESS_TOKEN = token;
+          await runtime.shutdown();
+        }
+        assert.deepEqual(
+          (await snapshot()).filter(
+            (f) => !f.metadata_api_id.startsWith("tmdb:"),
+          ),
+          demoBefore,
+        );
+      },
+    );
+
+    await t.test(
+      "migration preflight rejects ambiguous data without changing films",
+      async () => {
+        // Exercise the original append-only preflight directly inside a rolled-back transaction.
+        const client = await pool.connect();
+        try {
+          const sql = await readFile(
+            new URL(
+              "../../database/migrations/0007_add_tmdb_metadata_unique_index.sql",
+              import.meta.url,
+            ),
+            "utf8",
+          );
+          for (const [values, pattern] of [
+            [
+              [
+                ["Duplicate A", "tmdb:123"],
+                ["Duplicate B", "tmdb:123"],
+              ],
+              /duplicate TMDB/,
+            ],
+            [[["Malformed", "tmdb:abc"]], /malformed TMDB/],
+          ]) {
+            await client.query("BEGIN");
+            await client.query("DROP INDEX films_tmdb_metadata_api_id_uidx");
+            for (const valuesRow of values)
+              await client.query(
+                "INSERT INTO films (title,metadata_api_id) VALUES ($1,$2)",
+                valuesRow,
+              );
+            await assert.rejects(client.query(sql), pattern);
+            await client.query("ROLLBACK");
+          }
+        } finally {
+          await client.query("ROLLBACK");
+          client.release();
+        }
+      },
+    );
+  },
 );

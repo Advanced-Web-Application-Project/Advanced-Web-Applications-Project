@@ -105,9 +105,9 @@ explicitly; screening and seat reads now follow their feature layers in
 `backend/src/features/`. See the [screening API contract](docs/API-SCREENINGS.md). New business logic should follow the feature
 boundaries in the architecture guide as those features are implemented.
 
-The existing Docker Compose/Kubernetes files remain deployment scaffolding:
-the backend container entrypoint and database environment names need the runtime
-integration tracked under #67. Use the commands above for this milestone.
+The Dockerfiles and Kubernetes files remain deployment scaffolding; runtime
+integration is tracked under #67. Local development uses the native commands
+above, and Rahti deployment uses the `k8s/` manifests.
 
 ## Customer frontend
 
@@ -154,3 +154,8 @@ After selecting a showtime, the customer app renders the actual 100/200-seat
 layout with a separate wheelchair zone and read-only backend validation. See
 [seat-map behavior, verification and scope](docs/SEAT-MAP.md). Availability updates
 on refresh/focus/every 30 seconds. A successful check does not reserve places.
+
+## TMDB metadata import
+
+See [TMDB import setup, retained field meanings and verification](docs/TMDB-IMPORT.md)
+for the backend-only explicit movie-ID command.

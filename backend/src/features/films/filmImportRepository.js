@@ -1,4 +1,6 @@
-const ARTWORK_COLUMN = 'artwork_url';
+import { assertConnectedLocalTarget } from "../../../scripts/database/connection.js";
+
+const ARTWORK_COLUMN = "artwork_url";
 
 const UPSERT_TMDB_FILM_SQL = `
   INSERT INTO films (title, description, ${ARTWORK_COLUMN}, metadata_api_id)
@@ -18,12 +20,20 @@ const UPSERT_TMDB_FILM_SQL = `
     (xmax = 0) AS inserted;
 `;
 
-export function createFilmImportRepository(pool) {
+export function createFilmImportRepository(pool, { database } = {}) {
   return {
     async upsertBatchInTransaction(films) {
       const client = await pool.connect();
       try {
-        await client.query('BEGIN');
+        if (!database)
+          throw new Error(
+            "Isolated database name is required by the film import repository.",
+          );
+        await assertConnectedLocalTarget(client, database);
+        await client.query("BEGIN");
+        await client.query("SET LOCAL search_path = public, pg_catalog");
+        await client.query("SET LOCAL lock_timeout = '5s'");
+        await client.query("SET LOCAL statement_timeout = '30s'");
 
         const results = [];
         for (const film of films) {
@@ -41,15 +51,15 @@ export function createFilmImportRepository(pool) {
             title: row.title,
             description: row.description,
             posterUrl: row.poster_url,
-            action: row.inserted ? 'inserted' : 'updated',
+            action: row.inserted ? "inserted" : "updated",
           });
         }
 
-        await client.query('COMMIT');
+        await client.query("COMMIT");
         return results;
       } catch (err) {
         try {
-          await client.query('ROLLBACK');
+          await client.query("ROLLBACK");
         } catch {
           // Preserve original error if rollback fails on a broken connection.
         }

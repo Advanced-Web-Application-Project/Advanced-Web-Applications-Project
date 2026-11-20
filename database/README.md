@@ -319,22 +319,18 @@ returns future demo screenings after rerunning the existing browsing seed. See
 
 ## PostgreSQL 18 container examples
 
-`docker-compose.yaml` and `k8s/postgres_deployment.yaml` now target
-`postgres:18-alpine`. The official image uses `POSTGRES_DB`, `POSTGRES_USER` and
+`k8s/postgres_deployment.yaml` targets `postgres:18-alpine`. The official image uses `POSTGRES_DB`, `POSTGRES_USER` and
 `POSTGRES_PASSWORD`, with `PGDATA=/var/lib/postgresql/18/docker` inside a volume
 mounted at `/var/lib/postgresql`. See the
 [official image documentation](https://hub.docker.com/_/postgres).
 
-The Compose volume and Kubernetes PVC use the distinct name `postgres18-data`
+The Kubernetes PVC uses the distinct name `postgres18-data`
 so old data is not mounted as if it were already upgraded. Keep any existing
 `postgres-data` PVC/old volume until backup, upgrade/restore and record verification
 are complete. These are fresh-target examples, not an in-place upgrade procedure.
-Compose requires `POSTGRES_PASSWORD` from local environment; there is no committed
-default password.
 
-Container/Rahti execution remains unverified under #67. The Compose backend still
-needs its current `DATABASE_URL` contract and the frontend production API routing;
-a PostgreSQL image update does not complete that stack. The guarded native-local
+Container/Rahti execution remains unverified under #67. A PostgreSQL image update
+does not complete application deployment. The guarded native-local
 migration commands do not automatically adopt a container/shared server: retain
 the existing target checks and use a separately reviewed setup path. No Docker,
 Rahti or shared database is started, replaced or reset by these source changes.

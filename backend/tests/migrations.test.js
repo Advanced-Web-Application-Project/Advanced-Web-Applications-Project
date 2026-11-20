@@ -114,6 +114,7 @@ test(
               "0004_screen_inventory.sql",
               "0005_booking_safeguards.sql",
               "0006_allocation_isolation.sql",
+              "0007_add_tmdb_metadata_unique_index.sql",
             ],
             previouslyApplied: 0,
           });
@@ -307,7 +308,7 @@ test(
           const records = await snapshot();
           assert.deepEqual(await migrate(url), {
             applied: [],
-            previouslyApplied: 6,
+            previouslyApplied: 7,
           });
           assert.deepEqual(await snapshot(), records);
           assert.equal(
@@ -334,7 +335,7 @@ test(
                 "SELECT count(*)::int AS count FROM rio_schema_migrations",
               )
             ).rows[0].count,
-            6,
+            7,
           );
           console.log(
             "Schema evidence: empty → 11 application tables, 13 foreign keys, 17 checks, 12 enabled triggers; linked IDs survive rerun.",
@@ -350,7 +351,7 @@ test(
           const results = await Promise.all([migrate(url), migrate(url)]);
           assert.equal(
             results.reduce((count, result) => count + result.applied.length, 0),
-            6,
+            7,
           );
           assert.equal((await inspectDatabase(url)).tables.length, 12);
         });
