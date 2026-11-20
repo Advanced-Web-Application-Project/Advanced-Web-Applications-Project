@@ -1,5 +1,13 @@
 # Booking API safeguards (#82)
 
+## Guest checkout update — 20 November 2026
+
+[Guest checkout](GUEST-CHECKOUT.md) adds a non-allocating quote endpoint and optional
+`expectedQuote` on creation. The guest UI requires the quote and uses private
+retry keys; successful replays retain original prices/deadlines. Production price
+administration/payment remain separate. The approved local demo-price command
+is `npm run db:seed:demo-prices` (adult €12/child €6, EUR).
+
 This corrects the prototype merged in #80. It does not complete checkout,
 Stripe or account reservations. The read-only #27 preview endpoint is documented
 separately in [seat-selection validation](API-SEAT-SELECTION.md).

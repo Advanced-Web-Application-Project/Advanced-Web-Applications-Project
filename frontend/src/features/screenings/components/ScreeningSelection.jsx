@@ -37,8 +37,11 @@ function RequestFeedback({ request, subject }) {
   );
 }
 
-export default function ScreeningSelection({ renderSeatSelection } = {}) {
-  const [selection, dispatch] = useReducer(selectionReducer, initialSelection);
+export default function ScreeningSelection({
+  renderSeatSelection,
+  initialChoices = initialSelection,
+} = {}) {
+  const [selection, dispatch] = useReducer(selectionReducer, initialChoices);
   const [now, setNow] = useState(() => Date.now());
   const requests = useScreeningOptions(selection);
   useEffect(() => {

@@ -1,8 +1,9 @@
 export class ApiError extends Error {
-  constructor(message, status) {
+  constructor(message, status, code) {
     super(message);
     this.name = "ApiError";
     this.status = status;
+    this.code = code;
   }
 }
 
@@ -10,11 +11,12 @@ export function createApiClient(baseUrl) {
   const base = baseUrl.replace(/\/+$/, "");
   return async function apiRequest(
     path,
-    { signal, method = "GET", body: requestBody, cache } = {},
+    { signal, method = "GET", body: requestBody, cache, headers = {} } = {},
   ) {
     const response = await fetch(`${base}/${path.replace(/^\/+/, "")}`, {
       method,
       headers: {
+        ...headers,
         Accept: "application/json",
         ...(requestBody === undefined
           ? {}
@@ -42,6 +44,7 @@ export function createApiClient(baseUrl) {
           ? body.error
           : "The cinema service could not complete the request.",
         response.status,
+        typeof body?.code === "string" ? body.code : undefined,
       );
     }
     if (!Object.hasOwn(body, "data")) {

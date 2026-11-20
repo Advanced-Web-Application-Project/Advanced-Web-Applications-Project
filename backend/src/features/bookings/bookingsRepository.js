@@ -68,7 +68,7 @@ export function createBookingsRepository(pool) {
             return (
               (
                 await client.query(
-                  `SELECT id,screen_id,screening_time > statement_timestamp() AT TIME ZONE 'Europe/Helsinki' AS is_future
+                  `SELECT id,screen_id,film_id,screening_time,screening_time > statement_timestamp() AT TIME ZONE 'Europe/Helsinki' AS is_future
               FROM screenings WHERE id=$1 AND screen_id=$2 FOR NO KEY UPDATE`,
                   [id, reference.screen_id],
                 )

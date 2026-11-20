@@ -7,6 +7,7 @@ export function registerBookingRoutes(app, pool) {
     createBookingsService(createBookingsRepository(pool)),
   );
   app.get("/api/bookings", controller.list);
+  app.post("/api/bookings/quote", controller.quote);
   app.post("/api/bookings", controller.create);
   app.delete("/api/bookings/:id", controller.release);
 }

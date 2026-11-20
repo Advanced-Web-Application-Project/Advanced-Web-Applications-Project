@@ -1,0 +1,116 @@
+{
+  "database": "rio_test_ui_checkout_90336",
+  "prices": [
+    {
+      "category": "adult",
+      "amount_cents": 1200
+    },
+    {
+      "category": "child",
+      "amount_cents": 600
+    }
+  ],
+  "holds": [
+    {
+      "id": 121,
+      "status": "expired",
+      "screening_id": 1,
+      "tickets": 2,
+      "total_cents": 1800
+    },
+    {
+      "id": 122,
+      "status": "expired",
+      "screening_id": 95,
+      "tickets": 2,
+      "total_cents": 1800
+    }
+  ],
+  "allDemoHoldsReleased": true,
+  "verifiedOn": "2026-11-20",
+  "scope": "Guest review, server quote, private five-minute hold, retry, expiry and release; no Stripe payment",
+  "backendTests": {
+    "passed": 138,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "examples": [
+      {
+        "city": "Oulu",
+        "screenId": 1,
+        "capacity": 100,
+        "filmId": 4,
+        "filmTitle": "Hope",
+        "screeningId": 1,
+        "selectedIds": [
+          2,
+          103
+        ],
+        "totalCents": 1800,
+        "availableDuringHold": {
+          "seated": 98,
+          "wheelchair": 9
+        },
+        "availableAfterCancel": {
+          "seated": 99,
+          "wheelchair": 10
+        }
+      },
+      {
+        "city": "Tampere",
+        "screenId": 4,
+        "capacity": 200,
+        "filmId": 6,
+        "filmTitle": "The Hunger Games: Sunrise on the Reaping",
+        "screeningId": 95,
+        "selectedIds": [
+          432,
+          633
+        ],
+        "totalCents": 1800,
+        "availableDuringHold": {
+          "seated": 198,
+          "wheelchair": 9
+        },
+        "availableAfterCancel": {
+          "seated": 199,
+          "wheelchair": 10
+        }
+      }
+    ],
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "pageWidth": 375
+    },
+    "screeningContextPreservedOnReturn": true,
+    "selectionClearedOnReturn": true,
+    "screenshot": "guest-checkout-mobile.jpg"
+  },
+  "cleanup": {
+    "disposableDatabaseDropped": true,
+    "dedicatedServersStopped": true
+  },
+  "localDemoPrices": {
+    "currency": "EUR",
+    "adultCents": 1200,
+    "childCents": 600,
+    "rerunPreservedSettings": true
+  },
+  "deferred": [
+    "Stripe/payment orchestration",
+    "production pricing administration",
+    "account/staff/company authentication",
+    "payment/expiry reconciliation",
+    "full reload recovery",
+    "production deployment"
+  ],
+  "frontendTests": {
+    "passed": 70,
+    "unit": 27,
+    "component": 43,
+    "failed": 0,
+    "skipped": 0
+  }
+}

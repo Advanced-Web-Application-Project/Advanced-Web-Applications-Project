@@ -36,7 +36,7 @@ price configuration is still required; this change does not invent a local price
 - The database stores only its SHA256 hash. No reversible/encrypted token storage
   or new application secret is needed. The raw key is returned only to its caller.
 - The first successful allocation binds the key to screening ID, trimmed contact
-  email and the seat/category set. Seat order, adult integer shorthand, category
+  email, the seat/category set and an optional reviewed-quote fingerprint. Seat order, adult integer shorthand, category
   case and outer email whitespace normalize; actual email case remains significant.
   Ignored client amounts/status/roles do not affect server meaning or pricing.
 - Repeating an active matching request returns the same HTTP **201** success
@@ -125,8 +125,8 @@ contains IDs, prices, statuses and matching deadlines, never credentials or cont
 
 This completes the agreed **guest retry** milestone, not all of #62 or its parent
 #28. Account authentication/ownership and additional staff/company allocation
-writers remain separate acceptance gaps. The checkout UI must still generate,
-retain and transmit the private key; Stripe/webhooks, payment/expiry races (#63),
+writers remain separate acceptance gaps. The [guest checkout UI](GUEST-CHECKOUT.md) now generates,
+retains in memory and transmits the private key; Stripe/webhooks, payment/expiry races (#63),
 account pay-later reservations, pricing administration (#61), production migration
 execution and deployment remain deferred. Selection preview still creates no hold.
 No obsolete feature files or duplicate application directories are introduced.

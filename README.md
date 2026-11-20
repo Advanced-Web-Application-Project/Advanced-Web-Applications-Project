@@ -44,9 +44,11 @@ Join the [RIO Discord server](https://discord.gg/jJTps5kC9F) for team discussion
 In development. Customers can choose a city, screen, movie and showtime using
 live data. Customers can inspect/select seats and check the complete selection.
 Customers can review a validated selection with back navigation and separate
-seated/wheelchair availability counts. See [the selection workflow](docs/SELECTION-SUMMARY.md)
-for verification and scope. Checkout, payment and the later frontend redesign
-remain future work.
+seated/wheelchair availability counts, then enter guest checkout with ticket
+categories, a server quote and an owned five-minute unpaid hold. See [the selection workflow](docs/SELECTION-SUMMARY.md)
+for selection verification. See [guest checkout](docs/GUEST-CHECKOUT.md) for its
+current scope, local price setup and tests. Stripe payment and the later frontend
+redesign remain future work.
 
 ## Booking allocation safeguards
 

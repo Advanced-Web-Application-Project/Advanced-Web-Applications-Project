@@ -1,5 +1,13 @@
 # Customer selection workflow — #57 / #77
 
+## Guest-checkout integration — 20 November 2026
+
+The summary now offers Continue to guest checkout. [The #29 guest milestone](GUEST-CHECKOUT.md)
+adds email/categories, server pricing and a retryable unpaid hold. Browsing/map
+components unmount while checkout is active, so polling cannot erase its private
+state. After release/back navigation the screening context reloads with fresh,
+empty seat choices. The #57/#77 evidence below describes its earlier slice.
+
 The functional MVP is city → screen → movie → showtime → places → validated
 selection review. It uses the existing gold/red/black theme. This milestone does
 not redesign the later customer journey or connect checkout/payment.

@@ -352,3 +352,14 @@ existing runner, ensures locations/inventory without adding new synthetic-film
 screenings, imports the pinned TMDB IDs, then transactionally adds the schedule.
 Existing data is retained. Repeat with the same date to keep screening IDs; no
 reset is needed. Do not use this local fixture command on CSC/shared databases.
+
+
+## Approved guest checkout demo prices
+
+The user confirmed email-only guest checkout and EUR on 20 November 2026.
+From `backend/`, `npm run db:seed:demo-prices` adds adult 1200 and child 600 cents
+only to a guarded isolated local database. Reruns keep matching settings; different
+or duplicate existing prices cause rollback instead of overwriting them. Runtime
+child quotes still derive exactly half the authoritative adult base price.
+This is explicit demo setup, not a production price-administration feature.
+See [guest checkout verification](../docs/GUEST-CHECKOUT.md).

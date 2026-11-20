@@ -33,6 +33,7 @@ export function createBookingsController(service) {
   }
   return {
     list: handle((req) => service.listBookings(req.query)),
+    quote: handle((req) => service.quote(req.body)),
     create: handle(
       (req) => service.createHold(req.body, req.get("Idempotency-Key")),
       201,

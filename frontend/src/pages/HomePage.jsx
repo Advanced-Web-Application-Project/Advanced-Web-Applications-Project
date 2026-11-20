@@ -1,9 +1,13 @@
+import { useState } from "react";
+import GuestCheckout from "../features/bookings/components/GuestCheckout.jsx";
 import Icon from "../shared/components/Icon.jsx";
 import SelectionSummary from "../features/seats/components/SelectionSummary.jsx";
 import SeatSelection from "../features/seats/components/SeatSelection.jsx";
 import ScreeningSelection from "../features/screenings/components/ScreeningSelection.jsx";
 
 export default function HomePage() {
+  const [checkout, setCheckout] = useState(null);
+  const [browseChoices, setBrowseChoices] = useState(undefined);
   return (
     <>
       <a className="skip-link" href="#main">
@@ -46,17 +50,46 @@ export default function HomePage() {
             <span className="art-note">Lights down. Stories on.</span>
           </div>
         </section>
-        <ScreeningSelection
-          renderSeatSelection={(context) => (
-            <SeatSelection
-              screen={context.screen}
-              screening={context.screening}
-              renderSummary={(selection) => (
-                <SelectionSummary {...context} {...selection} />
-              )}
-            />
-          )}
-        />
+        {checkout ? (
+          <GuestCheckout
+            context={checkout}
+            onBack={() => {
+              setBrowseChoices({
+                cityId: checkout.city.id,
+                screenId: checkout.screen.id,
+                filmId: checkout.film.id,
+                screeningId: checkout.screening.id,
+              });
+              setCheckout(null);
+            }}
+          />
+        ) : (
+          <ScreeningSelection
+            initialChoices={browseChoices}
+            renderSeatSelection={(context) => (
+              <SeatSelection
+                screen={context.screen}
+                screening={context.screening}
+                renderSummary={(selection) => (
+                  <SelectionSummary
+                    {...context}
+                    {...selection}
+                    onCheckout={() =>
+                      setCheckout({
+                        city: context.city,
+                        film: context.film,
+                        screen: context.screen,
+                        screening: context.screening,
+                        showtime: context.showtime,
+                        selected: selection.selected,
+                      })
+                    }
+                  />
+                )}
+              />
+            )}
+          />
+        )}
       </main>
       <footer className="site-footer shell">
         <span className="footer-brand">RIO</span>
