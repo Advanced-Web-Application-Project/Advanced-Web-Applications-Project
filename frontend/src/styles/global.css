@@ -574,6 +574,10 @@ h3 {
   }
 }
 
+.screening-availability {
+  margin-top: clamp(1.5rem, 1rem + 1vw, 2rem);
+}
+
 .availability-list {
   list-style: none;
   padding: 0;

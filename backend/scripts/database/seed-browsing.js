@@ -10,7 +10,11 @@ import {
   DatabaseCommandError,
 } from "./connection.js";
 
-export async function seedBrowsing({ databaseUrl, mode }) {
+export async function seedBrowsing({
+  databaseUrl,
+  mode,
+  includeDemoScreenings = true,
+}) {
   const database = assertIsolatedDevelopment(databaseUrl, mode);
   const client = createClient(databaseUrl);
   try {
@@ -109,7 +113,7 @@ export async function seedBrowsing({ databaseUrl, mode }) {
             "Existing screen wheelchair capacity differs from the fixture requirement; no inventory was changed",
           );
         const screenings = [];
-        for (const film of films) {
+        for (const film of includeDemoScreenings ? films : []) {
           let shows = (
             await client.query(
               `

@@ -334,3 +334,21 @@ does not complete application deployment. The guarded native-local
 migration commands do not automatically adopt a container/shared server: retain
 the existing target checks and use a separately reviewed setup path. No Docker,
 Rahti or shared database is started, replaced or reset by these source changes.
+
+
+## Real-movie presentation fixtures
+
+For the 21 November presentation, [the dedicated setup](../docs/PRESENTATION-DATA.md)
+imports ten TMDB movies and adds three showtimes per movie per screen. From `backend/`:
+
+```bash
+npm run db:seed:presentation -- --start-date 2026-11-21
+# With the backend running:
+npm run verify:presentation
+```
+
+The command enforces isolated local targets, applies migrations through the
+existing runner, ensures locations/inventory without adding new synthetic-film
+screenings, imports the pinned TMDB IDs, then transactionally adds the schedule.
+Existing data is retained. Repeat with the same date to keep screening IDs; no
+reset is needed. Do not use this local fixture command on CSC/shared databases.

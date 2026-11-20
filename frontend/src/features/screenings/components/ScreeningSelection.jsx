@@ -192,7 +192,10 @@ export default function ScreeningSelection({ renderSeatSelection } = {}) {
         </div>
       </div>
       {options.showtimes.length > 0 && (
-        <section aria-label="Showtime availability">
+        <section
+          className="screening-availability"
+          aria-label="Showtime availability"
+        >
           <h3>Available places by showtime</h3>
           <p>Availability can change. These counts do not hold places.</p>
           <ul className="availability-list">

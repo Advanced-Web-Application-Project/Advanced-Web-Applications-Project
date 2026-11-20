@@ -15,7 +15,9 @@
     "db:seed:inventory": "node scripts/db-seed-inventory.js",
     "verify:inventory": "node scripts/verify-inventory.js",
     "db:import:tmdb": "node src/features/films/importTmdbCli.js",
-    "verify:tmdb": "node scripts/verify-tmdb-import.js"
+    "verify:tmdb": "node scripts/verify-tmdb-import.js",
+    "db:seed:presentation": "node scripts/db-seed-presentation.js",
+    "verify:presentation": "node scripts/verify-presentation.js"
   },
   "keywords": [],
   "author": "",
