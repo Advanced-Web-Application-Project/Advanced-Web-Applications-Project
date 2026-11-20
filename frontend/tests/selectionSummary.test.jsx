@@ -140,7 +140,7 @@ for (const [city, id, capacity] of [
       "Seat 2 (row 1)",
       "Wheelchair W3",
     ]);
-    expect(summary.textContent).toContain("Helsinki time");
+    expect(summary.textContent).not.toContain("Helsinki time");
     expect(summary.textContent).toContain("not reserved");
     expect(document.activeElement.textContent).toBe("Your selection summary");
     await user.click(

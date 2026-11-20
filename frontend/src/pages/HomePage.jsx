@@ -1,3 +1,4 @@
+import Icon from "../shared/components/Icon.jsx";
 import SelectionSummary from "../features/seats/components/SelectionSummary.jsx";
 import SeatSelection from "../features/seats/components/SeatSelection.jsx";
 import ScreeningSelection from "../features/screenings/components/ScreeningSelection.jsx";
@@ -13,7 +14,7 @@ export default function HomePage() {
           RIO<span>cinema</span>
         </a>
         <a className="header-link" href="#cinemas">
-          Find a screening <span aria-hidden="true">↗</span>
+          Find a screening <Icon name="arrow-up-right" />
         </a>
       </header>
       <main id="main" className="shell">
@@ -30,12 +31,12 @@ export default function HomePage() {
               Find your local RIO cinema.
             </p>
             <a className="primary-link" href="#cinemas">
-              Find a screening <span aria-hidden="true">↓</span>
+              Find a screening <Icon name="arrow-down" />
             </a>
           </div>
           <div className="cinema-art" aria-hidden="true">
             <div className="art-frame">
-              <span className="art-star">✳</span>
+              <Icon name="star-octogram" className="art-star" />
               <span className="art-caption">
                 See you
                 <br />

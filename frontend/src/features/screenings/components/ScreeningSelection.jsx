@@ -179,7 +179,6 @@ export default function ScreeningSelection({ renderSeatSelection } = {}) {
             value={screeningValue}
             disabled={!options.film || !options.showtimes.length}
             onChange={(event) => select("screening", event.target.value)}
-            aria-describedby="showtime-zone"
           >
             <option value="">
               {options.film ? "Choose a showtime" : "Choose a movie first"}
@@ -190,9 +189,6 @@ export default function ScreeningSelection({ renderSeatSelection } = {}) {
               </option>
             ))}
           </select>
-          <p id="showtime-zone" className="field-feedback">
-            All showtimes are in Helsinki time.
-          </p>
         </div>
       </div>
       {options.showtimes.length > 0 && (
@@ -234,10 +230,7 @@ export default function ScreeningSelection({ renderSeatSelection } = {}) {
               </div>
               <div>
                 <dt>Showtime</dt>
-                <dd>
-                  {formatShowtime(options.screening.screening_time)}{" "}
-                  <span className="timezone-label">(Helsinki time)</span>
-                </dd>
+                <dd>{formatShowtime(options.screening.screening_time)}</dd>
               </div>
             </dl>
             <p className="selection-note">

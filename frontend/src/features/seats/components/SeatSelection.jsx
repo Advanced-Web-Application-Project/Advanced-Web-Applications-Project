@@ -1,4 +1,4 @@
-import WheelchairIcon from "./WheelchairIcon.jsx";
+import Icon from "../../../shared/components/Icon.jsx";
 import { useId } from "react";
 import { useSeatSelection } from "../hooks/useSeatSelection.js";
 import SeatMap from "./SeatMap.jsx";
@@ -46,8 +46,8 @@ function ScreeningPlaces({
       <p className="seat-instructions">
         Choose all your places, then check the complete selection. Use Tab to
         move through places, arrow keys to move across rows, and Space or Enter
-        to select. Unavailable places are labelled and marked ×. On narrow
-        screens, scroll the map sideways.
+        to select. Unavailable places are labelled and marked with a cross. On
+        narrow screens, scroll the map sideways.
       </p>
       <ul className="seat-legend" aria-label="Place states">
         <li>
@@ -56,18 +56,18 @@ function ScreeningPlaces({
         </li>
         <li>
           <span className="legend-place place-selected" aria-hidden="true">
-            ✓
+            <Icon name="check" />
           </span>
           Selected
         </li>
         <li>
           <span className="legend-place place-unavailable" aria-hidden="true">
-            ×
+            <Icon name="cross" />
           </span>
           Unavailable
         </li>
         <li>
-          <WheelchairIcon /> Wheelchair space
+          <Icon name="wheelchair" /> Wheelchair space
         </li>
       </ul>
       <p className="seat-feedback" role="status" aria-atomic="true">
@@ -137,7 +137,8 @@ function ScreeningPlaces({
       )}
       {checked && result.valid && (
         <p className="selection-valid">
-          ✓ Selection checked. These places are not reserved.
+          <Icon name="check" /> Selection checked. These places are not
+          reserved.
         </p>
       )}
       {checked &&

@@ -43,7 +43,7 @@ export default function SelectionSummary({
         </div>
         <div>
           <dt>Showtime</dt>
-          <dd>{showtime} (Helsinki time)</dd>
+          <dd>{showtime}</dd>
         </div>
       </dl>
       <h4>Selected places ({selected.length})</h4>
@@ -71,8 +71,7 @@ export default function SelectionSummary({
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",
-        }).format(new Date(result.as_of))}{" "}
-        (Helsinki time)
+        }).format(new Date(result.as_of))}
       </time>
       <div className="seat-selection-actions">
         <button type="button" className="retry-button" onClick={edit}>
