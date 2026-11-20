@@ -42,6 +42,15 @@ routes and retains only the legacy price read. Customer `features/movies/`
 provides retained title/description details through the shared API client; it
 does not request third-party media. See [the current browsing contract](API-BROWSING.md).
 
+## Implemented staff identity foundation
+
+`backend/src/features/staff/` owns local provisioning rules, repository SQL and
+the reusable password verifier. `backend/scripts/staff-manage.js` is the local
+CLI entry point, using the existing explicit database target guards. Migration
+0009 extends the existing users table; there is no duplicate account store.
+Session versions and timestamps prepare the contract for #35 without adding
+HTTP routes, sessions or frontend scaffolding. See [the staff identity contract](STAFF-PROVISIONING.md).
+
 ## 2. Proposed structure
 
 **The following is a target directory tree.** Optional directories should remain absent until needed.

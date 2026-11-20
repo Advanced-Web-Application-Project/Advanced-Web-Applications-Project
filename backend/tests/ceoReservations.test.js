@@ -271,8 +271,19 @@ test(
           for (const role of ["customer", "cashier", "administrator"]) {
             const user = (
               await client.query(
-                "INSERT INTO users (role,email,password_hash) VALUES ($1,$2,'test-only-not-a-login') RETURNING id",
-                [role, `${role}@example.test`],
+                "INSERT INTO users (role,email,password_hash,permitted_city_id) VALUES ($1,$2,'test-only-not-a-login',$3) RETURNING id",
+                [
+                  role,
+                  `${role}@example.test`,
+                  role === "cashier"
+                    ? (
+                        await client.query(
+                          "SELECT city_id FROM screens WHERE id=$1",
+                          [screens[0].id],
+                        )
+                      ).rows[0].city_id
+                    : null,
+                ],
               )
             ).rows[0];
             const booking = (
@@ -699,7 +710,7 @@ test(
                     "SELECT count(*)::int AS count FROM rio_schema_migrations",
                   )
                 ).rows[0].count,
-                conflict ? 1 : 8,
+                conflict ? 1 : 9,
               );
             } finally {
               await rm(directory, { recursive: true, force: true });

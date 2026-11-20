@@ -1,0 +1,166 @@
+{
+  "date": "2026-11-21",
+  "workflow": "real pseudo-terminal CLI to service/repository/PostgreSQL",
+  "fixtureKind": "disposable runtime-generated secrets and accounts",
+  "checks": [
+    {
+      "action": "provision",
+      "exitCode": 0,
+      "passwordPrompts": 2,
+      "credentialEchoed": false,
+      "result": {
+        "result": "provisioned",
+        "userId": 1,
+        "role": "administrator",
+        "cityId": null,
+        "enabled": true,
+        "sessionVersion": 1
+      }
+    },
+    {
+      "action": "provision",
+      "exitCode": 0,
+      "passwordPrompts": 2,
+      "credentialEchoed": false,
+      "result": {
+        "result": "provisioned",
+        "userId": 2,
+        "role": "cashier",
+        "cityId": 1,
+        "enabled": true,
+        "sessionVersion": 1
+      }
+    },
+    {
+      "action": "provision",
+      "exitCode": 0,
+      "passwordPrompts": 2,
+      "credentialEchoed": false,
+      "result": {
+        "result": "provisioned",
+        "userId": 3,
+        "role": "cashier",
+        "cityId": 2,
+        "enabled": true,
+        "sessionVersion": 1
+      }
+    },
+    {
+      "action": "provision",
+      "exitCode": 0,
+      "passwordPrompts": 0,
+      "credentialEchoed": false,
+      "result": {
+        "result": "unchanged",
+        "userId": 1,
+        "role": "administrator",
+        "cityId": null,
+        "enabled": true,
+        "sessionVersion": 1
+      }
+    },
+    {
+      "action": "reset-password",
+      "exitCode": 0,
+      "passwordPrompts": 2,
+      "credentialEchoed": false,
+      "result": {
+        "result": "password-reset",
+        "userId": 1,
+        "role": "administrator",
+        "cityId": null,
+        "enabled": true,
+        "sessionVersion": 2
+      }
+    },
+    {
+      "action": "disable",
+      "exitCode": 0,
+      "passwordPrompts": 0,
+      "credentialEchoed": false,
+      "result": {
+        "result": "disabled",
+        "userId": 2,
+        "role": "cashier",
+        "cityId": 1,
+        "enabled": false,
+        "sessionVersion": 2
+      }
+    },
+    {
+      "action": "reset-password",
+      "exitCode": 0,
+      "passwordPrompts": 2,
+      "credentialEchoed": false,
+      "result": {
+        "result": "password-reset",
+        "userId": 2,
+        "role": "cashier",
+        "cityId": 1,
+        "enabled": false,
+        "sessionVersion": 3
+      }
+    },
+    {
+      "action": "provision",
+      "exitCode": 0,
+      "passwordPrompts": 0,
+      "credentialEchoed": false,
+      "result": {
+        "result": "unchanged",
+        "userId": 2,
+        "role": "cashier",
+        "cityId": 1,
+        "enabled": false,
+        "sessionVersion": 3
+      }
+    },
+    {
+      "action": "provision",
+      "exitCode": 1,
+      "passwordPrompts": 2,
+      "credentialEchoed": false,
+      "result": null
+    },
+    {
+      "action": "provision",
+      "exitCode": 1,
+      "passwordPrompts": 1,
+      "credentialEchoed": false,
+      "result": null
+    },
+    {
+      "action": "non-TTY provision",
+      "exitCode": 1,
+      "credentialEchoed": false
+    }
+  ],
+  "verification": {
+    "replacementVerified": true,
+    "originalRejected": true,
+    "staffCount": 3
+  },
+  "readOnlyAudit": {
+    "readOnly": true,
+    "migrations": [
+      "0001_initial_schema.sql",
+      "0002_ceo_reservations.sql",
+      "0003_guard_ceo_seat_conversion.sql",
+      "0004_screen_inventory.sql",
+      "0005_booking_safeguards.sql",
+      "0006_allocation_isolation.sql",
+      "0007_add_tmdb_metadata_unique_index.sql",
+      "0008_checkout_request_identity.sql",
+      "0009_staff_identity.sql"
+    ],
+    "invalidScopeUserIds": [],
+    "invalidEmailUserIds": [],
+    "duplicateLoginGroups": [],
+    "staffNeedingCredentialResetIds": []
+  },
+  "passwordsStoredInEvidence": false,
+  "disposableDatabaseDropped": true,
+  "retainedLocalAccountsCreated": 0,
+  "httpAuthenticationVerified": false,
+  "deploymentVerified": false
+}

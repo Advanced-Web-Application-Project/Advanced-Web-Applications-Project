@@ -23,7 +23,9 @@ npm run test:postgres
 npm start
 ```
 
-Apply migrations through `0008_checkout_request_identity.sql` before starting this version.
+Booking allocation requires migrations through `0008_checkout_request_identity.sql`;
+local staff provisioning additionally requires `0009_staff_identity.sql`. Apply
+all current migrations only to the explicitly selected development database.
 Seat availability and allocation share the active-state SQL function from 0006. The local
 `rio_dev` database had sixteen CEO reservations and no price rows when inspected
 on 18 November 2026. No customer prices are invented by migration or seeds.

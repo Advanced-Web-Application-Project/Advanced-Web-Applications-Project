@@ -1,0 +1,14 @@
+{
+  "provider": "local PostgreSQL",
+  "checks": [
+    "fresh role/city/normalized email constraints and protected city membership",
+    "legacy scope rejection preserves records and eight-migration ledger",
+    "legacy email rejection preserves records and eight-migration ledger",
+    "legacy duplicate rejection preserves records and eight-migration ledger",
+    "valid adoption preserves customer ID/contact/hash/loyalty, referenced paid tickets and charged snapshots",
+    "three staff roles, real password verification, unchanged reruns, reset, disable and retained disabled state",
+    "concurrent case/space-equivalent requests create one account without credential reset",
+    "database trigger revokes by monotonically increasing version after scope/contact/enabled changes; loyalty is independent"
+  ],
+  "privateValuesRecorded": false
+}

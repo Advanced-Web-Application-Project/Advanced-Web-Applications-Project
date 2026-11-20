@@ -83,7 +83,8 @@ release. Payment is unavailable and never simulated as paid.
 ## Local setup and commands
 
 Keep the existing ignored environment configured for isolated local PostgreSQL 18.
-Apply all migrations (through 0008), then, from `backend/`:
+Apply all current migrations (0009 adds staff identity; guest checkout depends
+on 0008), then, from `backend/`:
 
 ```bash
 npm run db:migrate:dev

@@ -27,6 +27,15 @@ checks create and remove a unique NOLOGIN test role; the isolated local test
 connection needs `CREATEDB` and `CREATEROLE` (or superuser). Existing development
 records are not seeded or migrated by that suite. See [commands and evidence](../docs/API-BROWSING.md).
 
+## Staff identity migration and provisioning
+
+Migration `0009_staff_identity.sql` adds normalized login uniqueness, role/city
+constraints, enabled state, revocation versions and nullable legacy timestamps.
+It rejects invalid old rows without reassigning identities. Use
+`npm run staff:manage -- audit` from `backend/` for an ID-only read-only preflight;
+provisioning/reset/disable remain explicitly guarded local writes. See
+[staff commands, data meanings and verification](../docs/STAFF-PROVISIONING.md).
+
 ## Commands and target
 
 Set `DATABASE_URL` in your local `backend/.env`, or export it in your shell.
