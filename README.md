@@ -51,8 +51,9 @@ remain future work.
 ## Booking allocation safeguards
 
 The corrected booking API creates owned five-minute unpaid holds and retains
-history on release. Apply migrations 0005–0006 before running this backend version.
+history on release. Apply current migrations through 0008 before running this backend version.
 See [the contract, verification and remaining work](docs/BOOKING-SAFEGUARDS.md).
+Optional private request keys now support [retry-safe hold creation](docs/CHECKOUT-HOLD-RETRIES.md).
 
 ## Presentation movie data
 

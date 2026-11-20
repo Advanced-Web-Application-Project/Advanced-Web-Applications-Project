@@ -1,0 +1,116 @@
+{
+  "scope": "Disposable PostgreSQL and real Express HTTP; synthetic adult 1200 cents; database removed after tests",
+  "examples": [
+    {
+      "city": "Oulu",
+      "capacity": 100,
+      "screenId": 1,
+      "screeningId": 9,
+      "selectedIds": [2, 103],
+      "bookingId": 18,
+      "creationStatus": 201,
+      "retryStatus": 201,
+      "originalDeadline": "2026-11-20T15:37:26.775Z",
+      "retryDeadline": "2026-11-20T15:37:26.775Z",
+      "totalCents": 1800,
+      "competingStatus": 409,
+      "releaseStatus": 200,
+      "releasedRetryStatus": 409
+    },
+    {
+      "city": "Oulu",
+      "capacity": 200,
+      "screenId": 2,
+      "screeningId": 10,
+      "selectedIds": [112, 313],
+      "bookingId": 20,
+      "creationStatus": 201,
+      "retryStatus": 201,
+      "originalDeadline": "2026-11-20T15:37:26.797Z",
+      "retryDeadline": "2026-11-20T15:37:26.797Z",
+      "totalCents": 1800,
+      "competingStatus": 409,
+      "releaseStatus": 200,
+      "releasedRetryStatus": 409
+    },
+    {
+      "city": "Tampere",
+      "capacity": 100,
+      "screenId": 3,
+      "screeningId": 11,
+      "selectedIds": [322, 423],
+      "bookingId": 22,
+      "creationStatus": 201,
+      "retryStatus": 201,
+      "originalDeadline": "2026-11-20T15:37:26.813Z",
+      "retryDeadline": "2026-11-20T15:37:26.813Z",
+      "totalCents": 1800,
+      "competingStatus": 409,
+      "releaseStatus": 200,
+      "releasedRetryStatus": 409
+    },
+    {
+      "city": "Tampere",
+      "capacity": 200,
+      "screenId": 4,
+      "screeningId": 12,
+      "selectedIds": [432, 633],
+      "bookingId": 24,
+      "creationStatus": 201,
+      "retryStatus": 201,
+      "originalDeadline": "2026-11-20T15:37:26.826Z",
+      "retryDeadline": "2026-11-20T15:37:26.826Z",
+      "totalCents": 1800,
+      "competingStatus": 409,
+      "releaseStatus": 200,
+      "releasedRetryStatus": 409
+    }
+  ],
+  "verifiedOn": "2026-11-20",
+  "tests": {
+    "command": "npm run test:postgres",
+    "passed": 130,
+    "failed": 0,
+    "skipped": 0
+  },
+  "checks": {
+    "concurrentIdenticalRequests": 6,
+    "oneAllocationPerKey": true,
+    "droppedResponseRecovered": true,
+    "normalizedReplayKeepsOriginalPrices": true,
+    "changedRequestsRejected": true,
+    "expiredReleasedAndPaidReplayRejected": true,
+    "expiryRecheckedAfterRealLockWait": true,
+    "lateTicketFailureRollsBackIdentity": true,
+    "legacyMigrationAndDuplicatePreflightPassed": true
+  },
+  "localMigration": {
+    "database": "rio_dev",
+    "migration": {
+      "applied": ["0008_checkout_request_identity.sql"],
+      "previouslyApplied": 7
+    },
+    "existingRowsUnchanged": true,
+    "rowCounts": {
+      "films": 12,
+      "seats": 640,
+      "screenings": 144,
+      "bookings": 144,
+      "tickets": 144,
+      "prices": 0
+    },
+    "availability": {
+      "screenId": 1,
+      "screeningId": 25,
+      "seated": {
+        "total": 100,
+        "available": 99
+      },
+      "wheelchair": {
+        "total": 10,
+        "available": 10
+      }
+    },
+    "customerPricesOrHoldsAdded": false
+  }
+}

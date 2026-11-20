@@ -15,8 +15,8 @@ npm run test:postgres
 npm start
 ```
 
-Apply migrations through `0006_allocation_isolation.sql` before starting this version: seat
-availability and allocation now share its active-state SQL function. The local
+Apply migrations through `0008_checkout_request_identity.sql` before starting this version.
+Seat availability and allocation share the active-state SQL function from 0006. The local
 `rio_dev` database had sixteen CEO reservations and no price rows when inspected
 on 18 November 2026. No customer prices are invented by migration or seeds.
 Checkout returns 503 until exactly one positive integer adult base price is
@@ -109,8 +109,9 @@ Paid/company records return 409 even with a previously valid hold token. Legacy
 bookings without ownership credentials cannot be released through this route.
 CEO release stays disabled. There is no general cancellation API in this fix.
 
-Hold tokens use 32 random bytes, are returned only once and stored only as SHA256
-hashes. Send them in the Authorization header, never URLs or logs. The future
+Legacy hold tokens use 32 random bytes, are returned only on creation and stored
+only as SHA256 hashes. Requests opting into [private retry keys](CHECKOUT-HOLD-RETRIES.md)
+can recover the same credential and response while their original hold is active. Send them in the Authorization header, never URLs or logs. The future
 checkout UI must keep them private. Tokens do not grant payment or CEO authority.
 
 `GET /api/bookings` and its optional `?screeningId=9` preserve the list envelope,
@@ -175,7 +176,8 @@ remain part of `npm run test:postgres`.
 The #27 public preview exposes the same rules without allocation. The #56
 [seat map](SEAT-MAP.md) consumes it; full summary and checkout integration remain
 separate. Remaining work belongs to existing tasks:
-#62 account ownership/idempotency and all other allocation writers;
+#62 account ownership and all other allocation writers (guest request retries
+are now implemented in [the retry slice](CHECKOUT-HOLD-RETRIES.md));
 #63 verified payment versus expiry races; #41 Stripe; #61 authorised price
 settings and rounding; #76 CEO-only release; full summary and checkout UI. No paid
 state or payment simulation is exposed by this patch. A checkout hold itself is

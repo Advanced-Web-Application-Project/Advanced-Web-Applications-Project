@@ -18,6 +18,55 @@ const isDatabaseId = (id) =>
 const hashHoldToken = (value) =>
   createHash("sha256").update(value).digest("hex");
 
+// Retry keys are private 256-bit credentials, not public UUID/correlation IDs.
+export function parseHoldRequestKey(value) {
+  if (value === undefined) return null;
+  if (
+    typeof value !== "string" ||
+    !/^[A-Za-z0-9_-]{43}$/.test(value) ||
+    Buffer.from(value, "base64url").length !== 32 ||
+    Buffer.from(value, "base64url").toString("base64url") !== value
+  )
+    throw new BookingError(
+      400,
+      "INVALID_IDEMPOTENCY_KEY",
+      "Idempotency-Key must be a private 32-byte random value encoded as canonical base64url",
+    );
+  return value;
+}
+
+export function fingerprintHoldRequest(request) {
+  return createHash("sha256")
+    .update(
+      JSON.stringify({
+        screeningId: request.screeningId,
+        clientEmail: request.clientEmail,
+        items: [...request.items].sort((a, b) => a.seatId - b.seatId),
+      }),
+    )
+    .digest("hex");
+}
+
+function holdResponse(hold, tickets, holdToken) {
+  return {
+    bookingId: hold.id,
+    screeningid: hold.screening_id,
+    status: "hold",
+    paymentStatus: "unpaid",
+    expiresAt: hold.expires_at,
+    holdToken,
+    totalCents: tickets.reduce(
+      (total, ticket) => total + ticket.amountCharged,
+      0,
+    ),
+    tickets: tickets.map(({ seatId, category, amountCharged }) => ({
+      seatId,
+      category,
+      amountCharged,
+    })),
+  };
+}
+
 export function parseBookingRequest(body) {
   if (
     !body ||
@@ -124,10 +173,51 @@ export function createBookingsService(repository) {
       }
       return repository.listBookings(screeningId);
     },
-    async createHold(body) {
+    async createHold(body, idempotencyKey) {
       const request = parseBookingRequest(body);
-      const holdToken = randomBytes(32).toString("base64url");
+      const requestKey = parseHoldRequestKey(idempotencyKey);
+      const holdToken = requestKey ?? randomBytes(32).toString("base64url");
+      const tokenHash = hashHoldToken(holdToken);
+      const fingerprint = requestKey ? fingerprintHoldRequest(request) : null;
       return repository.transaction(async (client, transaction) => {
+        if (requestKey) {
+          // Always claim request identity before screen/screening/booking locks.
+          await transaction.lockRequestKey(tokenHash);
+          const existing = await transaction.findHoldByTokenHash(tokenHash);
+          if (existing) {
+            if (
+              !existing.hold_request_fingerprint ||
+              existing.hold_request_fingerprint !== fingerprint
+            )
+              throw new BookingError(
+                409,
+                "IDEMPOTENCY_KEY_CONFLICT",
+                "This private request key was already used for another request",
+              );
+            const hold = await transaction.lockBooking(existing.id);
+            if (
+              hold.status === "expired" ||
+              (hold.status === "hold" &&
+                !(await transaction.isHoldActive(hold.id)))
+            )
+              throw new BookingError(
+                409,
+                "HOLD_EXPIRED",
+                "This hold has expired or was released. Review availability and use a new private request key",
+              );
+            if (hold.booking_type !== "customer" || hold.status !== "hold")
+              throw new BookingError(
+                409,
+                "HOLD_NOT_ACTIVE",
+                "This request no longer refers to an active unpaid customer hold",
+              );
+            return holdResponse(
+              hold,
+              await transaction.readHoldTickets(hold.id),
+              holdToken,
+            );
+          }
+        }
         const screening = await transaction.lockScreening(request.screeningId);
         if (!screening)
           throw new BookingError(
@@ -162,23 +252,12 @@ export function createBookingsService(repository) {
         const hold = await transaction.insertHold(
           request.screeningId,
           request.clientEmail,
-          hashHoldToken(holdToken),
+          tokenHash,
+          fingerprint,
         );
         for (const ticket of tickets)
           await transaction.insertTicket(hold.id, ticket);
-        return {
-          bookingId: hold.id,
-          screeningid: hold.screening_id,
-          status: "hold",
-          paymentStatus: "unpaid",
-          expiresAt: hold.expires_at,
-          holdToken,
-          totalCents: tickets.reduce(
-            (total, ticket) => total + ticket.amountCharged,
-            0,
-          ),
-          tickets: tickets.map(({ priceId, ...ticket }) => ticket),
-        };
+        return holdResponse(hold, tickets, holdToken);
       });
     },
     async releaseHold(id, authorization) {

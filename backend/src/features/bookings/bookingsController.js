@@ -3,9 +3,9 @@ import { BookingError } from "./bookingsService.js";
 export function createBookingsController(service) {
   function handle(action, status = 200) {
     return async (req, res) => {
+      res.set("Cache-Control", "no-store");
       try {
         const data = await action(req);
-        res.set("Cache-Control", "no-store");
         res.status(status).json({ success: true, data });
       } catch (error) {
         if (error instanceof BookingError)
@@ -33,7 +33,10 @@ export function createBookingsController(service) {
   }
   return {
     list: handle((req) => service.listBookings(req.query)),
-    create: handle((req) => service.createHold(req.body), 201),
+    create: handle(
+      (req) => service.createHold(req.body, req.get("Idempotency-Key")),
+      201,
+    ),
     release: handle((req) =>
       service.releaseHold(req.params.id, req.get("Authorization")),
     ),
