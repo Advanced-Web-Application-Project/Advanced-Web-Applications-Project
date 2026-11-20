@@ -55,6 +55,16 @@ function deferred() {
 function installApi(overrides = {}) {
   const mock = vi.fn(async (input, options) => {
     const url = new URL(input, "http://localhost");
+    if (/^\/api\/films\/\d+$/.test(url.pathname)) {
+      const id = Number(url.pathname.split("/").pop());
+      return overrides.movie
+        ? overrides.movie(id, options)
+        : response({
+            id,
+            title: id === 31 ? "Northern Lights" : "Lake Stories",
+            description: "A retained movie description.",
+          });
+    }
     if (url.pathname === "/api/cities")
       return overrides.cities ? overrides.cities(options) : response(cities);
     if (url.pathname === "/api/screens") {
@@ -91,7 +101,7 @@ async function chooseTime(user, id = 111) {
   await user.selectOptions(field("4. Showtime"), String(id));
 }
 function summary() {
-  return document.querySelector(".selection-summary");
+  return screen.getByRole("region", { name: "Your screening", exact: true });
 }
 
 afterEach(() => {
@@ -493,4 +503,33 @@ test("a fresh city request does not inherit the previous city's retry state", as
   await waitFor(() => expect(field("2. Screen").disabled).toBe(false));
   expect(field("2. Screen").value).toBe("");
   expect(screen.queryByRole("button", { name: "Refresh screens" })).toBe(null);
+});
+
+test("movie detail failure and retry preserve a selected screening", async () => {
+  let calls = 0;
+  installApi({
+    movie: (id) =>
+      ++calls === 1
+        ? response(null, 500, "Unavailable")
+        : response({
+            id,
+            title: "Northern Lights",
+            description: "Retained synopsis",
+          }),
+  });
+  const user = userEvent.setup();
+  render(<ScreeningSelection />);
+  await chooseCity(user);
+  await chooseScreen(user);
+  await chooseFilm(user);
+  await chooseTime(user);
+  expect(field("4. Showtime").value).toBe("111");
+  await user.click(
+    await screen.findByRole("button", { name: "Retry movie details" }),
+  );
+  await screen.findByText("Retained synopsis");
+  expect(field("4. Showtime").value).toBe("111");
+  expect(
+    screen.getByRole("region", { name: "Your screening" }).textContent,
+  ).toContain("Northern Lights");
 });

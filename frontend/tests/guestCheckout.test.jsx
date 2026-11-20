@@ -94,6 +94,12 @@ function install({ quote, create, release, capacity = 100 } = {}) {
         ? release(calls.releases.length)
         : response({ bookingId: 71, status: "expired", historyRetained: true });
     }
+    if (url.pathname === "/api/films/31")
+      return response({
+        id: 31,
+        title: "Hope",
+        description: "Retained synopsis",
+      });
     if (url.pathname === "/api/cities")
       return response([{ id: 1, name: "Oulu" }]);
     if (url.pathname === "/api/screens")

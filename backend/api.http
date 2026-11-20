@@ -1,3 +1,4 @@
+# Browsing contract/status/field meanings: ../docs/API-BROWSING.md
 @baseUrl = http://localhost:3000
 # Replace with real IDs returned by browsing/seat endpoints.
 @bookingId = 123
@@ -28,10 +29,28 @@ GET {{baseUrl}}/api/screens
 
 
 
+### SCREENS BY CITY (static capacities, not current availability)
+GET {{baseUrl}}/api/screens?cityId=1
+
+### MISSING ENTITY (404 when the valid ID does not exist)
+GET {{baseUrl}}/api/films/2147483647
+
+### MALFORMED DETAIL ID (400, no SQL query)
+GET {{baseUrl}}/api/cities/1.5
+
+### MALFORMED CITY FILTER (400; repeated/bracket values also rejected)
+GET {{baseUrl}}/api/screens?cityId=invalid
+
+### UNKNOWN VALID CITY FILTER (200 with an empty data array when absent)
+GET {{baseUrl}}/api/screens?cityId=2147483647
+
+### SCREENING AVAILABILITY (screening-specific counts, no hold)
+GET {{baseUrl}}/api/seats/availability?screenId=1&screeningId=1
+
 ### GET SEATS FROM SCREEN ID 1 AND SCREENING ID 1
 GET {{baseUrl}}/api/seats?screenId=1&screeningId=1
 
-### GET SEATS FROM SCREEN ID 1
+### STATIC INVENTORY ONLY (not screening occupancy)
 GET {{baseUrl}}/api/seats?screenId=1
 
 
@@ -76,7 +95,7 @@ Content-Type: application/json
 ### GET BOOKINGS WITH SCREENING FILTER
 GET {{baseUrl}}/api/bookings?screeningId=1
 
-### GET ALL BOOKINGS 
+### STAFF PROTOTYPE: AUTHORIZATION REMAINS #35 (not a public browsing contract)
 GET {{baseUrl}}/api/bookings
 
 ### RELEASE ONLY YOUR UNPAID HOLD (history retained; missing token returns 401)

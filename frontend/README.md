@@ -3,6 +3,14 @@
 React with JavaScript and Vite. Requires Node.js 22.13 or later in the Node 22
 release line (verified with 22.14.0). Dependencies are separate from `backend/`.
 
+## Movie details and browsing verification
+
+Choosing a movie displays its retained title and description from `/api/films/:id`.
+Loading, retryable failure and missing-description messages are distinct; failed
+details do not block selecting a screening. No external poster/trailer is fetched.
+See [the browsing contract and #8 evidence](../docs/API-BROWSING.md) for field
+meanings, verification and remaining media/deployment scope.
+
 ## Run locally
 
 Start the isolated PostgreSQL instance and Express backend using the

@@ -699,3 +699,8 @@ h3 {
     grid-column: 1 / -1;
   }
 }
+
+.movie-details .movie-description {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}

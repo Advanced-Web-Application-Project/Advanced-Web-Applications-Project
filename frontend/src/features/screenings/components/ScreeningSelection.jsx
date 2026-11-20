@@ -1,3 +1,4 @@
+import MovieDetails from "../../movies/components/MovieDetails.jsx";
 import ScreeningAvailability from "./ScreeningAvailability.jsx";
 import { useEffect, useReducer, useState } from "react";
 import { useScreeningOptions } from "../hooks/useScreeningOptions.js";
@@ -194,6 +195,9 @@ export default function ScreeningSelection({
           </select>
         </div>
       </div>
+      {options.film && (
+        <MovieDetails key={options.film.id} filmId={options.film.id} />
+      )}
       {options.showtimes.length > 0 && (
         <section
           className="screening-availability"

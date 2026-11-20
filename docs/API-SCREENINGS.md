@@ -74,7 +74,7 @@ current development backend with `TZ=Europe/Helsinki`; the existing PostgreSQL
 parser then produces the ISO UTC string returned by Express. For example,
 14 November 2026 at 18:00 Helsinki is `2026-11-14T16:00:00.000Z`.
 
-The future customer interface should format these instants explicitly in
+The current customer interface formats these instants explicitly in
 `Europe/Helsinki`, rather than using the browser's default timezone. Winter and
 summer offsets are covered by tests. No timestamp field was renamed, reformatted
 or migrated here. A different process timezone or differently interpreted legacy
@@ -87,7 +87,8 @@ resolve ambiguous/nonexistent local times at daylight-saving transitions.
 `backend/src/features/screenings/` follows route → controller → service →
 repository. The service validates filters; the repository builds parameterized
 SQL from a fixed column list; the controller retains the JSON envelopes.
-`backend/api.js` composes this feature and retains the other prototype routes.
+`backend/api.js` composes this and the other feature routes, retaining only the
+legacy price read. See [baseline browsing contracts](API-BROWSING.md).
 The feature uses the existing application database pool.
 
 From `backend/`, with the isolated local development database running:
@@ -103,7 +104,7 @@ With the backend running, in another terminal in `backend/`:
 npm run verify:browsing
 ```
 
-The full backend suite passed 35 tests with no skips. New coverage includes all
+At the original #53 milestone, the full backend suite passed 35 tests with no skips. New coverage includes all
 eight optional-filter combinations, invalid/repeated/array IDs before SQL,
 contradictory filters, unknown and unscheduled records, preserved fields,
 `film_id` joins, stable ordering, winter/summer serialization and retained past
@@ -113,5 +114,6 @@ through a real running Express process and read-only database queries.
 
 [Recorded evidence](../database/verification/screening-filters.json) includes
 matching, contradictory and invalid requests against the retained local data.
-Frontend selection controls and browsing request coordination remain #54/#25.
+Frontend selection controls and browsing request coordination were subsequently
+delivered by #54/#25; current #8 evidence is in [the browsing guide](API-BROWSING.md).
 No seat availability, booking writes or deployment behavior changed.
