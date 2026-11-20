@@ -634,3 +634,68 @@ h3 {
 .icon-wheelchair {
   mask-image: url("../assets/icons/wheelchair.svg");
 }
+
+.checkout-fields {
+  border: 0;
+  margin: 1.5rem 0;
+  padding: 0;
+}
+.checkout-fields legend {
+  font-weight: 700;
+  color: #e8bc64;
+}
+.checkout-tickets {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+  margin-block: 1.5rem;
+}
+.checkout-tickets li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(8rem, 0.6fr) auto;
+  gap: 1rem;
+  align-items: center;
+}
+.checkout-tickets label {
+  margin: 0;
+}
+.guest-checkout .selection-field input {
+  width: 100%;
+  min-height: 3rem;
+  font: inherit;
+  color: #f2e8d3;
+  background: #100f10;
+  border: 1px solid #7b6142;
+  border-radius: 4px;
+  padding: 0.75rem;
+}
+.guest-checkout input:focus-visible {
+  outline: 3px solid #efc56f;
+  outline-offset: 4px;
+}
+.checkout-total {
+  font-size: var(--font-body);
+  margin-block: 1.5rem;
+}
+.hold-status {
+  margin-block: 1.5rem;
+  padding: 1rem;
+  border-left: 3px solid #e8bc64;
+}
+.guest-checkout .seat-selection-actions {
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+.guest-checkout h2:focus-visible {
+  outline: 2px solid #eabd56;
+  outline-offset: 0.3rem;
+}
+@media (max-width: 43.75em) {
+  .checkout-tickets li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .checkout-tickets label {
+    grid-column: 1 / -1;
+  }
+}

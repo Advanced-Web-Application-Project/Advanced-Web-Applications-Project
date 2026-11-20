@@ -17,7 +17,8 @@
     "db:import:tmdb": "node src/features/films/importTmdbCli.js",
     "verify:tmdb": "node scripts/verify-tmdb-import.js",
     "db:seed:presentation": "node scripts/db-seed-presentation.js",
-    "verify:presentation": "node scripts/verify-presentation.js"
+    "verify:presentation": "node scripts/verify-presentation.js",
+    "db:seed:demo-prices": "node scripts/db-seed-demo-prices.js"
   },
   "keywords": [],
   "author": "",

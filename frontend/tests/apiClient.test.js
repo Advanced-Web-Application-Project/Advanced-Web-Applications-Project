@@ -22,6 +22,12 @@ before(async () => {
             data: {
               method: request.method,
               contentType: request.headers["content-type"],
+              ...(request.headers["idempotency-key"]
+                ? { retryKey: request.headers["idempotency-key"] }
+                : {}),
+              ...(request.headers.authorization
+                ? { authorization: request.headers.authorization }
+                : {}),
               body: JSON.parse(body),
             },
           }),
@@ -41,7 +47,11 @@ before(async () => {
     if (path === "/api/client-error") {
       response.statusCode = 400;
       return response.end(
-        JSON.stringify({ success: false, error: "Screen is required" }),
+        JSON.stringify({
+          success: false,
+          error: "Screen is required",
+          code: "INVALID_SCREEN",
+        }),
       );
     }
     if (path === "/api/false-success")
@@ -116,5 +126,22 @@ test("sends a JSON POST with complete numeric seat IDs through the shared transp
   assert.deepEqual(
     await get("selection", { method: "POST", body, cache: "no-store" }),
     { method: "POST", contentType: "application/json", body },
+  );
+});
+
+test("private request headers are forwarded and controlled error codes remain available", async () => {
+  const data = await get("/selection", {
+    method: "POST",
+    body: { screeningId: 1 },
+    headers: {
+      "Idempotency-Key": "PRIVATE_FIXTURE",
+      Authorization: "Bearer PRIVATE_FIXTURE",
+    },
+  });
+  assert.equal(data.retryKey, "PRIVATE_FIXTURE");
+  assert.equal(data.authorization, "Bearer PRIVATE_FIXTURE");
+  await assert.rejects(
+    get("/client-error"),
+    (error) => error instanceof ApiError && error.code === "INVALID_SCREEN",
   );
 });

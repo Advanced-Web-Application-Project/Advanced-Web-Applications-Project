@@ -42,6 +42,9 @@ export function fingerprintHoldRequest(request) {
         screeningId: request.screeningId,
         clientEmail: request.clientEmail,
         items: [...request.items].sort((a, b) => a.seatId - b.seatId),
+        ...(request.expectedQuote
+          ? { expectedQuote: request.expectedQuote }
+          : {}),
       }),
     )
     .digest("hex");
@@ -67,7 +70,7 @@ function holdResponse(hold, tickets, holdToken) {
   };
 }
 
-export function parseBookingRequest(body) {
+export function parseTicketSelection(body) {
   if (
     !body ||
     typeof body !== "object" ||
@@ -81,16 +84,6 @@ export function parseBookingRequest(body) {
       400,
       "INVALID_BOOKING_REQUEST",
       "screeningId and 1–210 seatId entries are required as JSON integer IDs",
-    );
-  if (
-    typeof body.clientEmail !== "string" ||
-    body.clientEmail.length > 254 ||
-    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.clientEmail.trim())
-  )
-    throw new BookingError(
-      400,
-      "INVALID_CONTACT",
-      "A valid clientEmail is required",
     );
   const items = Array.from(body.seatId, (item) => {
     const isTicketObject =
@@ -116,10 +109,38 @@ export function parseBookingRequest(body) {
       "DUPLICATE_SEATS",
       "Duplicate seat IDs are not allowed",
     );
+  return { screeningId: body.screeningId, items };
+}
+
+export function parseBookingRequest(body) {
+  const selection = parseTicketSelection(body);
+  if (
+    typeof body.clientEmail !== "string" ||
+    body.clientEmail.length > 254 ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.clientEmail.trim())
+  )
+    throw new BookingError(
+      400,
+      "INVALID_CONTACT",
+      "A valid clientEmail is required",
+    );
+
+  if (
+    body.expectedQuote !== undefined &&
+    (typeof body.expectedQuote !== "string" ||
+      !/^[0-9a-f]{64}$/.test(body.expectedQuote))
+  )
+    throw new BookingError(
+      400,
+      "INVALID_QUOTE",
+      "expectedQuote must be the server quote fingerprint",
+    );
   return {
-    screeningId: body.screeningId,
+    ...selection,
     clientEmail: body.clientEmail.trim(),
-    items,
+    ...(body.expectedQuote !== undefined
+      ? { expectedQuote: body.expectedQuote }
+      : {}),
   };
 }
 
@@ -154,8 +175,85 @@ function quoteTickets(prices, items) {
   }));
 }
 
+function quoteFingerprint(screening, tickets) {
+  return createHash("sha256")
+    .update(
+      JSON.stringify({
+        screeningId: screening.id,
+        screenId: screening.screen_id,
+        filmId: screening.film_id,
+        screeningTime: screening.screening_time,
+        currency: "EUR",
+        tickets: tickets
+          .map(({ seatId, category, amountCharged }) => ({
+            seatId,
+            category,
+            amountCharged,
+          }))
+          .sort((a, b) => a.seatId - b.seatId),
+      }),
+    )
+    .digest("hex");
+}
+
+async function checkedSelection(client, transaction, request) {
+  const screening = await transaction.lockScreening(request.screeningId);
+  if (!screening)
+    throw new BookingError(404, "SCREENING_NOT_FOUND", "Screening not found");
+  if (!screening.is_future)
+    throw new BookingError(
+      409,
+      "SCREENING_STARTED",
+      "The screening has already started",
+    );
+  const snapshot = await createSeatsRepository(
+    client,
+  ).findScreeningAvailability(screening.screen_id, request.screeningId);
+  const selection = validateSeatSelection(
+    snapshot,
+    request.items.map((item) => item.seatId),
+  );
+  if (!selection.valid)
+    throw new BookingError(
+      409,
+      "INVALID_SELECTION",
+      "The complete selection is no longer valid",
+      selection.errors,
+    );
+  const tickets = quoteTickets(await transaction.readPrices(), request.items);
+  return { screening, snapshot, tickets };
+}
+
 export function createBookingsService(repository) {
   return {
+    async quote(body) {
+      const request = parseTicketSelection(body);
+      return repository.transaction(async (client, transaction) => {
+        const { screening, snapshot, tickets } = await checkedSelection(
+          client,
+          transaction,
+          request,
+        );
+        return {
+          screeningid: screening.id,
+          screenId: screening.screen_id,
+          filmId: screening.film_id,
+          screeningTime: screening.screening_time,
+          currency: "EUR",
+          asOf: snapshot.as_of,
+          quoteFingerprint: quoteFingerprint(screening, tickets),
+          totalCents: tickets.reduce(
+            (total, ticket) => total + ticket.amountCharged,
+            0,
+          ),
+          tickets: tickets.map(({ seatId, category, amountCharged }) => ({
+            seatId,
+            category,
+            amountCharged,
+          })),
+        };
+      });
+    },
     async listBookings(query) {
       let screeningId;
       if (query.screeningId !== undefined) {
@@ -218,37 +316,20 @@ export function createBookingsService(repository) {
             );
           }
         }
-        const screening = await transaction.lockScreening(request.screeningId);
-        if (!screening)
-          throw new BookingError(
-            404,
-            "SCREENING_NOT_FOUND",
-            "Screening not found",
-          );
-        const snapshot = await createSeatsRepository(
+        const { screening, tickets } = await checkedSelection(
           client,
-        ).findScreeningAvailability(screening.screen_id, request.screeningId);
-        if (!screening.is_future)
+          transaction,
+          request,
+        );
+        if (
+          request.expectedQuote &&
+          request.expectedQuote !== quoteFingerprint(screening, tickets)
+        )
           throw new BookingError(
             409,
-            "SCREENING_STARTED",
-            "The screening has already started",
+            "QUOTE_CHANGED",
+            "Prices or screening details changed. Review a new quote before starting checkout",
           );
-        const selection = validateSeatSelection(
-          snapshot,
-          request.items.map((item) => item.seatId),
-        );
-        if (!selection.valid)
-          throw new BookingError(
-            409,
-            "INVALID_SELECTION",
-            "The complete selection is no longer valid",
-            selection.errors,
-          );
-        const tickets = quoteTickets(
-          await transaction.readPrices(),
-          request.items,
-        );
         const hold = await transaction.insertHold(
           request.screeningId,
           request.clientEmail,

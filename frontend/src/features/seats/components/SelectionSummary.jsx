@@ -10,6 +10,7 @@ export default function SelectionSummary({
   result,
   edit,
   changeScreening,
+  onCheckout,
 }) {
   const heading = useRef(null);
   useEffect(() => {
@@ -60,10 +61,9 @@ export default function SelectionSummary({
         Selection checked. These places are not reserved. Availability can
         change before checkout.
       </p>
-      <p className="selection-note">
-        This MVP ends at selection review. Checkout and payment are not
-        available here.
-      </p>
+      {!onCheckout && (
+        <p className="selection-note">Payment is not available yet.</p>
+      )}
       <time dateTime={result.as_of}>
         Checked at{" "}
         {new Intl.DateTimeFormat("en-GB", {
@@ -74,6 +74,15 @@ export default function SelectionSummary({
         }).format(new Date(result.as_of))}
       </time>
       <div className="seat-selection-actions">
+        {onCheckout && (
+          <button
+            type="button"
+            className="check-selection-button"
+            onClick={onCheckout}
+          >
+            Continue to guest checkout
+          </button>
+        )}
         <button type="button" className="retry-button" onClick={edit}>
           Back to seats
         </button>

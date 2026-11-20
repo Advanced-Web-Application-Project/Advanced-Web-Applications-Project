@@ -139,3 +139,28 @@ Idempotency-Key: {{privateHoldRequestKey}}
   "seatId": [12],
   "clientEmail": "customer@example.invalid"
 }
+
+
+### GUEST CHECKOUT QUOTE (no contact needed; creates no hold)
+# Example IDs from local presentation fixtures; use current API-returned IDs.
+POST {{baseUrl}}/api/bookings/quote
+Content-Type: application/json
+
+{
+  "screeningId": 25,
+  "seatId": [{"seatId": 2, "category": "adult"}, {"seatId": 103, "category": "child"}]
+}
+
+### START CHECKOUT ONLY AFTER REVIEWING THE SERVER QUOTE
+# Set reviewedQuoteFingerprint from the quote response and privateHoldRequestKey
+# in private REST-client configuration. Reuse the exact body/key on uncertain retries.
+POST {{baseUrl}}/api/bookings
+Content-Type: application/json
+Idempotency-Key: {{privateHoldRequestKey}}
+
+{
+  "screeningId": 25,
+  "seatId": [{"seatId": 2, "category": "adult"}, {"seatId": 103, "category": "child"}],
+  "clientEmail": "customer@example.invalid",
+  "expectedQuote": "{{reviewedQuoteFingerprint}}"
+}
