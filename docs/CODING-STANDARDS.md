@@ -18,8 +18,9 @@ To maintain consistent code quality:
 - Use Prettier for formatting.
 - Use ESLint for code quality checks.
 
-Shared formatting and linting configurations will be added
-when the applications are initialized.
+Each frontend now has its own ESLint/Prettier configuration and scripts. Run
+the affected application’s lint, format check and tests; do not assume one
+application’s commands cover another application.
 
 ## Naming Conventions
 
