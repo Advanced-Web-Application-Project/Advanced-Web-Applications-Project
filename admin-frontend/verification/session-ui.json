@@ -1,0 +1,95 @@
+{
+  "date": "2026-11-24",
+  "database": "disposable PostgreSQL",
+  "customerDataUnchanged": true,
+  "before": {
+    "cities": "f9c7a206bc9315a3ccf56eeed8c20b83",
+    "screens": "a91c84467952cdb7b388fbe14681d815",
+    "films": "c7a6bc588cd77efbac2100bc7fce49b2",
+    "screenings": "c6e407bd0aebe1b004dc9aec17839db0",
+    "seats": "482e56d87fe87241454b493b357681ce",
+    "bookings": "434e7b18805781fded268db700df63ab",
+    "tickets": "dead002b4057490610715f8ddb557260",
+    "prices": "d751713988987e9331980363e24189ce"
+  },
+  "after": {
+    "cities": "f9c7a206bc9315a3ccf56eeed8c20b83",
+    "screens": "a91c84467952cdb7b388fbe14681d815",
+    "films": "c7a6bc588cd77efbac2100bc7fce49b2",
+    "screenings": "c6e407bd0aebe1b004dc9aec17839db0",
+    "seats": "482e56d87fe87241454b493b357681ce",
+    "bookings": "434e7b18805781fded268db700df63ab",
+    "tickets": "dead002b4057490610715f8ddb557260",
+    "prices": "d751713988987e9331980363e24189ce"
+  },
+  "events": [
+    {
+      "event_type": "login",
+      "count": 9
+    },
+    {
+      "event_type": "logout",
+      "count": 4
+    }
+  ],
+  "commands": ["expire-all", "disable-oulu", "expire-all"],
+  "secretsRecorded": false,
+  "baseCommit": "416c24b",
+  "postgresVersion": "18.7",
+  "mockedTests": {
+    "node": 15,
+    "react": 16
+  },
+  "realBrowserChecks": [
+    "anonymous direct route",
+    "administrator all cities",
+    "Oulu cashier",
+    "Tampere cashier",
+    "cookie-backed refresh",
+    "logout and back/direct denial",
+    "stored expiry rejection",
+    "CLI disable revocation",
+    "external return rejection",
+    "not-found return",
+    "cross-tab identity replacement",
+    "keyboard Tab/Enter",
+    "390x844 no horizontal overflow"
+  ],
+  "realBusinessMutationsVerified": false,
+  "containerExecuted": false,
+  "deployedVerification": false,
+  "externalProviderVerification": false,
+  "disposableDatabaseRemoved": true,
+  "privateCredentialFileRemoved": true,
+  "remaining": [
+    "#65 operational screening list",
+    "#59/#61 delivered administrator navigation",
+    "#47 CI",
+    "#67 real Rahti runtime and cookie behavior"
+  ],
+  "initialUnknownLoginOutcome": "Observed once; subsequent explicit reconciliation/re-entry and all role workflows passed. Transient cause not isolated.",
+  "checks": {
+    "npmCi": true,
+    "lint": true,
+    "formatCheck": true,
+    "tests": true,
+    "build": true,
+    "auditVulnerabilities": 0,
+    "previewDeepLinks": {
+      "/screenings": 200,
+      "/sign-in": 200,
+      "/missing": 200
+    }
+  },
+  "retainedLocalSetupFollowup": {
+    "explicitUserApproval": true,
+    "applied": ["0009_staff_identity.sql", "0010_staff_sessions.sql"],
+    "existingRowHashesMatch": true,
+    "staffOrigin": "http://127.0.0.1:5174",
+    "secretRecorded": false,
+    "retainedAccountsCreated": 0,
+    "backendAndProxySessionStatus": 401,
+    "nodeTests": 15,
+    "reactTests": 17
+  }
+}

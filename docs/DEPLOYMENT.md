@@ -4,7 +4,7 @@
 
 On 18 November 2026 the user confirmed Rahti as the application hosting target,
 superseding the earlier Azure direction. This applies to the customer frontend,
-future separate staff frontend and Express backend. PostgreSQL remains at CSC, with version 18 as the current target. Verify the actual
+separate staff frontend and Express backend. PostgreSQL remains at CSC, with version 18 as the current target. Verify the actual
 shared server version before a separately reviewed major-version upgrade.
 Customer and staff websites require separate deployments and addresses; they may
 share the backend and authoritative database.
@@ -33,7 +33,8 @@ its commit; follow-up implementation must start from current `main`.
 
 Backend safeguards (#82/PR #83) and read-only selection validation (#27/PR #84)
 are integrated. Their local PostgreSQL/HTTP evidence is not deployed Rahti
-verification. The staff application remains future work under #15 and its child.
+verification. The [staff session shell](STAFF-APP.md) now exists under #58/#97;
+operational features and hosted staff delivery remain work under #15 and #67.
 
 ## Runtime and data contract
 
@@ -71,7 +72,7 @@ work still tracked in #47/#67; no entry claims that a configuration was deployed
 | `k8s/configmap.yaml`                                                         | `DB_*` keys supply the PostgreSQL 18 image mappings, but do not configure the current Express runtime. Reconcile consumers with the intended database; do not blindly reuse these keys for Express.                                                                                                                                                  |
 | `k8s/postgres_deployment.yaml`, `postgres_service.yaml`, `postgres_pvc.yaml` | Updated PostgreSQL 18 examples (`postgres:18-alpine`, official `POSTGRES_*` names, versioned PGDATA and distinct `postgres18-data` PVC), still unverified on Rahti. Confirm endpoint, image/UID policy, persistence, backups and tested upgrade/restore before application. Preserve existing PostgreSQL data/PVCs; this is not an in-place upgrade. |
 | `k8s/secret.yaml`, local `.env` and real build configuration                 | Local/ignored secret-bearing configuration is not committed evidence. Review references without printing values. Verify Docker build contexts exclude local secrets; `.gitignore` alone does not define a Docker build context.                                                                                                                      |
-| CI and staff app                                                             | No tracked `.github` workflow directory or staff app is present in the audited tree. #47 must implement relevant automation; staff checks/deployment remain dependent on staff initialization.                                                                                                                                                       |
+| CI and staff app                                                             | No tracked `.github` workflow directory is present. The independent `admin-frontend/` now has local checks/build, Dockerfile and nginx SPA fallback on 8080. Docker execution is unverified; #47 owns automation and #67 owns actual image/route/cookie/runtime verification.                                                                                                                                                       |
 
 Do not use a blanket `oc apply -f k8s/`: these files mix unverified database and
 application examples, old variable names and build placeholders.
@@ -123,7 +124,7 @@ address/proxy arrangement needs #67 verification. Preserve shared database data.
    retained history when the affected checkout UI/API exists. Local examples in
    `database/verification/` are references, not live evidence. No payment/secure
    ticket claim is allowed from an unpaid hold.
-4. **Separate staff site.** Once implemented, record its distinct address, staff
+4. **Separate staff site.** Deploy the independent staff artifact, record its distinct address, staff
    sign-in, role/city restrictions, CORS and shared occupancy behavior. Until then
    explicitly report this required criterion incomplete.
 5. **Release and rollback.** Document who approves/releases which verified image,

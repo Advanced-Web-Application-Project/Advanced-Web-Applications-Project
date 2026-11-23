@@ -6,8 +6,9 @@ The backend now provides real email/password sign-in, current-session recovery,
 logout and city-scoped booking reads. PostgreSQL owns the session store and
 revocation/expiry state; browsers receive an opaque signed HttpOnly cookie.
 Customer browsing, selection, quotes and owned guest hold/release stay public
-under their existing rules. No customer sign-in or separate staff frontend is
-introduced here. Staff app foundation is #58 and session UI is #97.
+under their existing rules. This backend milestone did not introduce customer
+sign-in. The separate [#58/#97 staff app](STAFF-APP.md) now consumes this API;
+its operational business features remain separate.
 
 This is verified local backend behavior, not a deployed Rahti result. The #35
 criterion covering actual separate Rahti sites still needs #67 evidence. Keep
@@ -37,8 +38,8 @@ With staff enabled, customer and staff origins must differ.
 
 For HTTP development use the **same hostname** for the API and staff browser site,
 for example API `http://127.0.0.1:3000`, staff `http://127.0.0.1:5174`. Do not mix
-`localhost` and `127.0.0.1` for this cookie flow. Ports may differ. The staff site
-is not implemented yet; these are configuration examples, not an existing UI.
+`localhost` and `127.0.0.1` for this cookie flow. Ports may differ. The separate staff app now uses 5174
+by default; see [its setup](../admin-frontend/README.md).
 
 From `backend/`, with the existing private local database configuration:
 
@@ -72,8 +73,11 @@ Do not copy actual credentials, cookies, CSRF tokens or secret values into
 `api.http`, source, URLs, logs, screenshots or evidence. Changing the signing
 secret invalidates cookies; it is not a routine startup-generated value.
 The tests generate their own transient secrets and accounts in disposable databases.
-The retained local database was inspected read-only and remains at migration 0008
-with no users; this milestone did not migrate/provision it or access CSC.
+At the original #35 verification, the retained local database was inspected
+read-only at migration 0008 with no users. The subsequent explicitly approved
+[staff-app local setup](STAFF-APP.md#approved-retained-local-setup-follow-up--24-november-2026)
+applied migrations 0009–0010 and local configuration while preserving existing
+rows. No CSC/shared database was modified.
 
 ## Request contract
 
@@ -250,6 +254,7 @@ and CSC data are untouched. See [machine-readable evidence](../database/verifica
 | Anonymous/customer/cashier/admin/expiry/revocation/logout/CSRF examples | Real HTTP/PostgreSQL scenarios, including actual store failure/recovery                                                                                       |
 | Trusted actor/time integration interface                                | Booking service and permission interface verified; auth events persist actor/time. Future business writes remain their own #59/#60/#61/#65/#66 implementation |
 
-The agreed local backend milestone is ready for review. Staff UI #58/#97, real
-Rahti/TLS/cookie/ingress verification #67 and later domain writers remain deferred.
+The local backend milestone is integrated. [Staff UI #58/#97](STAFF-APP.md) now
+adds local browser evidence. Real Rahti/TLS/cookie/ingress verification #67 and
+later domain writers remain deferred.
 No deployment, GitHub issue closure, commit or push is implied by these checks.

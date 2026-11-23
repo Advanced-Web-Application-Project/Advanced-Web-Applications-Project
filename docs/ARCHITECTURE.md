@@ -13,7 +13,7 @@ This document explains where code belongs and the intended application boundarie
 | Database            | PostgreSQL 18 target at CSC (csc.fi)     |
 | Application hosting | Rahti (CSC), confirmed 18 November 2026  |
 
-The customer frontend, future separate staff frontend and Express backend will
+The customer frontend, separate staff frontend and Express backend will
 be deployed on Rahti at CSC, confirmed by the user on 18 November 2026. This
 supersedes the former Azure application-hosting direction. PostgreSQL remains at
 CSC; PostgreSQL 18 is the current target, while the live CSC version/adoption must
@@ -23,8 +23,8 @@ access data through Express rather than connecting directly to PostgreSQL.
 Customer and staff remain separate deployable websites with distinct addresses;
 a shared backend/database is compatible with that requirement. Rahti project/
 namespace, actual site/API addresses, intended database endpoint and release
-arrangements still require recording and live verification. The future staff
-application remains a dependency.
+arrangements still require recording and live verification. The staff session
+shell now exists locally; operational features and separate deployment remain dependencies.
 
 See [deployment status and verification](DEPLOYMENT.md) for the audited Docker/
 Rahti artifacts and the split between #47 CI/CD and #67 runtime/connectivity.
@@ -51,8 +51,15 @@ CLI entry point, using the existing explicit database target guards. Migration
 The [staff session feature](API-STAFF-AUTH.md) now follows routes/controllers →
 service → repository with a maintained PostgreSQL session store, origin/CSRF
 checks and trusted actor context. Booking reads enforce current role/city in the
-service and SQL. Migration 0010 adds session/counter/auth-event tables; no staff
-frontend or future business-write scaffolding is introduced. See also [the staff identity contract](STAFF-PROVISIONING.md).
+service and SQL. Migration 0010 adds session/counter/auth-event tables. See also
+[the staff identity contract](STAFF-PROVISIONING.md).
+
+`admin-frontend/src/features/session/` owns staff sign-in/session state and its
+services/components/hooks. Shared credentialed transport lives in
+`admin-frontend/src/shared/services/apiClient.js`; routes/layouts/pages compose
+the protected shell. Identity is revalidated with the shared backend; neither
+frontend owns authorization or directly accesses PostgreSQL. See the
+[staff app boundary and verification](STAFF-APP.md).
 
 ## 2. Proposed structure
 
@@ -87,7 +94,7 @@ RIO/
 │   │   ├── routes/
 │   │   └── styles/
 │   └── tests/
-├── admin-frontend/                 # Future, separately deployed staff React app
+├── admin-frontend/                 # Separate staff React app; session shell exists
 ├── backend/
 │   ├── src/
 │   │   ├── features/
@@ -106,7 +113,7 @@ RIO/
 └── docs/
 ```
 
-The product backlog requires separate customer and staff websites, deployed separately. `frontend/` and the proposed `admin-frontend/` express that boundary; the staff app can use the same feature-based organization. Its creation is future work. Both applications may use the same backend, with authorization enforced by the backend. A hidden staff route or separate website is not an authorization mechanism.
+The product backlog requires separate customer and staff websites, deployed separately. `frontend/` and `admin-frontend/` express that boundary and use feature-based organization. The staff session shell exists; its operational features remain future work. Both applications may use the same backend, with authorization enforced by the backend. A hidden staff route or separate website is not an authorization mechanism.
 
 ## 3. Responsibilities and dependency boundaries
 

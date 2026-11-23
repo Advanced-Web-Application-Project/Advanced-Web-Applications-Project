@@ -17,7 +17,7 @@ Planned technologies:
 
 ## Deployment
 
-Rahti is the confirmed target for the customer frontend, future separate staff
+Rahti is the confirmed target for the customer frontend, separate staff
 frontend and Express backend. PostgreSQL remains at CSC. See the
 [deployment guide](docs/DEPLOYMENT.md) for the current source/configuration audit,
 remaining runtime/CI work and required live verification. The merged deployment
@@ -66,7 +66,9 @@ and hidden-terminal local account management through migration 0009. Commands
 are repeatable without resetting credentials. The [staff session API](docs/API-STAFF-AUTH.md)
 adds sign-in/current-session/logout, eight-hour absolute expiry and city-scoped
 booking reads through migration 0010. Staff authentication requires explicit
-staff origin/secret configuration; no staff frontend is introduced here. Local
+staff origin/secret configuration. The separate [staff app](admin-frontend/README.md)
+now provides sign-in, recovery/logout and a protected Screenings shell; operational
+screening tools remain #65. See [behavior and evidence](docs/STAFF-APP.md). Local
 verification does not establish Rahti session/cookie behavior.
 
 ## Presentation movie data
@@ -148,6 +150,12 @@ npm run dev
 
 Open `http://127.0.0.1:5173/`. See the [frontend guide](frontend/README.md) for
 API configuration, build/lint/test commands and verified scope.
+
+## Staff frontend
+
+Follow [the independent staff setup](admin-frontend/README.md). Run `npm ci` and
+`npm run dev` from `admin-frontend/` after configuring real backend staff sessions.
+The default staff URL is `http://127.0.0.1:5174/`; no default account is supplied.
 
 ## CEO seat reservations
 
