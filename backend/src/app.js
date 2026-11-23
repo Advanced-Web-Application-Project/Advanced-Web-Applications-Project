@@ -1,12 +1,25 @@
 import express from "express";
 import cors from "cors";
 import registerApiRoutes from "../api.js";
+import { registerStaffAuthRoutes } from "./features/staff/staffAuthRoutes.js";
 
-export function createApp({ pool, frontendUrl }) {
+export function createApp({ pool, frontendUrl, staff = null }) {
   const app = express();
-  app.use(cors({ origin: frontendUrl, credentials: true }));
+  if (staff?.trustProxyHops) app.set("trust proxy", staff.trustProxyHops);
+  const origins = new Set([frontendUrl, staff?.origin].filter(Boolean));
+  app.use(
+    cors({
+      origin: (origin, callback) =>
+        callback(null, origins.has(origin) ? origin : false),
+      credentials: true,
+      exposedHeaders: ["Retry-After"],
+    }),
+  );
+  app.use("/api/staff", express.json({ limit: "4kb" }));
   app.use(express.json());
-  registerApiRoutes(app, pool);
+  const staffAuth = registerStaffAuthRoutes(app, pool, staff);
+  app.locals.closeStaffAuth = staffAuth.close;
+  registerApiRoutes(app, pool, { staffAuth });
   app.use((error, req, res, next) => {
     if (res.headersSent) return next(error);
     const status =

@@ -5,8 +5,10 @@
 The user confirmed email/password sign-in with server-managed sessions on
 20 November 2026. This milestone implements the database identity constraints,
 password hashing/verification utility and explicit local account-management CLI.
-It adds no HTTP routes, sessions, customer account integration or staff frontend.
-#35 owns authentication, actual session revocation and city-scoped route enforcement.
+That original slice added no HTTP routes or frontend. The subsequent
+[staff session feature](API-STAFF-AUTH.md) now uses these credentials and account
+versions for local backend authentication/revocation and city-scoped booking reads.
+Customer account integration and the separate staff frontend remain later work.
 
 | Role            | `permitted_city_id` | Required staff permission policy for #35 and later features                                    |
 | --------------- | ------------------- | ---------------------------------------------------------------------------------------------- |
@@ -15,9 +17,10 @@ It adds no HTTP routes, sessions, customer account integration or staff frontend
 | `customer`      | NULL                | No staff functions; not provisioned or managed by this CLI                                     |
 
 Ordinary staff have no CEO release capability. A schema role or separate website
-is not authorization. The existing anonymous `GET /api/bookings` prototype
-remains a known #35 gap, and this milestone does not assert that staff HTTP access
-is secure. Staff sign-in/navigation is #97; app foundation is #58.
+is not authorization. `GET /api/bookings` is now protected by the
+[staff session API](API-STAFF-AUTH.md); that guide separates verified local
+behavior from remaining hosted checks. Staff sign-in/navigation is #97; app
+foundation is #58.
 
 ## Schema and migration adoption
 
@@ -138,9 +141,10 @@ resource/latency verification with authentication throttling under #35.
 verified credential, an enabled staff role and valid city scope, and create a
 revocable server session tied to the user ID and current `session_version`.
 Every session use must reject disabled accounts, version mismatch and expiry;
-logout/rotation/CSRF/origin controls and finite lifetime remain #35. A database
-version change alone does not terminate an HTTP session until those checks exist.
-No sessions table or pretend login was added in advance.
+logout/rotation/CSRF/origin controls and finite lifetime are now implemented by
+[the local #35 backend](API-STAFF-AUTH.md). Its account checks enforce version
+changes on subsequent requests. Migration 0010 adds its real session store;
+no placeholder login or staff frontend is claimed.
 
 Staff writes in #59/#60/#61/#66 must retain the authenticated actor user ID and
 a database timestamp separately from customer contact and booking ownership.
@@ -207,7 +211,8 @@ See [test evidence](../database/verification/staff-provisioning.json) and
 | Permission matrix, reset/disable and actor/time requirements        | Documented here; schema version/timestamps are ready for #35                                     |
 | Isolated verification and no silent shared writes                   | Disposable database/terminal evidence; retained local database read-only; CSC untouched          |
 
-The scoped #33 implementation is ready for review. #35 HTTP sessions/authorization,
-#58 staff app, #97 sign-in UI, production provisioning and deployment remain
-incomplete. No GitHub status or parent issue is changed by these local checks.
+The #33 implementation merged in PR #100. The [#35 local backend milestone](API-STAFF-AUTH.md)
+now supplies sessions and protected booking reads. #58 staff app, #97 sign-in UI,
+actual hosted verification and production provisioning remain incomplete.
+No parent issue is completed by the identity foundation alone.
 No unused frontend/auth scaffolding or duplicate account store was introduced.

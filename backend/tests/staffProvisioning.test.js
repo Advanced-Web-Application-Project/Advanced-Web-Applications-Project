@@ -387,7 +387,7 @@ test(
           );
           assert.deepEqual(await migrateDatabase(target), {
             applied: [],
-            previouslyApplied: 9,
+            previouslyApplied: 10,
           });
           await assert.rejects(
             manage(url, provision("legacy@example.invalid")),

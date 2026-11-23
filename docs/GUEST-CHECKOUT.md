@@ -83,7 +83,7 @@ release. Payment is unavailable and never simulated as paid.
 ## Local setup and commands
 
 Keep the existing ignored environment configured for isolated local PostgreSQL 18.
-Apply all current migrations (0009 adds staff identity; guest checkout depends
+Apply all current migrations (0010 adds staff sessions; guest checkout depends
 on 0008), then, from `backend/`:
 
 ```bash

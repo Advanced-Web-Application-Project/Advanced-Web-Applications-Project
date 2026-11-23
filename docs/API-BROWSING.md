@@ -170,5 +170,6 @@ merge are still user-controlled; no issue is closed by this document. Broader
 film/scheduling/pricing administration dependencies remain separate issues.
 Unconfirmed doors/advertising copy is not introduced. Media persistence #59,
 trailers, staff/session enforcement #35 and deployment remain separate scopes.
-The existing anonymous booking-list prototype is still a known #35 gap; this
-public browsing milestone does not assert staff security.
+The former anonymous booking-list prototype is now protected by [the staff
+session feature](API-STAFF-AUTH.md). Its local and remaining hosted verification
+are separate from this public browsing milestone.

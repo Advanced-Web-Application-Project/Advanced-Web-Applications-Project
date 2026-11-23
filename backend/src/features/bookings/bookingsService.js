@@ -1,3 +1,4 @@
+import { requireStaffPermission } from "../staff/staffAccess.js";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import {
   MAX_DATABASE_ID,
@@ -254,7 +255,14 @@ export function createBookingsService(repository) {
         };
       });
     },
-    async listBookings(query) {
+    async listBookings(query, actor) {
+      requireStaffPermission(actor, "bookings:read");
+      if (Object.keys(query).some((key) => key.startsWith("screeningId[")))
+        throw new BookingError(
+          400,
+          "INVALID_SCREENING",
+          "screeningId must be a positive integer",
+        );
       let screeningId;
       if (query.screeningId !== undefined) {
         if (
@@ -269,7 +277,20 @@ export function createBookingsService(repository) {
           );
         screeningId = Number(query.screeningId);
       }
-      return repository.listBookings(screeningId);
+      if (screeningId !== undefined) {
+        const cityId = await repository.findScreeningCity(screeningId);
+        if (cityId === null)
+          throw new BookingError(
+            404,
+            "SCREENING_NOT_FOUND",
+            "Screening not found",
+          );
+        requireStaffPermission(actor, "bookings:read", { cityId });
+      }
+      return repository.listBookings(
+        screeningId,
+        actor.role === "cashier" ? actor.cityId : undefined,
+      );
     },
     async createHold(body, idempotencyKey) {
       const request = parseBookingRequest(body);

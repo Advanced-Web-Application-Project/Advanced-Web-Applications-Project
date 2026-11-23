@@ -116,7 +116,10 @@ administrator across both cities with film/schedule/price controls; cashier
 operational reads and eligible manual reservations in one assigned city. Local
 provisioning, credential reset and disable are operator CLI operations, with no
 public staff registration. See [the #33 identity/provisioning contract](STAFF-PROVISIONING.md).
-HTTP enforcement remains #35; the schema/CLI alone does not complete RIO-02.
+[The #35 backend contract](API-STAFF-AUTH.md) now verifies local sessions,
+revocation and city-scoped booking reads. Staff UI, later protected business
+features and actual hosted session/origin verification remain separate gates;
+the schema/CLI alone does not complete RIO-02.
 
 ### RIO-03 — Maintain film information
 

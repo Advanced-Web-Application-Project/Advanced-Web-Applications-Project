@@ -241,6 +241,7 @@ test(
           const listed = await request(
             `/api/bookings?screeningId=${s.show.id}`,
           );
+          assert.equal(listed.status, 401);
           for (const secret of [
             privateKey,
             stored.hold_token_hash,

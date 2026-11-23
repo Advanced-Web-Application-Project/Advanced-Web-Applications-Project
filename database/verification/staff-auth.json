@@ -1,0 +1,30 @@
+{
+  "date": "2026-11-21",
+  "database": "disposable PostgreSQL",
+  "checks": [
+    "anonymous/customer/disabled/legacy/unknown/spoofed cookie denied with generic credential failures",
+    "HttpOnly host-only cookie, minimal identity, eight-hour absolute expiry, no read renewal, session fixation rotation",
+    "actual-city scoped cashier lists/filters, body/query spoofing denied, administrator both cities, trusted actor matrix and CEO denial",
+    "exact staff origin, custom JSON login header, synchronized CSRF, hostile/non-ASCII tokens denied, logout revocation and actor/time events",
+    "real provisioning reset/disable and direct role/city changes invalidate stored sessions on next request",
+    "session valid before deadline and denied at/past absolute deadline independently of store pruning",
+    "PostgreSQL session survives process restart; actual unavailable session table gives safe 503, recovery retains valid session",
+    "durable 5/login and 25/IP limits per 15 minutes; normalized identities, ignored untrusted forwarding and restart persistence; elapsed window resets",
+    "Secure HttpOnly host cookie/SameSite=None with simulated verified TLS proxy, no untrusted proxy bypass, separate explicit origins and credentialed preflight",
+    "public customer browse/preview/quote and owned retry-key hold/release preserved with authoritative charged history while staff auth is enabled"
+  ],
+  "secretsRecorded": false,
+  "postgresVersion": "18.7",
+  "backendTests": {
+    "passed": 169,
+    "failed": 0,
+    "skipped": 0
+  },
+  "cookieHttpsVerification": "simulated trusted TLS termination on local HTTP; actual Rahti/browser cookie acceptance unverified",
+  "frontendChanged": false,
+  "externalProviderVerified": false,
+  "deploymentVerified": false,
+  "retainedLocalDatabaseChanged": false,
+  "disposableServersStopped": true,
+  "disposableDatabaseDropped": true
+}

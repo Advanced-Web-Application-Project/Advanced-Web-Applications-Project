@@ -1,5 +1,6 @@
 # Browsing contract/status/field meanings: ../docs/API-BROWSING.md
-@baseUrl = http://localhost:3000
+@baseUrl = http://127.0.0.1:3000
+@staffOrigin = http://127.0.0.1:5174
 # Replace with real IDs returned by browsing/seat endpoints.
 @bookingId = 123
 @holdToken = REPLACE_WITH_PRIVATE_TOKEN_FROM_CREATION
@@ -80,7 +81,7 @@ Content-Type: application/json
 }
 
 ### CREATE A HOLD WITH ADULT/CHILD PRICES (child is half adult)
-POST http://localhost:3000/api/bookings
+POST {{baseUrl}}/api/bookings
 Content-Type: application/json
 
 {
@@ -92,11 +93,13 @@ Content-Type: application/json
   "clientEmail": "perhe.matkustaja@example.com"
 }
 
-### GET BOOKINGS WITH SCREENING FILTER
+### STAFF BOOKINGS BY SCREENING (requires private cookie jar after staff sign-in)
 GET {{baseUrl}}/api/bookings?screeningId=1
+Origin: {{staffOrigin}}
 
-### STAFF PROTOTYPE: AUTHORIZATION REMAINS #35 (not a public browsing contract)
+### STAFF BOOKINGS (administrator both cities; cashier assigned city only)
 GET {{baseUrl}}/api/bookings
+Origin: {{staffOrigin}}
 
 ### RELEASE ONLY YOUR UNPAID HOLD (history retained; missing token returns 401)
 DELETE {{baseUrl}}/api/bookings/{{bookingId}}
@@ -104,7 +107,7 @@ Authorization: Bearer {{holdToken}}
 
 
 ### 4. INVALID TEST MISSING seatID (returns 400)
-POST http://localhost:3000/api/bookings
+POST {{baseUrl}}/api/bookings
 Content-Type: application/json
 
 {
@@ -183,3 +186,26 @@ Idempotency-Key: {{privateHoldRequestKey}}
   "clientEmail": "customer@example.invalid",
   "expectedQuote": "{{reviewedQuoteFingerprint}}"
 }
+
+
+### STAFF SIGN-IN (0010/config required; variables belong only in private REST-client configuration)
+# The response sets a private HttpOnly cookie. Let the client cookie jar retain it.
+# Never save real passwords, cookies or CSRF values into this tracked file.
+POST {{baseUrl}}/api/staff/login
+Origin: {{staffOrigin}}
+X-RIO-Staff: 1
+Content-Type: application/json
+
+{
+  "email": "{{staffEmail}}",
+  "password": "{{staffPassword}}"
+}
+
+### CURRENT STAFF SESSION (no deadline renewal)
+GET {{baseUrl}}/api/staff/session
+Origin: {{staffOrigin}}
+
+### STAFF LOGOUT (private CSRF value from current-session response)
+POST {{baseUrl}}/api/staff/logout
+Origin: {{staffOrigin}}
+X-CSRF-Token: {{staffCsrfToken}}

@@ -10,6 +10,9 @@ export const APPLICATION_TABLES = [
   "screenings",
   "screens",
   "seats",
+  "staff_auth_events",
+  "staff_login_attempts",
+  "staff_sessions",
   "tickets",
   "users",
 ];
