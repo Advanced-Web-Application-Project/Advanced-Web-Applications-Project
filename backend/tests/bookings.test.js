@@ -451,7 +451,8 @@ test(
             const listed = await request(
               `/api/bookings?screeningId=${screen.screenings[0].id}`,
             );
-            assert.ok(listed.data.some((b) => b.booking_type === "ceo"));
+            assert.equal(listed.status, 401);
+            assert.equal(listed.code, "STAFF_AUTH_REQUIRED");
             assert.ok(!JSON.stringify(listed).includes(hold.holdToken));
             assert.ok(!JSON.stringify(listed).includes("hold_token_hash"));
             assert.ok(!JSON.stringify(listed).includes(valid.clientEmail));

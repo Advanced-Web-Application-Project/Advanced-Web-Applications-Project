@@ -536,7 +536,8 @@ test(
             const bookings = await fetch(
               `${base}/api/bookings?screeningId=${listings[0]}`,
             );
-            assert.equal((await bookings.json()).data[0].booking_type, "ceo");
+            assert.equal(bookings.status, 401);
+            assert.equal((await bookings.json()).code, "STAFF_AUTH_REQUIRED");
             const release = await fetch(`${base}/api/bookings/1/release`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -710,7 +711,7 @@ test(
                     "SELECT count(*)::int AS count FROM rio_schema_migrations",
                   )
                 ).rows[0].count,
-                conflict ? 1 : 9,
+                conflict ? 1 : 10,
               );
             } finally {
               await rm(directory, { recursive: true, force: true });

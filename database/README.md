@@ -36,6 +36,14 @@ It rejects invalid old rows without reassigning identities. Use
 provisioning/reset/disable remain explicitly guarded local writes. See
 [staff commands, data meanings and verification](../docs/STAFF-PROVISIONING.md).
 
+## Staff sessions
+
+Migration `0010_staff_sessions.sql` adds private PostgreSQL session storage,
+hashed attempt buckets and authentication actor/time events. Runtime does not
+create tables automatically. Enable staff endpoints only with the explicit
+origin/secret configuration in [the staff session guide](../docs/API-STAFF-AUTH.md).
+The same guide records local verification and unverified Rahti acceptance.
+
 ## Commands and target
 
 Set `DATABASE_URL` in your local `backend/.env`, or export it in your shell.

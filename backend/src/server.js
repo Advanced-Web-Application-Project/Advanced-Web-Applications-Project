@@ -6,10 +6,14 @@ export async function startServer({
   pool = createDatabasePool(config),
   host,
 }) {
-  let server;
+  let server, app;
   try {
     await pool.query("SELECT 1");
-    const app = createApp({ pool, frontendUrl: config.frontendUrl });
+    app = createApp({
+      pool,
+      frontendUrl: config.frontendUrl,
+      staff: config.staff,
+    });
     server = await new Promise((resolve, reject) => {
       const listener = app.listen(config.port, host);
       listener.once("error", reject);
@@ -19,6 +23,7 @@ export async function startServer({
       });
     });
   } catch (error) {
+    await app?.locals.closeStaffAuth?.();
     await pool.end();
     throw error;
   }
@@ -34,6 +39,7 @@ export async function startServer({
         });
       } finally {
         clearTimeout(forceClose);
+        await app.locals.closeStaffAuth?.();
         await pool.end();
       }
     })();

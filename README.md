@@ -54,7 +54,7 @@ redesign remain future work.
 
 The corrected booking API creates owned five-minute unpaid holds and retains
 history on release. The booking API requires migrations through 0008; local staff
-provisioning additionally requires 0009. Apply current migrations only to the
+provisioning additionally requires 0009, and staff sessions require 0010. Apply current migrations only to the
 explicit development target described in the database guide.
 See [the contract, verification and remaining work](docs/BOOKING-SAFEGUARDS.md).
 Optional private request keys now support [retry-safe hold creation](docs/CHECKOUT-HOLD-RETRIES.md).
@@ -63,8 +63,11 @@ Optional private request keys now support [retry-safe hold creation](docs/CHECKO
 
 [Staff provisioning](docs/STAFF-PROVISIONING.md) adds role/city/email constraints
 and hidden-terminal local account management through migration 0009. Commands
-are repeatable without resetting credentials. HTTP sign-in, sessions and staff
-route authorization remain #35; no staff frontend is introduced here.
+are repeatable without resetting credentials. The [staff session API](docs/API-STAFF-AUTH.md)
+adds sign-in/current-session/logout, eight-hour absolute expiry and city-scoped
+booking reads through migration 0010. Staff authentication requires explicit
+staff origin/secret configuration; no staff frontend is introduced here. Local
+verification does not establish Rahti session/cookie behavior.
 
 ## Presentation movie data
 

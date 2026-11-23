@@ -24,7 +24,8 @@ npm start
 ```
 
 Booking allocation requires migrations through `0008_checkout_request_identity.sql`;
-local staff provisioning additionally requires `0009_staff_identity.sql`. Apply
+local staff provisioning additionally requires `0009_staff_identity.sql`, and
+staff sessions require `0010_staff_sessions.sql`. Apply
 all current migrations only to the explicitly selected development database.
 Seat availability and allocation share the active-state SQL function from 0006. The local
 `rio_dev` database had sixteen CEO reservations and no price rows when inspected
@@ -49,6 +50,15 @@ The [recorded workflow](../database/verification/booking-safeguards.json) follow
 actual HTTP city → screen → movie → screening → hold → conflict → release for
 Oulu and Tampere, with both capacities. It records IDs, counts, amounts and
 statuses, never a hold token, hash, contact address or connection URL.
+
+## Staff booking reads
+
+`GET /api/bookings` and its screening filter now require a valid staff session
+and configured staff origin/referrer. Administrator reads cover both cities;
+cashier reads are restricted by the actual screening city. This intentionally
+removes the anonymous prototype bypass. [The staff contract](API-STAFF-AUTH.md)
+documents status codes, cookies and remaining hosted verification. Public quote,
+guest hold creation and owned release keep their existing behavior below.
 
 ## Customer API
 

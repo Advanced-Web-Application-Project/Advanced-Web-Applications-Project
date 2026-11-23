@@ -1,14 +1,35 @@
 export function createBookingsRepository(pool) {
   return {
-    async listBookings(screeningId) {
+    async findScreeningCity(id) {
+      return (
+        (
+          await pool.query(
+            "SELECT s.city_id FROM screenings sc JOIN screens s ON s.id=sc.screen_id WHERE sc.id=$1",
+            [id],
+          )
+        ).rows[0]?.city_id ?? null
+      );
+    },
+    async listBookings(screeningId, cityId) {
+      const conditions = [],
+        parameters = [];
+      for (const [column, value] of [
+        ["b.screening_id", screeningId],
+        ["s.city_id", cityId],
+      ]) {
+        if (value !== undefined) {
+          parameters.push(value);
+          conditions.push(`${column}=$${parameters.length}`);
+        }
+      }
       return (
         await pool.query(
           `SELECT b.id AS booking_id,b.booking_type,b.status,b.expiry_time,
         sc.screening_time,f.title AS film_title,ARRAY_AGG(t.seat_id ORDER BY t.id) AS seat_id
-        FROM bookings b JOIN screenings sc ON sc.id=b.screening_id JOIN films f ON f.id=sc.film_id
-        LEFT JOIN tickets t ON t.booking_id=b.id ${screeningId === undefined ? "" : "WHERE b.screening_id=$1"}
+        FROM bookings b JOIN screenings sc ON sc.id=b.screening_id JOIN screens s ON s.id=sc.screen_id JOIN films f ON f.id=sc.film_id
+        LEFT JOIN tickets t ON t.booking_id=b.id ${conditions.length ? "WHERE " + conditions.join(" AND ") : ""}
         GROUP BY b.id,sc.screening_time,f.title ORDER BY b.id DESC`,
-          screeningId === undefined ? [] : [screeningId],
+          parameters,
         )
       ).rows;
     },

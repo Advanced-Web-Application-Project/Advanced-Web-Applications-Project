@@ -30,6 +30,7 @@ test("configuration requires a PostgreSQL database and an explicit frontend orig
   assert.deepEqual(readEnvironment(environment), {
     databaseUrl: environment.DATABASE_URL,
     frontendUrl: environment.FRONTEND_URL,
+    staff: null,
     port: 3000,
   });
   for (const databaseUrl of [
@@ -118,12 +119,12 @@ test("existing GET routes retain response envelopes and parameter binding", asyn
     "/api/films",
     "/api/screenings?filmId=7&cityId=7",
     "/api/prices",
-    "/api/bookings?screeningId=7",
   ]) {
     const response = await fetch(base + path);
     assert.equal(response.status, 200, path);
     assert.deepEqual(await response.json(), { success: true, data: [row] });
   }
+  assert.equal((await fetch(`${base}/api/bookings?screeningId=7`)).status, 401);
   for (const resource of ["cities", "screens", "films"]) {
     const response = await fetch(`${base}/api/${resource}/7`);
     assert.equal(response.status, 200);

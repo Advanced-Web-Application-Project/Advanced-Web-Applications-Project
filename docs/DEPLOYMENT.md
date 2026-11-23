@@ -40,7 +40,7 @@ verification. The staff application remains future work under #15 and its child.
 | Application / setting        | Meaning and current implementation                                                                                                                                                                                                       |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Backend `DATABASE_URL`       | Required PostgreSQL connection URL including database name. Obtain credentials from approved secret storage; never place them in frontend configuration or commit them.                                                                  |
-| Backend `FRONTEND_URL`       | Required allowed HTTP(S) browser origin. It accepts one origin today, not a comma-separated list. Verify the customer origin; the future distinct staff origin needs a reviewed CORS policy extension.                                   |
+| Backend `FRONTEND_URL` | Required exact customer origin. `STAFF_FRONTEND_URL` adds a distinct exact staff origin; no wildcard or comma-separated list. See [staff authentication](API-STAFF-AUTH.md). |
 | Backend `PORT`               | Defaults to 3000; must match the deployed listener/service mapping.                                                                                                                                                                      |
 | Backend timezone             | The current timestamp-without-time-zone schema relies on Helsinki local time; preserve `TZ=Europe/Helsinki` until a separately reviewed timestamp migration.                                                                             |
 | Frontend `VITE_API_BASE_URL` | Public build-time configuration consumed by the API client; never a secret. Use the actual HTTPS backend origin with `/api`, or `/api` only when a verified production proxy handles it.                                                 |
@@ -75,6 +75,20 @@ work still tracked in #47/#67; no entry claims that a configuration was deployed
 
 Do not use a blanket `oc apply -f k8s/`: these files mix unverified database and
 application examples, old variable names and build placeholders.
+
+## Staff session configuration and remaining live checks
+
+The local #35 backend adds real PostgreSQL sessions and protected booking reads.
+Rahti must supply a distinct HTTPS `STAFF_FRONTEND_URL` and a private
+`STAFF_SESSION_SECRET` through secret configuration, apply migration 0010 via an
+explicit reviewed target, and verify the actual ingress topology before enabling
+`STAFF_TRUST_PROXY_HOPS=1`. Existing manifests do not configure these values and
+staff endpoints remain disabled without them. Do not invent a staff address.
+Verify Secure/HttpOnly/host-only cookies, actual browser cookie acceptance across
+staff/API addresses, CSRF/CORS and session recovery/logout on the real deployment.
+SameSite=None does not override browser third-party-cookie policies; the actual
+address/proxy arrangement needs #67 verification. Preserve shared database data.
+[Local HTTP/proxy tests](API-STAFF-AUTH.md) are not evidence of live Rahti behavior.
 
 ## Verification to attach before deployment tasks are Done
 

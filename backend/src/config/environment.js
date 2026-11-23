@@ -1,4 +1,4 @@
-function readHttpOrigin(value) {
+function readHttpOrigin(value, name = "FRONTEND_URL") {
   try {
     const url = new URL(value);
     if (
@@ -13,7 +13,7 @@ function readHttpOrigin(value) {
     }
     return url.origin;
   } catch {
-    throw new Error("FRONTEND_URL must be an HTTP(S) origin");
+    throw new Error(`${name} must be an HTTP(S) origin`);
   }
 }
 
@@ -51,6 +51,43 @@ export function readEnvironment(environment = process.env) {
   return {
     databaseUrl,
     frontendUrl: readHttpOrigin(environment.FRONTEND_URL),
+    staff: readStaffEnvironment(environment),
     port,
   };
+}
+
+export function readStaffEnvironment(environment = process.env) {
+  if (!environment.STAFF_FRONTEND_URL && !environment.STAFF_SESSION_SECRET)
+    return null;
+  const origin = readHttpOrigin(
+    environment.STAFF_FRONTEND_URL,
+    "STAFF_FRONTEND_URL",
+  );
+  const secret = environment.STAFF_SESSION_SECRET;
+  if (
+    typeof secret !== "string" ||
+    !/^[A-Za-z0-9_-]{43}$/.test(secret) ||
+    Buffer.from(secret, "base64url").toString("base64url") !== secret
+  )
+    throw new Error(
+      "STAFF_SESSION_SECRET must be a private random 32-byte canonical base64url value",
+    );
+  if (origin === readHttpOrigin(environment.FRONTEND_URL))
+    throw new Error("Staff and customer frontend origins must be distinct");
+  const url = new URL(origin),
+    secureCookies = url.protocol === "https:";
+  if (
+    !secureCookies &&
+    (environment.NODE_ENV === "production" ||
+      !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname))
+  )
+    throw new Error(
+      "HTTP staff origins are allowed only for loopback development; production requires HTTPS",
+    );
+  const proxy = environment.STAFF_TRUST_PROXY_HOPS ?? "0";
+  if (!["0", "1"].includes(String(proxy)))
+    throw new Error(
+      "STAFF_TRUST_PROXY_HOPS must be 0 or 1; configure the verified deployment proxy boundary",
+    );
+  return { origin, secret, secureCookies, trustProxyHops: Number(proxy) };
 }

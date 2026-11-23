@@ -48,8 +48,11 @@ does not request third-party media. See [the current browsing contract](API-BROW
 the reusable password verifier. `backend/scripts/staff-manage.js` is the local
 CLI entry point, using the existing explicit database target guards. Migration
 0009 extends the existing users table; there is no duplicate account store.
-Session versions and timestamps prepare the contract for #35 without adding
-HTTP routes, sessions or frontend scaffolding. See [the staff identity contract](STAFF-PROVISIONING.md).
+The [staff session feature](API-STAFF-AUTH.md) now follows routes/controllers →
+service → repository with a maintained PostgreSQL session store, origin/CSRF
+checks and trusted actor context. Booking reads enforce current role/city in the
+service and SQL. Migration 0010 adds session/counter/auth-event tables; no staff
+frontend or future business-write scaffolding is introduced. See also [the staff identity contract](STAFF-PROVISIONING.md).
 
 ## 2. Proposed structure
 

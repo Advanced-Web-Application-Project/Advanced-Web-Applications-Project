@@ -61,7 +61,7 @@ price configuration is still required; this change does not invent a local price
 
 Booking-controller responses, including controlled failures, use `Cache-Control:
 no-store`. Keys, key hashes, request fingerprints and guest contacts are excluded
-from public booking lists. Malformed JSON is still handled by Express before the
+from booking lists (now staff-protected by [#35](API-STAFF-AUTH.md)). Malformed JSON is still handled by Express before the
 booking controller. No frontend or GET browsing response contract is changed.
 
 ## Transaction and migration behaviour
@@ -115,7 +115,7 @@ contains IDs, prices, statuses and matching deadlines, never credentials or cont
 | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Same request returns the same owned hold     | Real HTTP across four screens; equivalent normalized requests; stable stored ticket prices after base-price changes                                 |
 | Lost response is recoverable                 | A local HTTP proxy commits creation then drops its response; direct retry recovers the exact original response and one booking                      |
-| Different input cannot reuse its key         | Screening, email, place and category mismatch checks; public lists exclude credentials/fingerprints/contact                                         |
+| Different input cannot reuse its key         | Screening, email, place and category mismatch checks; booking lists exclude credentials/fingerprints/contact                                         |
 | No duplicate allocations or deadline renewal | Six concurrent identical calls return one hold/ticket set; release/natural expiry/paid states reject replay; original deadlines match               |
 | Atomic failure and safe schema adoption      | Late ticket failure rolls back booking/tickets/request identity; retry succeeds; duplicate-credential preflight and repaired legacy adoption tested |
 | Expiry is authoritative after waits          | Actual booking-row contention spans its stored deadline; the waiting replay returns `HOLD_EXPIRED`                                                  |

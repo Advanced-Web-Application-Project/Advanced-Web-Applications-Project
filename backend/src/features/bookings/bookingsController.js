@@ -1,3 +1,4 @@
+import { StaffAuthError } from "../staff/staffAuthError.js";
 import { BookingError } from "./bookingsService.js";
 
 export function createBookingsController(service) {
@@ -8,7 +9,7 @@ export function createBookingsController(service) {
         const data = await action(req);
         res.status(status).json({ success: true, data });
       } catch (error) {
-        if (error instanceof BookingError)
+        if (error instanceof BookingError || error instanceof StaffAuthError)
           return res.status(error.status).json({
             success: false,
             code: error.code,
@@ -32,7 +33,7 @@ export function createBookingsController(service) {
     };
   }
   return {
-    list: handle((req) => service.listBookings(req.query)),
+    list: handle((req) => service.listBookings(req.query, req.staffActor)),
     quote: handle((req) => service.quote(req.body)),
     create: handle(
       (req) => service.createHold(req.body, req.get("Idempotency-Key")),

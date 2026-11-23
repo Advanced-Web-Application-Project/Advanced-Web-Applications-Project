@@ -117,23 +117,24 @@ test(
               "0007_add_tmdb_metadata_unique_index.sql",
               "0008_checkout_request_identity.sql",
               "0009_staff_identity.sql",
+              "0010_staff_sessions.sql",
             ],
             previouslyApplied: 0,
           });
           const schema = await inspectDatabase(url);
           assert.deepEqual(schema.missingTables, []);
-          assert.equal(schema.tables.length, 12);
+          assert.equal(schema.tables.length, 15);
           assert.equal(
             schema.constraints.filter((row) => row.type === "f").length,
-            13,
+            14,
           );
           assert.equal(
             schema.constraints.filter((row) => row.type === "c").length,
-            22,
+            24,
           );
           assert.equal(
             schema.constraints.filter((row) => row.type === "p").length,
-            12,
+            15,
           );
           assert.deepEqual(
             schema.triggers.map((row) => [row.name, row.enabled]),
@@ -190,6 +191,9 @@ test(
             films: "id title metadata_api_id description artwork_url",
             screenings: "id film_id screen_id screening_time",
             prices: "id category amount_cents",
+            staff_sessions: "sid sess expire",
+            staff_login_attempts: "bucket window_start attempts",
+            staff_auth_events: "id actor_user_id event_type occurred_at",
             users:
               "id role permitted_city_id email password_hash loyalty_progress login_email is_enabled session_version provisioned_at credentials_changed_at disabled_at",
             bookings:
@@ -309,7 +313,7 @@ test(
             for (const name of APPLICATION_TABLES)
               rows[name] = (
                 await client.query(
-                  `SELECT jsonb_agg(to_jsonb(t) ORDER BY id) AS records FROM public.${name} t`,
+                  `SELECT jsonb_agg(to_jsonb(t) ORDER BY to_jsonb(t)) AS records FROM public.${name} t`,
                 )
               ).rows[0].records;
             return rows;
@@ -317,7 +321,7 @@ test(
           const records = await snapshot();
           assert.deepEqual(await migrate(url), {
             applied: [],
-            previouslyApplied: 9,
+            previouslyApplied: 10,
           });
           assert.deepEqual(await snapshot(), records);
           assert.equal(
@@ -344,10 +348,10 @@ test(
                 "SELECT count(*)::int AS count FROM rio_schema_migrations",
               )
             ).rows[0].count,
-            9,
+            10,
           );
           console.log(
-            "Schema evidence: empty → 11 application tables, 13 foreign keys, 22 checks, 13 enabled triggers; linked IDs survive rerun.",
+            "Schema evidence: empty → 14 application tables, 14 foreign keys, 24 checks, 13 enabled triggers; linked IDs survive rerun.",
           );
         });
       },
@@ -360,9 +364,9 @@ test(
           const results = await Promise.all([migrate(url), migrate(url)]);
           assert.equal(
             results.reduce((count, result) => count + result.applied.length, 0),
-            9,
+            10,
           );
-          assert.equal((await inspectDatabase(url)).tables.length, 12);
+          assert.equal((await inspectDatabase(url)).tables.length, 15);
         });
       },
     );
