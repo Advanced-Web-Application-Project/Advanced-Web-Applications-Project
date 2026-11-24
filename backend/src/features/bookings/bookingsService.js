@@ -157,21 +157,13 @@ function quoteTickets(prices, items) {
       "PRICE_NOT_CONFIGURED",
       "Exactly one positive adult base price must be configured",
     );
-  if (
-    items.some((item) => item.category === "child") &&
-    adult[0].amount_cents % 2
-  )
-    throw new BookingError(
-      503,
-      "PRICE_NOT_CONFIGURED",
-      "Child pricing needs an even adult amount in cents until a rounding policy is agreed",
-    );
+ 
   return items.map((item) => ({
     ...item,
     priceId: adult[0].id,
     amountCharged:
       item.category === "child"
-        ? adult[0].amount_cents / 2
+       ? Math.ceil(adult[0].amount_cents / 2)
         : adult[0].amount_cents,
   }));
 }
