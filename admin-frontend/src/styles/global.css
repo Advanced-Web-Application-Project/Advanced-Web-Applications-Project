@@ -308,22 +308,6 @@ label {
   width: 100%;
   flex: 1;
 }
-.access-panel {
-  margin-top: 2.5rem;
-  max-width: 650px;
-}
-.access-panel p {
-  color: var(--muted);
-  max-width: 36rem;
-}
-.panel-icon {
-  color: var(--gold);
-  margin-bottom: 1.5rem;
-}
-.panel-icon .icon {
-  width: 32px;
-  height: 32px;
-}
 .workspace footer {
   padding: 1.5rem 3rem;
   color: var(--muted);
@@ -414,9 +398,6 @@ label {
   .workspace footer {
     padding: 1.25rem;
   }
-  .access-panel {
-    padding: 1.5rem;
-  }
   h1 {
     font-size: 2.2rem;
   }
@@ -424,5 +405,133 @@ label {
 @media (prefers-reduced-motion: reduce) {
   * {
     scroll-behavior: auto;
+  }
+}
+
+select {
+  font: inherit;
+  color: inherit;
+  background: #100f10;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.8rem;
+  width: 100%;
+  min-height: 48px;
+}
+.list-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.list-toolbar p {
+  margin: 0;
+}
+.screening-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  padding: 1.5rem;
+}
+/* Normalize macOS/WebKit form chrome while retaining native menus/pickers. */
+.screening-filters select,
+.screening-filters input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  color-scheme: dark;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 3.25rem;
+  min-height: 3.25rem;
+  padding: 0.75rem 1rem;
+  line-height: 1.5;
+  background-color: #100f10;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+}
+.screening-filters select {
+  padding-right: 2.75rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--gold) 50%),
+    linear-gradient(135deg, var(--gold) 50%, transparent 50%);
+  background-position:
+    calc(100% - 21px) center,
+    calc(100% - 15px) center;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.screening-filters select:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.screening-filters input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+  min-height: 1.5em;
+}
+.screening-filters input[type="date"]::-webkit-datetime-edit {
+  padding: 0;
+}
+.screening-filters input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.85;
+  cursor: pointer;
+}
+.screening-filters label {
+  margin-top: 0;
+}
+.screening-filters > .hint {
+  margin: 0;
+  align-self: center;
+}
+.screening-cards {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+.screening-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.screening-card h2 {
+  margin: 0 0 0.6rem;
+  overflow-wrap: anywhere;
+}
+.screening-card p {
+  margin: 0.3rem 0;
+}
+.screening-card dl {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+}
+.screening-card dt {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.screening-card dd {
+  margin: 0.3rem 0 0;
+  font-size: 1.1rem;
+}
+.screening-card > .error {
+  flex-basis: 100%;
+}
+@media (max-width: 720px) {
+  .screening-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .screening-card {
+    display: block;
+  }
+  .screening-card dl {
+    margin-top: 1rem;
+  }
+  .screening-filters .hint {
+    font-size: 0.8rem;
   }
 }

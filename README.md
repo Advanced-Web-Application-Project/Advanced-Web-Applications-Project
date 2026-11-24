@@ -67,8 +67,8 @@ are repeatable without resetting credentials. The [staff session API](docs/API-S
 adds sign-in/current-session/logout, eight-hour absolute expiry and city-scoped
 booking reads through migration 0010. Staff authentication requires explicit
 staff origin/secret configuration. The separate [staff app](admin-frontend/README.md)
-now provides sign-in, recovery/logout and a protected Screenings shell; operational
-screening tools remain #65. See [behavior and evidence](docs/STAFF-APP.md). Local
+now provides sign-in, recovery/logout and a [city-scoped screening list](docs/STAFF-SCREENINGS.md);
+screening details and occupancy maps remain #65. See [behavior and evidence](docs/STAFF-APP.md). Local
 verification does not establish Rahti session/cookie behavior.
 
 ## Presentation movie data

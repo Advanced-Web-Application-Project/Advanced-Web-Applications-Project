@@ -8,7 +8,8 @@ password hashing/verification utility and explicit local account-management CLI.
 That original slice added no HTTP routes or frontend. The subsequent
 [staff session feature](API-STAFF-AUTH.md) now uses these credentials and account
 versions for local backend authentication/revocation and city-scoped booking reads.
-Customer account integration and the separate staff frontend remain later work.
+The separate [staff session shell](STAFF-APP.md) now consumes this identity
+foundation. Customer account integration and operational staff features remain later work.
 
 | Role            | `permitted_city_id` | Required staff permission policy for #35 and later features                                    |
 | --------------- | ------------------- | ---------------------------------------------------------------------------------------------- |

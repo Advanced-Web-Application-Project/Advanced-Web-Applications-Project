@@ -61,6 +61,11 @@ the protected shell. Identity is revalidated with the shared backend; neither
 frontend owns authorization or directly accesses PostgreSQL. See the
 [staff app boundary and verification](STAFF-APP.md).
 
+Staff screening reads remain inside the screenings backend feature, using the
+existing session/actor interface and shared database occupancy predicate. The
+staff `features/screenings/` UI uses its session-aware transport; it never reads
+PostgreSQL or owns availability. See [the #65 list contract](STAFF-SCREENINGS.md).
+
 ## 2. Proposed structure
 
 **The following is a target directory tree.** Optional directories should remain absent until needed.

@@ -1,6 +1,14 @@
 # Staff application and sessions — #58/#97
 
-## Delivered boundary
+## Current implementation
+
+The #58/#97 session foundation is now integrated. The [#65 screening-list milestone](STAFF-SCREENINGS.md)
+replaces its initial landing shell with real city/date/screen filters and
+seated/wheelchair availability. Detail/occupancy maps and booking contacts remain
+later #65 work. The foundation verification below is historical evidence for
+that milestone; current list contracts and validation are in the linked guide.
+
+## Original #58/#97 boundary
 
 `admin-frontend/` is an independent React/JavaScript/Vite app with its own lockfile,
 commands, styles and production output. `features/session/` owns identity state,

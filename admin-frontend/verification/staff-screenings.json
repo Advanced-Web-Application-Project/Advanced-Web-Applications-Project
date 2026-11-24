@@ -1,0 +1,97 @@
+{
+  "date": "2026-11-24",
+  "database": "disposable PostgreSQL",
+  "customerDataUnchanged": true,
+  "before": {
+    "cities": "f9c7a206bc9315a3ccf56eeed8c20b83",
+    "screens": "a91c84467952cdb7b388fbe14681d815",
+    "films": "c7a6bc588cd77efbac2100bc7fce49b2",
+    "screenings": "c6e407bd0aebe1b004dc9aec17839db0",
+    "seats": "482e56d87fe87241454b493b357681ce",
+    "bookings": "d68f0936a1b448e2a51aa9aeef837346",
+    "tickets": "09d09bfde53ac044900659a0572495e8",
+    "prices": "4689682b726b1e5365906c2526ee5d2f"
+  },
+  "after": {
+    "cities": "f9c7a206bc9315a3ccf56eeed8c20b83",
+    "screens": "a91c84467952cdb7b388fbe14681d815",
+    "films": "c7a6bc588cd77efbac2100bc7fce49b2",
+    "screenings": "c6e407bd0aebe1b004dc9aec17839db0",
+    "seats": "482e56d87fe87241454b493b357681ce",
+    "bookings": "d68f0936a1b448e2a51aa9aeef837346",
+    "tickets": "09d09bfde53ac044900659a0572495e8",
+    "prices": "4689682b726b1e5365906c2526ee5d2f"
+  },
+  "events": [
+    {
+      "event_type": "login",
+      "count": 3
+    },
+    {
+      "event_type": "logout",
+      "count": 3
+    }
+  ],
+  "commands": [],
+  "secretsRecorded": false,
+  "baseMainCommit": "d44bc9a",
+  "postgresVersion": "18.7",
+  "backendTests": {
+    "passed": 172,
+    "skipped": 0
+  },
+  "staffTests": {
+    "node": 15,
+    "react": 25
+  },
+  "checks": {
+    "lint": true,
+    "format": true,
+    "build": true,
+    "browser": true
+  },
+  "guestHoldFixture": {
+    "creation": "real quote and hold API",
+    "screeningId": 1,
+    "screenId": 1,
+    "places": 3,
+    "seatedAvailable": 97,
+    "wheelchairAvailable": 9,
+    "customerAndStaffMatch": true
+  },
+  "browser": [
+    "administrator all cities",
+    "default Helsinki today empty state",
+    "city/date/screen combined filters",
+    "URL-preserving reload",
+    "Oulu and Tampere cashiers",
+    "foreign city direct URL denied",
+    "390x844 no overflow",
+    "Tab/Enter submission",
+    "logout"
+  ],
+  "disposableDatabaseRemoved": true,
+  "privateCredentialFileRemoved": true,
+  "retainedLocalDataChanged": false,
+  "deployedVerification": false,
+  "externalProviderVerification": false,
+  "remainingIssue65": [
+    "screening detail and list context return",
+    "individual occupancy states/map",
+    "scoped booking/contact detail"
+  ],
+  "issueLink": "Refs #65, #32, #13, #15",
+  "filterAppearanceFollowup": {
+    "date": "2026-11-24",
+    "desktopControlHeights": [52, 52, 52, 52],
+    "narrowControlHeights": [52, 52, 52, 52],
+    "narrowControlWidths": [285, 285, 285, 285],
+    "viewport": 390,
+    "documentWidth": 375,
+    "keyboardTabToApply": true,
+    "nativeSelectAndDateSemanticsPreserved": true,
+    "lint": true,
+    "format": true,
+    "build": true
+  }
+}
