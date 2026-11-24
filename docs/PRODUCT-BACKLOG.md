@@ -118,8 +118,9 @@ provisioning, credential reset and disable are operator CLI operations, with no
 public staff registration. See [the #33 identity/provisioning contract](STAFF-PROVISIONING.md).
 [The #35 backend contract](API-STAFF-AUTH.md) now verifies local sessions,
 revocation and city-scoped booking reads. The [#58/#97 staff session shell](STAFF-APP.md)
-adds real local sign-in and recovery; operational lists and later protected business
-features remain their own tasks. Actual hosted session/origin verification is still required;
+adds real local sign-in and recovery. The [first #65 milestone](STAFF-SCREENINGS.md)
+now adds the protected screening list and aggregate availability; detail/maps and
+later protected business features remain their own tasks. Actual hosted session/origin verification is still required;
 the schema/CLI alone does not complete RIO-02.
 
 ### RIO-03 — Maintain film information

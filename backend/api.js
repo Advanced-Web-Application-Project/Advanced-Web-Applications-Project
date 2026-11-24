@@ -7,7 +7,7 @@ import { registerScreeningRoutes } from "./src/features/screenings/screeningsRou
 export default function registerApiRoutes(app, pool, { staffAuth }) {
   registerCinemaRoutes(app, pool);
   registerFilmRoutes(app, pool);
-  registerScreeningRoutes(app, pool);
+  registerScreeningRoutes(app, pool, staffAuth);
   registerSeatRoutes(app, pool);
   registerBookingRoutes(app, pool, staffAuth);
 

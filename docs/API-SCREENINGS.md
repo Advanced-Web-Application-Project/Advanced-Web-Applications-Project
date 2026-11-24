@@ -117,3 +117,9 @@ matching, contradictory and invalid requests against the retained local data.
 Frontend selection controls and browsing request coordination were subsequently
 delivered by #54/#25; current #8 evidence is in [the browsing guide](API-BROWSING.md).
 No seat availability, booking writes or deployment behavior changed.
+
+## Separate staff read
+
+The protected [staff screening list](STAFF-SCREENINGS.md) is
+`GET /api/staff/screenings`. It adds staff city authorization, calendar-date
+filters and aggregate availability without changing this public API contract.

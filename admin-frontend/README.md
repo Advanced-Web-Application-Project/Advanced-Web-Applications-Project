@@ -2,8 +2,8 @@
 
 Independent React/JavaScript/Vite website for #58/#97. Customer `frontend/` stays
 separate; both websites use the same Express services and PostgreSQL records.
-This milestone delivers real staff sign-in, session recovery and a protected
-Screenings landing shell. Operational lists/occupancy are #65. Film, schedule,
+The app delivers real staff sign-in/session recovery and a [city-scoped screening
+list](../docs/STAFF-SCREENINGS.md). Screening detail/occupancy maps remain #65. Film, schedule,
 price and manual reservation controls remain #59/#60/#61/#66.
 
 ## Local setup

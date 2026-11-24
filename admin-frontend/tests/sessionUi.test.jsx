@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import App from "../src/App.jsx";
@@ -49,6 +49,19 @@ function install({
       session = null;
       return response({ signedOut: true });
     }
+    if (url.startsWith("/api/staff/screenings"))
+      return response({
+        as_of: new Date().toISOString(),
+        screenings: [],
+        cities: [],
+        screens: [],
+        filters: {
+          dateFrom: "2026-11-24",
+          dateTo: "2026-11-24",
+          cityId: null,
+          screenId: null,
+        },
+      });
     if (url === "/api/cities")
       return response([
         { id: 7, name: "Oulu" },
@@ -139,16 +152,14 @@ test.each([
     install({ login: () => response(identity(role, 1, cityId)) });
     await signIn(user);
     await screen.findByRole("heading", { name: "Screenings" });
-    await screen.findByText(label);
+    await within(document.querySelector(".scope")).findByText(label);
     expect(
       screen.getByRole("navigation", { name: "Staff navigation" }).textContent,
     ).toContain("Screenings");
     expect(screen.queryByRole("link", { name: "Films" })).toBe(null);
     expect(screen.queryByRole("link", { name: "Prices" })).toBe(null);
     expect(
-      screen.getByText(
-        "Screening lists and reservation tools are not available here yet.",
-      ),
+      screen.getByRole("region", { name: "Staff screenings" }),
     ).toBeTruthy();
     expect(localStorage.length).toBe(0);
     expect(sessionStorage.length).toBe(0);
@@ -309,7 +320,8 @@ test("cross-tab notifications contain no credentials and always reload the real 
   });
   try {
     const api = install({ initial: identity() });
-    await screen.findByText("All cities");
+    await screen.findByRole("heading", { name: "Screenings" });
+    await within(document.querySelector(".scope")).findByText("All cities");
     api.setSession(identity("cashier", 2, 8));
     await act(async () =>
       channels[0].onmessage({
