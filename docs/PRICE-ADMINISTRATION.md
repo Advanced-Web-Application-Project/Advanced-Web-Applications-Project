@@ -122,10 +122,12 @@ verification are satisfied; merged earlier PRs alone are not acceptance evidence
   displayed → type a new draft without losing focus → sign out. Responsive checks
   at 390px and 320px found no horizontal overflow. Browser artifacts used only
   synthetic account data; the fixture database and credentials were removed.
-- Additional customer checks: 27 Node tests passed. The optional unchanged customer
-  component suite stalled before any test results in both fork and single-thread
-  modes and was stopped; it is unverified, not counted as passing. Real customer
-  quote/review/hold/replay integration remains covered by the backend suite.
+- Customer `npm test`: all 80 tests passed (27 Node and 53 React component tests).
+  The initial component run stalled while importing jsdom, before test execution.
+  A clean `npm ci --ignore-scripts --no-audit --no-fund` using the unchanged
+  lockfile resolved the local installation problem; dependency versions and test
+  assertions were not changed. Real customer quote/review/hold/replay integration
+  is also covered by the backend suite.
 - Read-only cleanup check: the retained database remains at 0010, and zero pricing
   fixture databases remain. Apply the complete guarded local migration set before
   running this branch against the retained development database.
