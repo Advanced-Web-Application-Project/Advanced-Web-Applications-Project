@@ -212,6 +212,34 @@ test(
         (await get("/api/staff/screenings?" + q, cookies.admin)).status,
         400,
       );
+    assert.equal((await get("/api/staff/screenings/1")).status, 401);
+    for (const malformed of ["0", "-1", "abc", "2147483648", "1.2"])
+      assert.equal(
+        (await get("/api/staff/screenings/" + malformed, cookies.admin)).status,
+        400,
+      );
+    assert.equal(
+      (await get("/api/staff/screenings/2147483647", cookies.admin)).status,
+      404,
+    );
+    for (const label of ["oulu", "tampere"]) {
+      const own = all.body.data.screenings.find(
+          (row) => row.city_name.toLowerCase() === label,
+        ),
+        foreign = all.body.data.screenings.find(
+          (row) => row.city_name.toLowerCase() !== label,
+        );
+      assert.equal(
+        (await get(`/api/staff/screenings/${own.id}`, cookies[label])).status,
+        200,
+      );
+      const denied = await get(
+        `/api/staff/screenings/${foreign.id}?cityId=${own.city_id}`,
+        cookies[label],
+      );
+      assert.equal(denied.status, 404);
+      assert.equal(denied.body.data, undefined);
+    }
     for (const capacity of [100, 200]) {
       const show = all.body.data.screenings.find(
         (x) => x.availability.seated.total === capacity,
@@ -255,6 +283,50 @@ test(
       const staff = (
         await get(path + `&screenId=${show.screen_id}`, cookies.admin)
       ).body.data.screenings.find((x) => x.id === show.id);
+      const detailResponse = await get(
+        `/api/staff/screenings/${show.id}`,
+        cookies.admin,
+      );
+      assert.equal(detailResponse.status, 200);
+      assert.equal(detailResponse.cache, "no-store");
+      const detail = detailResponse.body.data;
+      assert.equal(detail.places.length, capacity + 10);
+      assert.equal(detail.screening.id, show.id);
+      assert.deepEqual(detail.availability.seated, staff.availability.seated);
+      const byLabel = (label) =>
+        detail.places.find((place) => place.display_label === label)
+          ?.occupancy_state;
+      for (const [label, state] of [
+        ["1", "ceo"],
+        ["2", "paid"],
+        ["3", "company_secured"],
+        ["4", "hold"],
+        ["5", "reserved"],
+        ["6", "available"],
+        ["7", "available"],
+        ["8", "available"],
+        ["W1", "hold"],
+        ["W10", "available"],
+      ])
+        assert.equal(byLabel(label), state, label);
+      const publicSeats = (
+        await get(
+          `/api/seats?screenId=${show.screen_id}&screeningId=${show.id}`,
+        )
+      ).body.data;
+      assert.ok(
+        publicSeats.every((place) => !Object.hasOwn(place, "occupancy_state")),
+        "Staff states are absent from customer seat responses",
+      );
+      for (const field of [
+        "guest_email",
+        "password",
+        "csrfToken",
+        "hold_token",
+        "request_key",
+        "booking_id",
+      ])
+        assert.ok(!JSON.stringify(detail).includes(field));
       const customer = (
         await get(
           `/api/seats/availability?screenId=${show.screen_id}&screeningId=${show.id}`,
@@ -278,6 +350,23 @@ test(
       ).body.data.screenings.find((x) => x.id === show.id);
       assert.equal(expired.availability.seated.available, capacity - 4);
       assert.equal(expired.availability.wheelchair.available, 10);
+      const expiredDetail = (
+        await get(`/api/staff/screenings/${show.id}`, cookies.admin)
+      ).body.data;
+      assert.equal(
+        expiredDetail.places.find((place) => place.display_label === "4")
+          .occupancy_state,
+        "available",
+      );
+      assert.equal(
+        expiredDetail.places.find((place) => place.display_label === "W1")
+          .occupancy_state,
+        "available",
+      );
+      assert.deepEqual(
+        expiredDetail.availability.seated,
+        expired.availability.seated,
+      );
     }
     const sample = all.body.data.screenings[0];
     assert.equal(
@@ -325,6 +414,11 @@ test(
     assert.equal(incomplete.inventory_complete, false);
     assert.equal(incomplete.seated.available, null);
     assert.equal(incomplete.wheelchair.available, null);
+    const partial = (
+      await get(`/api/staff/screenings/${sample.id}`, cookies.admin)
+    ).body.data;
+    assert.equal(partial.availability.inventory_complete, false);
+    assert.equal(partial.availability.seated.available, null);
     const body = JSON.stringify((await get(path, cookies.admin)).body);
     for (const field of [
       "guest_email",

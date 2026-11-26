@@ -1,3 +1,4 @@
+import ScreeningDetailPage from "../pages/ScreeningDetailPage.jsx";
 import {
   Navigate,
   Route,
@@ -75,7 +76,9 @@ export default function StaffRoutes() {
       <Navigate
         to={
           "/sign-in?returnTo=" +
-          encodeURIComponent(safeReturnPath(location.pathname))
+          encodeURIComponent(
+            safeReturnPath(location.pathname + location.search),
+          )
         }
         replace
       />
@@ -87,6 +90,10 @@ export default function StaffRoutes() {
       <Route element={<StaffLayout />}>
         <Route index element={<Navigate to="/screenings" replace />} />
         <Route path="screenings" element={<ScreeningsPage />} />
+        <Route
+          path="screenings/:screeningId"
+          element={<ScreeningDetailPage />}
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

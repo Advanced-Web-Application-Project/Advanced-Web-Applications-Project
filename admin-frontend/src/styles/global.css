@@ -1,23 +1,3 @@
-:root {
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  color: #f4ead9;
-  background: #100f10;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  line-height: 1.6;
-  font-weight: 400;
-  --gold: #efc778;
-  --muted: #c6b8a9;
-  --border: #765e3f;
-  --panel: #1c1819;
-}
 * {
   box-sizing: border-box;
 }
@@ -40,15 +20,19 @@ a {
 a {
   color: var(--gold);
 }
+/* Adapted from the customer check-selection-button for staff primary actions. */
 button {
-  border: 1px solid var(--gold);
-  border-radius: 5px;
-  padding: 0.75rem 1.15rem;
-  color: #1b1510;
-  background: var(--gold);
+  min-height: 2.875rem;
+  background: #b41f35;
+  color: white;
+  border: 1px solid #e8bc64;
+  border-radius: 4px;
+  padding: 0.625rem 1.125rem;
   cursor: pointer;
-  font-weight: 650;
-  min-height: 46px;
+  font-weight: 600;
+}
+button:hover:enabled {
+  background: #d52d45;
 }
 button:disabled {
   opacity: 0.55;
@@ -56,7 +40,7 @@ button:disabled {
 }
 button.secondary {
   background: transparent;
-  color: #f4ead9;
+  color: #f2e8d3;
   border-color: var(--border);
 }
 button.text-button {
@@ -71,23 +55,12 @@ button:hover:enabled,
   filter: brightness(1.12);
 }
 :focus-visible {
-  outline: 3px solid var(--gold);
+  outline: 3px solid var(--focus);
   outline-offset: 5px;
 }
 h1:focus,
 h2:focus {
   outline: none;
-}
-h1 {
-  font-family: Georgia, serif;
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 400;
-  line-height: 1.15;
-  margin: 0.5rem 0 1rem;
-}
-h2 {
-  font-size: 1.35rem;
-  font-weight: 600;
 }
 p {
   margin: 0.6rem 0 1rem;
@@ -119,45 +92,21 @@ label {
 .skip-link:focus {
   top: 1rem;
 }
-.wordmark {
-  font-family: Georgia, serif;
-  font-size: 2.5rem;
-  letter-spacing: 0.04em;
-  text-decoration: none;
-  color: var(--gold);
-  white-space: nowrap;
-}
-.wordmark span {
-  font-family: inherit;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--muted);
-  margin-left: 0.5rem;
-}
-.eyebrow,
 .nav-label {
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 0.7rem;
-  color: var(--gold);
-  font-weight: 650;
+  letter-spacing: 0.15em;
+  font-size: var(--font-caption);
+  font-weight: 700;
 }
 .eyebrow {
   display: flex;
   gap: 0.65rem;
   align-items: center;
 }
-.icon {
-  width: 21px;
-  height: 21px;
-  flex-shrink: 0;
-  vertical-align: middle;
-}
 .panel {
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 6px;
   padding: clamp(1.5rem, 4vw, 2.5rem);
 }
 .intro,
@@ -165,18 +114,12 @@ label {
   color: var(--muted);
 }
 .hint {
-  font-size: 0.85rem;
+  font-size: var(--font-small);
 }
 .notice {
   border-left: 3px solid var(--gold);
   padding: 0.5rem 1rem;
   background: #282219;
-}
-.error {
-  color: #ffb0a4;
-  border-left: 3px solid #d36657;
-  padding: 0.5rem 1rem;
-  margin-top: 1rem;
 }
 .sign-in-page {
   min-height: 100svh;
@@ -191,9 +134,6 @@ label {
 .sign-in-brand {
   padding: 3rem 0;
 }
-.sign-in-brand .wordmark {
-  font-size: 3.3rem;
-}
 .sign-in-brand > p {
   color: var(--muted);
 }
@@ -203,10 +143,11 @@ label {
   margin: 3rem 0;
 }
 .sign-in-brand .brand-note {
-  font-family: Georgia, serif;
+  font-family: inherit;
   font-size: 2.4rem;
+  font-weight: 600;
   line-height: 1.35;
-  color: #f4ead9;
+  color: #f2e8d3;
 }
 .sign-in-panel {
   align-self: center;
@@ -348,9 +289,6 @@ label {
   .brand-note {
     display: none;
   }
-  .sign-in-brand .wordmark {
-    font-size: 2.5rem;
-  }
   .sign-in-panel {
     padding: 1.5rem;
   }
@@ -398,9 +336,6 @@ label {
   .workspace footer {
     padding: 1.25rem;
   }
-  h1 {
-    font-size: 2.2rem;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -408,16 +343,6 @@ label {
   }
 }
 
-select {
-  font: inherit;
-  color: inherit;
-  background: #100f10;
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 0.8rem;
-  width: 100%;
-  min-height: 48px;
-}
 .list-toolbar {
   display: flex;
   justify-content: space-between;
@@ -434,7 +359,7 @@ select {
   gap: 1rem;
   padding: 1.5rem;
 }
-/* Normalize macOS/WebKit form chrome while retaining native menus/pickers. */
+/* Customer selection fields with matched native date-control dimensions. */
 .screening-filters select,
 .screening-filters input[type="date"] {
   -webkit-appearance: none;
@@ -443,29 +368,16 @@ select {
   display: block;
   width: 100%;
   min-width: 0;
-  height: 3.25rem;
-  min-height: 3.25rem;
-  padding: 0.75rem 1rem;
+  height: 3rem;
+  min-height: 3rem;
   line-height: 1.5;
-  background-color: #100f10;
-  border: 1px solid var(--border);
-  border-radius: 5px;
+  font-size: var(--font-body);
 }
-.screening-filters select {
-  padding-right: 2.75rem;
-  background-image:
-    linear-gradient(45deg, transparent 50%, var(--gold) 50%),
-    linear-gradient(135deg, var(--gold) 50%, transparent 50%);
-  background-position:
-    calc(100% - 21px) center,
-    calc(100% - 15px) center;
-  background-size: 6px 6px;
-  background-repeat: no-repeat;
-  cursor: pointer;
-}
-.screening-filters select:disabled {
-  opacity: 0.7;
-  cursor: default;
+.screening-filters input[type="date"] {
+  padding: 0.75rem 0.875rem;
+  border: 1px solid #7b6142;
+  border-radius: 4px;
+  background: #1c1819;
 }
 .screening-filters input[type="date"]::-webkit-date-and-time-value {
   text-align: left;
@@ -534,4 +446,107 @@ select {
   .screening-filters .hint {
     font-size: 0.8rem;
   }
+}
+
+.occupancy-link {
+  align-self: center;
+}
+.screening-detail-summary {
+  padding: 1.5rem;
+}
+.screening-detail-summary h2 {
+  margin-top: 0;
+}
+/* Staff-only state detail on the copied customer seat presentation. */
+.occupancy-map {
+  margin-top: 2rem;
+}
+.occupancy-map .seat-place {
+  height: 2.875rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+.occupancy-map .seat-legend .legend-place {
+  font-size: 0.55rem;
+}
+.occupancy-map .occupancy-hold {
+  color: #ffe1a5;
+  background: #302619;
+  border-color: #c99d4b;
+}
+.occupancy-map .occupancy-reserved {
+  color: #f6c2a6;
+  background: #321f1a;
+  border-color: #cc886b;
+}
+.occupancy-map .occupancy-paid {
+  color: #bfe3ff;
+  background: #172a36;
+  border-color: #74a6c8;
+}
+.occupancy-map .occupancy-company_secured {
+  color: #e0ceff;
+  background: #2b2238;
+  border-color: #b095cd;
+}
+.occupancy-map .occupancy-ceo {
+  color: #ffccca;
+  background: #32191e;
+  border-color: #ce7a82;
+}
+.button-link {
+  border-radius: 4px;
+  color: #f2e8d3;
+}
+.occupancy-link {
+  background: #b41f35;
+  color: white;
+  border-color: #e8bc64;
+  font-weight: 600;
+}
+@media (max-width: 720px) {
+  .screening-detail-summary {
+    padding: 1.25rem;
+  }
+  .list-toolbar .button-link {
+    font-size: var(--font-small);
+  }
+}
+
+@media (max-width: 37.5em) {
+  .occupancy-map .seat-place {
+    height: 2.75rem;
+  }
+}
+
+.occupancy-map .seat-state-symbol {
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 0.9375rem;
+  letter-spacing: 0.02em;
+}
+
+/* Approved readability refinement: about 2px larger, scaled in rem. */
+.occupancy-map .seat-place {
+  font-size: clamp(0.75rem, 0.6rem + 0.45vw, 0.9375rem);
+}
+.occupancy-map .seat-row-label {
+  font-size: clamp(0.75rem, 0.64rem + 0.3vw, 0.875rem);
+}
+.occupancy-map .seat-legend {
+  font-size: calc(var(--font-small) + 0.125rem);
+}
+.occupancy-map .seat-legend .legend-place {
+  width: clamp(2.25rem, 2rem + 0.6vw, 2.5rem);
+  height: clamp(2.25rem, 2rem + 0.6vw, 2.5rem);
+  flex-shrink: 0;
+  font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem);
+}
+
+.occupancy-map .seat-state-symbol,
+.occupancy-map .legend-place {
+  text-transform: uppercase;
 }

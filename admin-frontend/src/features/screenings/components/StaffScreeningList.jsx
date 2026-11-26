@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { useScreeningRead } from "../hooks/useScreeningRead.js";
+import { useState } from "react";
+import { Link, useSearchParams } from "react-router";
 import { useSession } from "../../session/hooks/useSession.js";
 import {
   formatScreeningTime,
@@ -25,7 +26,7 @@ function Filters({ data, session, apply }) {
         );
       }}
     >
-      <div>
+      <div className="selection-field">
         <label htmlFor="city-filter">City</label>
         <select
           id="city-filter"
@@ -47,7 +48,7 @@ function Filters({ data, session, apply }) {
           ))}
         </select>
       </div>
-      <div>
+      <div className="selection-field">
         <label htmlFor="from-filter">From</label>
         <input
           id="from-filter"
@@ -57,7 +58,7 @@ function Filters({ data, session, apply }) {
           defaultValue={filters.dateFrom}
         />
       </div>
-      <div>
+      <div className="selection-field">
         <label htmlFor="to-filter">Through</label>
         <input
           id="to-filter"
@@ -67,7 +68,7 @@ function Filters({ data, session, apply }) {
           defaultValue={filters.dateTo}
         />
       </div>
-      <div>
+      <div className="selection-field">
         <label htmlFor="screen-filter">Screen</label>
         <select
           id="screen-filter"
@@ -100,71 +101,43 @@ function Places({ value }) {
   );
 }
 export default function StaffScreeningList() {
-  const { model, session } = useSession();
+  const { session } = useSession();
   const [params, setParams] = useSearchParams();
   const query = params.toString();
-  const [attempt, setAttempt] = useState(0);
-  const key = `${query}:${attempt}`;
-  const [result, setResult] = useState(null);
-  useEffect(() => {
-    const controller = new AbortController();
-    let current = true;
-    model
-      .request(`/staff/screenings${query ? `?${query}` : ""}`, {
-        signal: controller.signal,
-      })
-      .then(validateScreeningList)
-      .then((data) => {
-        if (current) setResult({ key, data });
-      })
-      .catch((error) => {
-        if (current && error.name !== "AbortError") setResult({ key, error });
-      });
-    return () => {
-      current = false;
-      controller.abort();
-    };
-  }, [model, query, key]);
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (
-        document.visibilityState !== "hidden" &&
-        !document.activeElement?.closest(".screening-filters")
-      )
-        setAttempt((value) => value + 1);
-    }, 30000);
-    return () => clearInterval(timer);
-  }, []);
-  const active = result?.key === key ? result : null;
-  const data = active?.data;
+  const { data, error, loading, refresh } = useScreeningRead(
+    `/staff/screenings${query ? `?${query}` : ""}`,
+    validateScreeningList,
+    ".screening-filters",
+  );
+  const returnQuery = data
+    ? new URLSearchParams(
+        Object.entries(data.filters)
+          .filter(([, value]) => value !== null)
+          .map(([key, value]) => [key, String(value)]),
+      ).toString()
+    : "";
   return (
     <section aria-label="Staff screenings" className="screening-list">
       <div className="list-toolbar">
         <p className="hint">
           Availability is a snapshot. Viewing this list does not reserve places.
         </p>
-        <button
-          className="secondary"
-          onClick={() => setAttempt((value) => value + 1)}
-          disabled={!active}
-        >
+        <button className="secondary" onClick={refresh} disabled={loading}>
           Refresh
         </button>
       </div>
-      {!active ? (
+      {loading ? (
         <p role="status">Loading screenings…</p>
-      ) : active.error ? (
+      ) : error ? (
         <div className="panel" role="alert">
           <p>
-            {active.error.status === 403
+            {error.status === 403
               ? "You don’t have access to these screening filters."
-              : active.error.status === 400 || active.error.status === 404
+              : error.status === 400 || error.status === 404
                 ? "Check the city, screen and date range in your filters."
                 : "Couldn’t load screenings. Please try again."}
           </p>
-          <button onClick={() => setAttempt((value) => value + 1)}>
-            Try again
-          </button>{" "}
+          <button onClick={refresh}>Try again</button>{" "}
           <button className="secondary" onClick={() => setParams({})}>
             Reset filters
           </button>
@@ -220,6 +193,13 @@ export default function StaffScreeningList() {
                       </dd>
                     </div>
                   </dl>
+                  <Link
+                    className="button-link occupancy-link"
+                    to={`/screenings/${row.id}${returnQuery ? `?${returnQuery}` : ""}`}
+                    aria-label={`View occupancy for ${row.film_title}, screen ${row.screen_id}, ${formatScreeningTime(row.screening_time)}`}
+                  >
+                    View occupancy
+                  </Link>
                   {!row.availability.inventory_complete && (
                     <p role="status" className="error">
                       Inventory is incomplete. Availability cannot be confirmed.

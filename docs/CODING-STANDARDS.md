@@ -13,7 +13,8 @@ To maintain consistent code quality:
 
 - Use meaningful names for variables, functions, and files.
 - Keep functions focused on a single responsibility.
-- Avoid unnecessary code duplication.
+- Avoid unnecessary code duplication. Deliberate customer-to-staff UI copies
+  follow the user-approved [UI consistency policy](UI-CONSISTENCY.md).
 - Follow the agreed [project architecture](ARCHITECTURE.md).
 - Use Prettier for formatting.
 - Use ESLint for code quality checks.
@@ -21,6 +22,18 @@ To maintain consistent code quality:
 Each frontend now has its own ESLint/Prettier configuration and scripts. Run
 the affected application’s lint, format check and tests; do not assume one
 application’s commands cover another application.
+
+## UI consistency
+
+All UI work must be responsive: use scalable typography/spacing, check desktop
+and narrow screens, and keep any necessary map scrolling inside its own panel.
+Preserve keyboard access and readable labels as text and viewport sizes change.
+
+For every frontend UI task, use the customer frontend as the visual reference and
+follow [the UI consistency policy](UI-CONSISTENCY.md). Copy relevant presentation
+code locally into the staff app; preserve independent builds and backend-owned
+business rules. Match branding, fonts, seats, controls and focus states before
+introducing new variants. This is a confirmed user decision, not a proposal.
 
 ## Naming Conventions
 

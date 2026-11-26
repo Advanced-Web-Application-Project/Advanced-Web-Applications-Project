@@ -4,8 +4,9 @@
 
 The #58/#97 session foundation is now integrated. The [#65 screening-list milestone](STAFF-SCREENINGS.md)
 replaces its initial landing shell with real city/date/screen filters and
-seated/wheelchair availability. Detail/occupancy maps and booking contacts remain
-later #65 work. The foundation verification below is historical evidence for
+seated/wheelchair availability. [Read-only occupancy detail](STAFF-SCREENING-DETAIL.md)
+now extends that list with map states and safe filter return. Booking/contact
+details remain later #65 work. The foundation verification below is historical evidence for
 that milestone; current list contracts and validation are in the linked guide.
 
 ## Original #58/#97 boundary

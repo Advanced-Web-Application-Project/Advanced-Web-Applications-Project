@@ -1,0 +1,182 @@
+{
+  "date": "2026-11-24",
+  "database": "disposable PostgreSQL",
+  "customerDataUnchanged": true,
+  "before": {
+    "cities": "f9c7a206bc9315a3ccf56eeed8c20b83",
+    "screens": "a91c84467952cdb7b388fbe14681d815",
+    "films": "c7a6bc588cd77efbac2100bc7fce49b2",
+    "screenings": "c6e407bd0aebe1b004dc9aec17839db0",
+    "seats": "482e56d87fe87241454b493b357681ce",
+    "bookings": "9014cf66913ad75923fc97e341f1ec96",
+    "tickets": "73ff2f44a45e96b66f1104429ebcbdc1",
+    "prices": "4689682b726b1e5365906c2526ee5d2f"
+  },
+  "after": {
+    "cities": "f9c7a206bc9315a3ccf56eeed8c20b83",
+    "screens": "a91c84467952cdb7b388fbe14681d815",
+    "films": "c7a6bc588cd77efbac2100bc7fce49b2",
+    "screenings": "c6e407bd0aebe1b004dc9aec17839db0",
+    "seats": "482e56d87fe87241454b493b357681ce",
+    "bookings": "9014cf66913ad75923fc97e341f1ec96",
+    "tickets": "73ff2f44a45e96b66f1104429ebcbdc1",
+    "prices": "4689682b726b1e5365906c2526ee5d2f"
+  },
+  "events": [
+    {
+      "event_type": "login",
+      "count": 3
+    },
+    {
+      "event_type": "logout",
+      "count": 3
+    }
+  ],
+  "commands": [],
+  "secretsRecorded": false,
+  "baseMainCommit": "03375bd",
+  "postgresVersion": "18.7",
+  "backendTests": {
+    "passed": 172,
+    "skipped": 0
+  },
+  "staffTests": {
+    "node": 16,
+    "react": 35
+  },
+  "checks": {
+    "lint": true,
+    "format": true,
+    "build": true,
+    "browser": true
+  },
+  "fixtureStates": {
+    "actualGuestHoldPlaces": ["2", "3", "W1"],
+    "isolatedReadFixtures": {
+      "4": "paid",
+      "5": "reserved",
+      "6": "company_invoiced"
+    },
+    "externalProviderVerified": false
+  },
+  "browser": {
+    "directSignInDetailAndFilters": true,
+    "backToSameList": true,
+    "listLinkAndReload": true,
+    "capacities": [100, 200],
+    "gridCellCounts": [110, 210],
+    "states": [
+      "available",
+      "hold",
+      "reserved",
+      "paid",
+      "company_secured",
+      "ceo"
+    ],
+    "actual100SeatAvailability": {
+      "seated": 94,
+      "wheelchair": 9
+    },
+    "keyboard": {
+      "arrowRight": ["101", "100"],
+      "end": "92",
+      "physicalRow": 10
+    },
+    "mobile": {
+      "viewportWidth": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "mapClientWidth": 333,
+      "mapScrollWidth": 626
+    },
+    "cashiers": ["Oulu", "Tampere"],
+    "foreignDetailFilmAndMapHidden": true
+  },
+  "disposableDatabaseRemoved": true,
+  "privateCredentialFileRemoved": true,
+  "retainedLocalDataChanged": false,
+  "deployedVerification": false,
+  "remainingIssue65": ["scoped booking/contact list and detail UI"],
+  "issueLink": "Refs #65, #32, #13, #15",
+  "uiAlignmentFollowup": {
+    "date": "2026-11-24",
+    "customerSourceModified": false,
+    "additionalBackendChanges": false,
+    "localCustomerPresentationCopies": true,
+    "desktopWordmarkMatches": true,
+    "desktopSeatStylesAndDimensionsMatch": true,
+    "desktopScreenBarMatches": true,
+    "wordmark": {
+      "sizePx": 38,
+      "weight": 900,
+      "letterSpacingPx": -3,
+      "color": "rgb(232, 188, 100)"
+    },
+    "desktopSeat": {
+      "heightPx": 46,
+      "widthPx": 60.6015625,
+      "labelPx": 13,
+      "bottomBorderPx": 4,
+      "radiusPx": [8, 8, 3, 3]
+    },
+    "staffMobile": {
+      "viewportWidth": 390,
+      "height": 844,
+      "documentWidth": 375,
+      "mapClientWidth": 335,
+      "mapScrollWidth": 358,
+      "seatHeightPx": 44,
+      "seatLabelPx": 10,
+      "seatRadiusPx": [5, 5, 2, 2],
+      "reference": "copied customer mobile CSS rule"
+    },
+    "filterControlHeightsPx": [48, 48, 48, 48],
+    "keyboardPhysicalNavigationAndReturn": true,
+    "staffTestsPassed": 51,
+    "customerDataUnchanged": true,
+    "disposableServersAndDatabaseRemoved": true,
+    "privateCredentialFileRemoved": true
+  },
+  "placeContentRefinement": {
+    "date": "2026-11-24",
+    "stateCodeAboveSeatLabel": true,
+    "codes": ["CEO", "A", "H", "R", "P", "C"],
+    "duplicateBadgeRemoved": true,
+    "placeIcons": 0,
+    "realBrowserCellsChecked": 110,
+    "wheelchairSample": ["H", "W1"],
+    "customerSourceChanged": false,
+    "staffTestsPassed": 51
+  },
+  "responsiveLabelRefinement": {
+    "date": "2026-11-24",
+    "desktopPixels": {
+      "seat": 15,
+      "state": 12,
+      "legendBadge": 11.52,
+      "legendText": 18
+    },
+    "narrowPixels": {
+      "seat": 12,
+      "state": 12,
+      "legendText": 16
+    },
+    "viewportWidthsChecked": [320, 390],
+    "documentWidths": [305, 375],
+    "textClippingObserved": false,
+    "responsiveGuidelineRecorded": true
+  },
+  "legendBoxRefinement": {
+    "completedDate": "2026-11-26",
+    "browserVerificationDate": "2026-11-24",
+    "desktopBoxWidthPx": 39.6796875,
+    "desktopBoxHeightPx": 39.6796875,
+    "narrowViewportWidthPx": 320,
+    "narrowDocumentWidthPx": 305,
+    "narrowBoxSizePx": 36,
+    "badgeOverflow": false,
+    "titleCaseDescriptions": true,
+    "uppercaseSeatAndLegendCodes": true,
+    "interruptedFixtureCleanupVerified": true
+  }
+}

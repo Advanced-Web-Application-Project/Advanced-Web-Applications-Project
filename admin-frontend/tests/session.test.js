@@ -173,3 +173,22 @@ test("failed logout can be reconciled with server-owned session state", async ()
   assert.equal(model.getSnapshot().status, "anonymous");
   model.stop();
 });
+
+test("safe return destinations retain delivered detail/list filters and reject redirect injection", () => {
+  for (const path of [
+    "/screenings?dateFrom=2030-01-15&dateTo=2030-01-16&cityId=1&screenId=2",
+    "/screenings/123?dateFrom=2030-01-15&cityId=1",
+  ])
+    assert.equal(safeReturnPath(path), path);
+  for (const path of [
+    "/screenings/0",
+    "/screenings/2147483648",
+    "/screenings/123/other",
+    "/screenings/123?redirect=https://invalid",
+    "/screenings?cityId=1&cityId=2",
+    "/screenings?cityId=javascript:evil",
+    "/screenings#https://invalid",
+    "//evil/screenings/1",
+  ])
+    assert.equal(safeReturnPath(path), "/screenings");
+});

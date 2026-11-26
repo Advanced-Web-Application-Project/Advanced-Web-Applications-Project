@@ -1,3 +1,4 @@
+import { createSeatsRepository } from "../seats/seatsRepository.js";
 import { createStaffScreeningsRepository } from "./staffScreeningsRepository.js";
 import { createStaffScreeningsService } from "./staffScreeningsService.js";
 import { createCinemasRepository } from "../cinemas/cinemasRepository.js";
@@ -14,8 +15,14 @@ export function registerScreeningRoutes(app, pool, staffAuth) {
   const staffService = createStaffScreeningsService(
     createStaffScreeningsRepository(pool),
     createCinemasRepository(pool),
+    createSeatsRepository(pool),
   );
   const staffController = createStaffScreeningsController(staffService);
+  app.get(
+    "/api/staff/screenings/:screeningId",
+    ...staffAuth.requireSession,
+    staffController.detail,
+  );
   app.get(
     "/api/staff/screenings",
     ...staffAuth.requireSession,

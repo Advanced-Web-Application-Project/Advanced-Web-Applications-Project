@@ -1,0 +1,276 @@
+/* Local copies from frontend/src/styles/global.css (24 November 2026).
+ * Customer UI is the visual reference. Keep matching rules in sync deliberately;
+ * staff layout/permissions/occupancy variants stay in this app. */
+:root {
+  --font-body: clamp(1rem, 0.9375rem + 0.25vw, 1.125rem);
+  --font-label: clamp(1rem, 0.96875rem + 0.125vw, 1.0625rem);
+  --font-small: clamp(0.875rem, 0.8125rem + 0.25vw, 1rem);
+  --font-caption: clamp(0.8125rem, 0.78125rem + 0.125vw, 0.875rem);
+  font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+  color: #f2e8d3;
+  background: #100f10;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+body {
+  margin: 0;
+  font-size: var(--font-body);
+  line-height: 1.6;
+}
+.wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-size: 2.375rem;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.1875rem;
+  text-decoration: none;
+}
+.wordmark span {
+  font-weight: 500;
+  font-size: var(--font-caption);
+  letter-spacing: 0.08em;
+}
+.eyebrow {
+  font-size: var(--font-caption);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin: 0 0 1.125rem;
+}
+h1 {
+  font-size: clamp(2.875rem, 5.6vw, 4.625rem);
+  letter-spacing: -0.055em;
+  line-height: 1.06;
+  font-weight: 600;
+  margin: 0;
+}
+h2 {
+  font-size: 1.875rem;
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  margin: 0;
+}
+.intro {
+  color: #c2b3a3;
+  font-size: var(--font-body);
+  line-height: 1.7;
+  margin-block: 1.625rem;
+}
+.selection-field label {
+  display: block;
+  margin-bottom: 0.5625rem;
+  color: #e8bc64;
+  font-size: var(--font-label);
+  font-weight: 600;
+}
+.selection-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  color-scheme: dark;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.75rem 2.75rem 0.75rem 0.875rem;
+  border: 1px solid #7b6142;
+  border-radius: 4px;
+  background-color: #1c1819;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m4 6 4 4 4-4' stroke='%23e8bc64' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  background-size: 1rem;
+  color: #f2e8d3;
+  font: inherit;
+  font-size: var(--font-body);
+  line-height: 1.5;
+  cursor: pointer;
+}
+.selection-field select:hover:not(:disabled) {
+  border-color: #e8bc64;
+}
+.selection-field select:disabled {
+  color: #9c9390;
+  border-color: #493d38;
+  cursor: not-allowed;
+}
+.selection-field select:focus-visible {
+  outline: 3px solid #efc56f;
+  outline-offset: 4px;
+}
+.seat-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  list-style: none;
+  margin: 1.375rem 0;
+  padding: 0;
+  font-size: var(--font-small);
+}
+.seat-legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.legend-place {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5625rem;
+  height: 1.5625rem;
+  border: 1px solid #b99966;
+  border-radius: 5px 5px 2px 2px;
+}
+.seat-layout-content {
+  min-width: 21.875rem;
+}
+.seat-layout {
+  --seat-gap: 0.4375rem;
+  --wheelchair-frame: calc(var(--seat-gap) + 1px);
+  overflow-x: auto;
+  width: min(100%, 45rem);
+  margin: 1.75rem auto;
+  padding: 0.75rem var(--wheelchair-frame);
+}
+.seat-row {
+  display: flex;
+  gap: 0.625rem;
+  align-items: center;
+  margin-block: 0.4375rem;
+}
+.seat-row-label {
+  flex: 0 0 1.5625rem;
+  text-align: center;
+  color: #c2b3a3;
+  font-size: 0.75rem;
+}
+.seat-row-places {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: var(--seat-gap);
+  width: 100%;
+}
+.seat-place {
+  min-width: 0;
+  min-height: 2.875rem;
+  border: 1px solid #b99966;
+  border-bottom-width: 4px;
+  border-radius: 8px 8px 3px 3px;
+  padding: 0.125rem;
+  font-size: 0.8125rem;
+  line-height: 1.1;
+  cursor: pointer;
+}
+.place-available {
+  color: #f2e8d3;
+  background: #211c1d;
+}
+.place-unavailable {
+  color: #b4aaa7;
+  background: #272325;
+  border-color: #655b58;
+}
+.seat-state-symbol {
+  display: block;
+  height: 0.9375rem;
+  font-size: 0.75rem;
+}
+.seat-place:focus-visible {
+  outline: 3px solid #efc56f;
+  outline-offset: 2px;
+  position: relative;
+  z-index: 1;
+}
+.wheelchair-zone {
+  margin-top: 0.5rem;
+  margin-inline: calc(-1 * var(--wheelchair-frame));
+  padding: var(--seat-gap);
+  border: 1px solid #7b6142;
+  border-radius: 8px;
+  background: #1c1819;
+}
+.wheelchair-zone .seat-row {
+  margin-block: 0;
+}
+.wheelchair-place {
+  border-style: solid;
+  border-bottom-width: 1px;
+  border-radius: 4px;
+}
+.auditorium-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(2.5rem, 2.25rem + 1vw, 3rem);
+  margin: clamp(3rem, 2rem + 2vw, 4rem) 8% 0.25rem;
+  padding: 0.375rem 0.75rem;
+  background: #e8bc64;
+  color: #100f10;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: var(--font-body);
+  font-weight: 800;
+}
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  background-color: currentColor;
+  mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  vertical-align: middle;
+}
+
+/* Customer seat-map mobile rules, copied without importing the customer build. */
+@media (max-width: 37.5em) {
+  .seat-layout {
+    --seat-gap: 0.1875rem;
+  }
+  .seat-row {
+    gap: 0.1875rem;
+    margin-block: 0.375rem;
+  }
+  .seat-row-label {
+    flex-basis: 1.125rem;
+    font-size: 0.625rem;
+  }
+  .seat-place {
+    min-height: 2.75rem;
+    font-size: 0.625rem;
+    border-radius: 5px 5px 2px 2px;
+  }
+}
+
+.wordmark,
+.eyebrow {
+  color: #e8bc64;
+}
+:root {
+  --gold: #e8bc64;
+  --muted: #c2b3a3;
+  --border: #7b6142;
+  --panel: #1c1819;
+  --focus: #efc56f;
+}
+/* Staff-only icons use the same local mask component as the customer icons. */
+.icon-calendar {
+  mask-image: url("../assets/icons/calendar.svg");
+}
+.icon-logout {
+  mask-image: url("../assets/icons/logout.svg");
+}
+.icon-lock {
+  mask-image: url("../assets/icons/lock.svg");
+}
+
+/* Customer validation-panel presentation, adapted to the staff error class. */
+.error {
+  margin-top: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-left: 4px solid #e8bc64;
+  background: #32191e;
+}

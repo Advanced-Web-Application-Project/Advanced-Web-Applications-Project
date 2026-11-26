@@ -7,9 +7,10 @@ Helsinki date/range and screen filters. It replaces the #58/#97 landing shell.
 Film/start/city/screen and separate seated/wheelchair availability are real backend
 reads. This is partial progress under #13 → #32 → #65; use **Refs #65**, not Closes.
 
-Booking/contact details, individual occupancy states/maps, detail navigation and
-manual reservations are deliberately absent. They remain later #65 slices and
-#66 respectively. There are no dead detail links or simulated operational data.
+[Read-only screening detail and occupancy maps](STAFF-SCREENING-DETAIL.md) now
+extend this list with six occupancy states and filter-preserving navigation.
+Booking/contact details and manual reservations remain later #65 work and #66
+respectively. There are no simulated operational data or unsupported write controls.
 Films/Prices navigation stays with their delivered administrator features.
 
 No schema migration is needed: current migrations through 0010 provide the data,
@@ -104,7 +105,7 @@ background timers can be throttled. A read never promises that places are held.
 Loading, empty, retry/reset, forbidden, incomplete-inventory and truncated states
 are explicit. Keyboard labels/Tab/Enter and responsive cards work at narrow
 widths. macOS/WebKit selects and date fields use scoped appearance normalization,
-matching 52-pixel control heights and visible dark-theme picker icons. Native
+matching customer-sized control heights and visible dark-theme picker icons. Native
 menus, date pickers and keyboard focus remain available. Booking details and
 allocation controls are absent until implemented.
 
@@ -171,8 +172,8 @@ were not altered by this milestone. See [sanitized evidence](../admin-frontend/v
 | Loading/error/empty/freshness/refresh and stale reply handling | Component checks plus real empty/refresh/filter/browser workflow pass. |
 | Representative real layers, keyboard/mobile and docs | Verified as above, fixtures cleaned up, commands/contracts recorded. |
 
-Next concrete slice: screening detail with a protected occupancy map and narrowly
-scoped booking/contact reads, preserving the list/filter return context. #65
+The subsequent [detail/map milestone](STAFF-SCREENING-DETAIL.md) adds protected
+occupancy and filter return. Next are narrowly scoped booking/contact reads. #65
 remains open until all its criteria pass. #66 reservation writes and #47/#67 hosted
 checks remain separate. No GitHub fields, commits, pushes or branches were changed
 by the implementation agent.

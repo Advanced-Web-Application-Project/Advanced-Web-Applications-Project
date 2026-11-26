@@ -1,3 +1,5 @@
+import { parseDatabaseId } from "../../utils/databaseId.js";
+import { summarizeAvailability } from "../seats/seatsService.js";
 import {
   parseOptionalDatabaseId,
   DatabaseIdError,
@@ -56,8 +58,50 @@ export function parseStaffScreeningFilters(query, today = helsinkiDate()) {
     throw bad("Choose an ordered date range of at most 31 days.");
   return { cityId, screenId, dateFrom, dateTo };
 }
-export function createStaffScreeningsService(repository, cinemas) {
+export function createStaffScreeningsService(repository, cinemas, seats) {
   return {
+    async detail(rawId, actor) {
+      requireStaffPermission(actor, "screenings:read");
+      let id;
+      try {
+        id = parseDatabaseId(rawId, "screeningId");
+      } catch (error) {
+        if (error instanceof DatabaseIdError) throw bad(error.message);
+        throw error;
+      }
+      const snapshot = await seats.findScreeningAvailability(null, id, {
+        includeOccupancy: true,
+        permittedCity: actor.role === "cashier" ? actor.cityId : null,
+      });
+      if (!snapshot)
+        throw new StaffAuthError(
+          404,
+          "SCREENING_NOT_FOUND",
+          "Screening was not found or is not available to your account.",
+        );
+      return {
+        screening: {
+          id: snapshot.screening_id,
+          screen_id: snapshot.screen_id,
+          city_id: snapshot.city_id,
+          city_name: snapshot.city_name,
+          film_id: snapshot.film_id,
+          film_title: snapshot.film_title,
+          screening_time: new Date(snapshot.screening_time).toISOString(),
+        },
+        availability: summarizeAvailability(snapshot),
+        places: snapshot.seats.map((place) => ({
+          id: place.id,
+          screen_id: place.screen_id,
+          display_label: place.display_label,
+          physical_row: place.physical_row,
+          physical_column: place.physical_column,
+          row_label: place.row_label,
+          is_wheelchair: place.is_wheelchair,
+          occupancy_state: place.occupancy_state,
+        })),
+      };
+    },
     async list(query, actor) {
       requireStaffPermission(actor, "screenings:read");
       const filters = parseStaffScreeningFilters(query);

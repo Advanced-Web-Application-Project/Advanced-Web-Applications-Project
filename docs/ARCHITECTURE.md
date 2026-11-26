@@ -24,12 +24,18 @@ Customer and staff remain separate deployable websites with distinct addresses;
 a shared backend/database is compatible with that requirement. Rahti project/
 namespace, actual site/API addresses, intended database endpoint and release
 arrangements still require recording and live verification. The staff session
-shell now exists locally; operational features and separate deployment remain dependencies.
+list and occupancy detail now exist locally; remaining operational features and
+separate deployment remain dependencies.
 
 See [deployment status and verification](DEPLOYMENT.md) for the audited Docker/
 Rahti artifacts and the split between #47 CI/CD and #67 runtime/connectivity.
 The hosting decision is confirmed; the existence of manifests or merged PR #81
 is not evidence that the deployed workflow is complete.
+
+Customer UI is the visual reference for both sites. The user explicitly prefers
+local duplicated presentation code over a shared UI package: see
+[UI consistency and copy ownership](UI-CONSISTENCY.md). This does not duplicate
+backend business logic or merge the applications.
 
 One repository does not require one deployment or an npm workspace. Keep frontend and backend dependencies in their own `package.json` files initially. Introduce root-level tooling only when it solves a concrete need.
 
@@ -64,7 +70,9 @@ frontend owns authorization or directly accesses PostgreSQL. See the
 Staff screening reads remain inside the screenings backend feature, using the
 existing session/actor interface and shared database occupancy predicate. The
 staff `features/screenings/` UI uses its session-aware transport; it never reads
-PostgreSQL or owns availability. See [the #65 list contract](STAFF-SCREENINGS.md).
+PostgreSQL or owns availability. See [the #65 list contract](STAFF-SCREENINGS.md) and [detail/map contract](STAFF-SCREENING-DETAIL.md).
+The detail uses an internal staff-only extension of the common seat snapshot and
+the existing availability summarizer; public customer response fields are preserved.
 
 ## 2. Proposed structure
 
@@ -118,7 +126,7 @@ RIO/
 └── docs/
 ```
 
-The product backlog requires separate customer and staff websites, deployed separately. `frontend/` and `admin-frontend/` express that boundary and use feature-based organization. The staff session shell exists; its operational features remain future work. Both applications may use the same backend, with authorization enforced by the backend. A hidden staff route or separate website is not an authorization mechanism.
+The product backlog requires separate customer and staff websites, deployed separately. `frontend/` and `admin-frontend/` express that boundary and use feature-based organization. The staff session, screening list and read-only occupancy map exist; remaining operational features are future work. Both applications may use the same backend, with authorization enforced by the backend. A hidden staff route or separate website is not an authorization mechanism.
 
 ## 3. Responsibilities and dependency boundaries
 

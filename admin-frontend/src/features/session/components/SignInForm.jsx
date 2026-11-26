@@ -102,7 +102,7 @@ export default function SignInForm() {
             {notice}
           </p>
         )}
-        <form onSubmit={submit} noValidate>
+        <form className="selection-field" onSubmit={submit} noValidate>
           <label htmlFor="email">Email address</label>
           <input
             ref={emailField}

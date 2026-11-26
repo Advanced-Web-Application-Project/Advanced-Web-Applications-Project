@@ -3,8 +3,16 @@
 Independent React/JavaScript/Vite website for #58/#97. Customer `frontend/` stays
 separate; both websites use the same Express services and PostgreSQL records.
 The app delivers real staff sign-in/session recovery and a [city-scoped screening
-list](../docs/STAFF-SCREENINGS.md). Screening detail/occupancy maps remain #65. Film, schedule,
+list](../docs/STAFF-SCREENINGS.md) and [read-only occupancy detail](../docs/STAFF-SCREENING-DETAIL.md).
+Booking/contact details remain #65. Film, schedule,
 price and manual reservation controls remain #59/#60/#61/#66.
+
+## Visual consistency
+
+The customer frontend is the visual reference. Customer presentation rules,
+icons and seat markup are copied locally; staff layouts and occupancy semantics
+extend them. See [copy ownership and future UI guidance](../docs/UI-CONSISTENCY.md).
+No customer-source imports or shared UI package are needed.
 
 ## Local setup
 
