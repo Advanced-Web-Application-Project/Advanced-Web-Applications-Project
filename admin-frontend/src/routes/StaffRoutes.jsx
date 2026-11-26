@@ -11,6 +11,7 @@ import StatusPanel from "../shared/components/StatusPanel.jsx";
 import StaffLayout from "../layouts/StaffLayout.jsx";
 import ScreeningsPage from "../pages/ScreeningsPage.jsx";
 import NotFoundPage from "../pages/NotFoundPage.jsx";
+import PricesPage from "../pages/PricesPage.jsx";
 import { safeReturnPath } from "./returnPath.js";
 
 export default function StaffRoutes() {
@@ -87,6 +88,7 @@ export default function StaffRoutes() {
       <Route element={<StaffLayout />}>
         <Route index element={<Navigate to="/screenings" replace />} />
         <Route path="screenings" element={<ScreeningsPage />} />
+        <Route path="prices" element={<PricesPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
