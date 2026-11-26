@@ -18,7 +18,7 @@ export async function seedDemoPrices({ databaseUrl, mode }) {
     ]) {
       const rows = (
         await client.query(
-          "SELECT id,amount_cents FROM prices WHERE category=$1 ORDER BY id FOR UPDATE",
+          "SELECT id,amount_cents FROM prices WHERE category=$1 AND is_current ORDER BY id FOR UPDATE",
           [category],
         )
       ).rows;

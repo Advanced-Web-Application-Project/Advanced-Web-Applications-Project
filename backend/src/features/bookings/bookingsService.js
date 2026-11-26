@@ -1,3 +1,4 @@
+import { calculateChildAmountCents } from "../prices/pricesService.js";
 import { requireStaffPermission } from "../staff/staffAccess.js";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import {
@@ -157,13 +158,13 @@ function quoteTickets(prices, items) {
       "PRICE_NOT_CONFIGURED",
       "Exactly one positive adult base price must be configured",
     );
- 
+
   return items.map((item) => ({
     ...item,
     priceId: adult[0].id,
     amountCharged:
       item.category === "child"
-       ? Math.ceil(adult[0].amount_cents / 2)
+        ? calculateChildAmountCents(adult[0].amount_cents)
         : adult[0].amount_cents,
   }));
 }

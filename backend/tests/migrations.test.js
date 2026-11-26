@@ -118,6 +118,8 @@ test(
               "0008_checkout_request_identity.sql",
               "0009_staff_identity.sql",
               "0010_staff_sessions.sql",
+              "0011_price_administration.sql",
+              "0012_preserve_price_history.sql",
             ],
             previouslyApplied: 0,
           });
@@ -126,11 +128,11 @@ test(
           assert.equal(schema.tables.length, 15);
           assert.equal(
             schema.constraints.filter((row) => row.type === "f").length,
-            14,
+            15,
           );
           assert.equal(
             schema.constraints.filter((row) => row.type === "c").length,
-            24,
+            26,
           );
           assert.equal(
             schema.constraints.filter((row) => row.type === "p").length,
@@ -190,7 +192,8 @@ test(
               "id screen_id physical_row row_label seat_label is_wheelchair is_ceo_reserved physical_column display_label",
             films: "id title metadata_api_id description artwork_url",
             screenings: "id film_id screen_id screening_time",
-            prices: "id category amount_cents",
+            prices:
+              "id category amount_cents version updated_at updated_by_user_id updated_by_email is_current",
             staff_sessions: "sid sess expire",
             staff_login_attempts: "bucket window_start attempts",
             staff_auth_events: "id actor_user_id event_type occurred_at",
@@ -321,7 +324,7 @@ test(
           const records = await snapshot();
           assert.deepEqual(await migrate(url), {
             applied: [],
-            previouslyApplied: 10,
+            previouslyApplied: 12,
           });
           assert.deepEqual(await snapshot(), records);
           assert.equal(
@@ -348,10 +351,10 @@ test(
                 "SELECT count(*)::int AS count FROM rio_schema_migrations",
               )
             ).rows[0].count,
-            10,
+            12,
           );
           console.log(
-            "Schema evidence: empty → 14 application tables, 14 foreign keys, 24 checks, 13 enabled triggers; linked IDs survive rerun.",
+            "Schema evidence: current migrations preserve linked IDs on rerun.",
           );
         });
       },
@@ -364,7 +367,7 @@ test(
           const results = await Promise.all([migrate(url), migrate(url)]);
           assert.equal(
             results.reduce((count, result) => count + result.applied.length, 0),
-            10,
+            12,
           );
           assert.equal((await inspectDatabase(url)).tables.length, 15);
         });

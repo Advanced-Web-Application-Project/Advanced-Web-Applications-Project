@@ -15,23 +15,6 @@ export function createStaffAuthController(service, config, clearCookie) {
         "A configured staff origin is required.",
       );
   }
-  function checkCsrf(req) {
-    writeOrigin(req);
-    const token = req.get("X-CSRF-Token"),
-      expected = req.session?.csrfToken;
-    if (
-      typeof token !== "string" ||
-      typeof expected !== "string" ||
-      !/^[A-Za-z0-9_-]{43}$/.test(token) ||
-      !/^[A-Za-z0-9_-]{43}$/.test(expected) ||
-      !timingSafeEqual(Buffer.from(token), Buffer.from(expected))
-    )
-      throw new StaffAuthError(
-        403,
-        "CSRF_DENIED",
-        "Refresh the staff session and retry this action.",
-      );
-  }
   function identity(req) {
     return {
       user: {
@@ -83,7 +66,7 @@ export function createStaffAuthController(service, config, clearCookie) {
     },
     async logout(req, res) {
       try {
-        checkCsrf(req);
+        assertStaffCsrf(req, config);
         const userId = req.staffActor.userId;
         await call(req.session, "destroy");
         clearCookie(res);
@@ -94,4 +77,27 @@ export function createStaffAuthController(service, config, clearCookie) {
       }
     },
   };
+}
+
+export function assertStaffCsrf(req, config) {
+  if (req.get("Origin") !== config.origin)
+    throw new StaffAuthError(
+      403,
+      "STAFF_ORIGIN_DENIED",
+      "A configured staff origin is required.",
+    );
+  const token = req.get("X-CSRF-Token"),
+    expected = req.session?.csrfToken;
+  if (
+    typeof token !== "string" ||
+    typeof expected !== "string" ||
+    !/^[A-Za-z0-9_-]{43}$/.test(token) ||
+    !/^[A-Za-z0-9_-]{43}$/.test(expected) ||
+    !timingSafeEqual(Buffer.from(token), Buffer.from(expected))
+  )
+    throw new StaffAuthError(
+      403,
+      "CSRF_DENIED",
+      "Refresh the staff session and retry this action.",
+    );
 }

@@ -105,6 +105,28 @@ export async function migrateDatabase({
     }
     const pending = migrations.slice(applied.length);
     for (const migration of pending) {
+      if (migration.name === "0011_price_administration.sql") {
+        // Prevent 0011's category deduplication from destroying retained IDs.
+        // 0012 restores these exact references before this transaction commits.
+        if (
+          !pending.some(
+            (item) => item.name === "0012_preserve_price_history.sql",
+          )
+        ) {
+          throw new DatabaseCommandError(
+            "Migration 0011 requires the forward history-preservation migration 0012; use the complete current migration set",
+          );
+        }
+        await client.query(
+          "LOCK TABLE public.prices, public.tickets IN ACCESS EXCLUSIVE MODE",
+        );
+        await client.query(
+          "CREATE TEMP TABLE rio_prices_before_0011 ON COMMIT DROP AS SELECT id,category,amount_cents FROM public.prices",
+        );
+        await client.query(
+          "CREATE TEMP TABLE rio_ticket_prices_before_0011 ON COMMIT DROP AS SELECT id,price_id FROM public.tickets",
+        );
+      }
       await client.query(migration.sql);
       await client.query(
         "INSERT INTO public.rio_schema_migrations (name, checksum) VALUES ($1, $2)",

@@ -54,7 +54,7 @@ With this interpretation, the 100-seat screen has labels through 101 and the 200
 
 ### Prices and reservations
 
-- Authorised administrators set the base ticket price. The scope of a price setting remains open.
+- Authorised administrators set one global adult base ticket price in EUR (confirmed 20 November 2026). Child prices are server-derived; positive half cents round up.
 - A child ticket, for a customer aged 12 or under, is priced at 50% of the adult price. This is the normal child category price.
 - A proposed 15% first-time/premiere surcharge remains unconfirmed and must not be silently applied.
 - Confirming a seat selection creates a five-minute checkout hold with a stored expiry deadline; merely choosing seats creates no allocation. Revalidate and allocate atomically at confirmation (confirmed 16 November 2026).
@@ -162,7 +162,7 @@ the schema/CLI alone does not complete RIO-02.
 - A confirmed purchase preserves the prices actually charged when future price settings change.
 - Calculations use an agreed currency/rounding policy; the unconfirmed premiere surcharge is not applied.
 
-**Dependencies:** RIO-02, RIO-04. **Open:** Price scope, price changes during checkout, currency/rounding (O-06).
+**Dependencies:** RIO-02, RIO-04. **Confirmed:** global adult EUR price; half-price child tickets with positive half cents rounded up; price changes require customer quote re-review. See [pricing correction and migration safety](PRICE-ADMINISTRATION.md), #106.
 
 ### RIO-06 — Browse films by city and select a screening
 
@@ -417,7 +417,7 @@ local verification.
 - **Access control:** Enforce role, city, and customer ownership rules for all relevant reads and writes.
 - **Usability and accessibility:** Apply gold/red/black with readable contrast; core booking actions support keyboard use, clear labels, and understandable validation. Agree a simple end-to-end usability exercise with the teacher.
 - **Maintainability:** Keep seating, pricing, payment, and reservation-expiry rules clearly structured; document configuration and local setup. Verify critical rules and failure cases with meaningful tests.
-- **Financial consistency:** Retain charged amounts and distinguish booking status, payment status, and invoice status. Settle rounding and currency before price acceptance tests are finalised.
+- **Financial consistency:** Retain charged amounts and distinguish booking status, payment status, and invoice status. Use the confirmed global EUR adult/child rounding policy when checking price acceptance.
 - **Time consistency:** Display local cinema times clearly and calculate deadlines consistently in Europe/Helsinki.
 
 ## Open decision register
@@ -431,7 +431,7 @@ These are refinement tasks, not reasons to stop work on independent items. Custo
 | O-03 | Confirmed 20 November 2026: administrator both cities and film/schedule/price writes; cashier own-city operational reads/manual reservations; email/password with server-managed sessions and operator CLI provisioning. #33 provides the identity foundation; #35 implements local HTTP enforcement, with hosted verification still open. No ordinary staff CEO release. | RIO-02, 05, 11 |
 | O-04 | TMDB selected 19 November 2026; initial import fields: title, description (overview), optional artwork URL, English/en-US. Further staff metadata requirements remain open.                                                                                                              | RIO-03, 06                |
 | O-05 | Define duration/turnaround and changes/cancellation of screenings with bookings.                                                                                                                                                                                                         | RIO-04                    |
-| O-06 | Guest checkout uses EUR and re-review on price/context changes (confirmed 20 November 2026); local demo prices are adult €12/child €6. Production base-price scope/permissions and odd-cent rounding remain open; no unconfirmed premiere surcharge.                                                                                                                                                       | RIO-05, 09                |
+| O-06 | Guest checkout uses EUR and re-review on price/context changes (confirmed 20 November 2026); local demo prices are adult €12/child €6. One global adult EUR price, administrator-only writes and positive half-cent rounding up are confirmed; child/company overrides are excluded from MVP. #106 corrects the original #61 implementation; no premiere surcharge.                                                                                                                                                       | RIO-05, 09                |
 | O-07 | Checkout hold duration is five minutes (confirmed 16 November 2026); active holds count as occupied and only newly created internal gaps fail (confirmed 18 November 2026). Payment after hold expiry remains open.                                                                      | RIO-07–09                 |
 | O-08 | Guest MVP collects email only (confirmed 20 November 2026). Confirmation delivery/retrieval, ticket admission validation and Stripe setup remain open.                                                                                                                                                                              | RIO-09–10                 |
 | O-09 | Confirm six-place threshold counting; agree online/cinema settlement, manual reservation deadlines, and payment at the two-hour cutoff.                                                                                                                                                  | RIO-11, 14–16             |

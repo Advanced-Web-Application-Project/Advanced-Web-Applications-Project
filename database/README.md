@@ -382,7 +382,11 @@ reset is needed. Do not use this local fixture command on CSC/shared databases.
 The user confirmed email-only guest checkout and EUR on 20 November 2026.
 From `backend/`, `npm run db:seed:demo-prices` adds adult 1200 and child 600 cents
 only to a guarded isolated local database. Reruns keep matching settings; different
-or duplicate existing prices cause rollback instead of overwriting them. Runtime
+or duplicate current prices cause rollback instead of overwriting them. Runtime
 child quotes still derive exactly half the authoritative adult base price.
 This is explicit demo setup, not a production price-administration feature.
 See [guest checkout verification](../docs/GUEST-CHECKOUT.md).
+
+## Price administration upgrade
+
+Runtime now requires migrations through 0012. Read [the migration/adoption procedure](../docs/PRICE-ADMINISTRATION.md) before upgrading: the complete guarded runner preserves pre-0011 IDs and ticket references inside one transaction. An already-committed 0011 cannot reconstruct deleted references without a reliable backup. No shared/CSC adoption is implied by local tests.

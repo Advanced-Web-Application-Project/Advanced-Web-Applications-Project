@@ -199,7 +199,7 @@ test(
         assert.equal(hold.status, 201);
         assert.equal(hold.body.data.totalCents, 2400);
         await c.query(
-          "UPDATE prices SET amount_cents=1200 WHERE category='adult'",
+          "UPDATE prices SET amount_cents=1200,is_current=TRUE WHERE category='adult'",
         );
       },
     );
@@ -248,7 +248,7 @@ test(
           assert.equal(response.body.code, "INVALID_SELECTION");
         }
         await c.query(
-          "UPDATE prices SET amount_cents=0 WHERE category='adult'",
+          "UPDATE prices SET is_current=FALSE WHERE category='adult'",
         );
         const before = await snapshot(),
           missing = await post("/bookings/quote", s.body);
@@ -261,7 +261,7 @@ test(
       "demo price setup is repeatable and never overwrites differing existing settings",
       async () => {
         await c.query(
-          "UPDATE prices SET amount_cents=1200 WHERE category='adult'",
+          "UPDATE prices SET amount_cents=1200,is_current=TRUE WHERE category='adult'",
         );
         await seedDemoPrices(target);
         await c.query(

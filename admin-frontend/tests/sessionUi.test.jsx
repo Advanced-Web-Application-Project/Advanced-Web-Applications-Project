@@ -157,7 +157,9 @@ test.each([
       screen.getByRole("navigation", { name: "Staff navigation" }).textContent,
     ).toContain("Screenings");
     expect(screen.queryByRole("link", { name: "Films" })).toBe(null);
-    expect(screen.queryByRole("link", { name: "Prices" })).toBe(null);
+    expect(Boolean(screen.queryByRole("link", { name: "Prices" }))).toBe(
+      role === "administrator",
+    );
     expect(
       screen.getByRole("region", { name: "Staff screenings" }),
     ).toBeTruthy();

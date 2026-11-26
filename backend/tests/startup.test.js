@@ -122,7 +122,10 @@ test("existing GET routes retain response envelopes and parameter binding", asyn
   ]) {
     const response = await fetch(base + path);
     assert.equal(response.status, 200, path);
-    assert.deepEqual(await response.json(), { success: true, data: [row] });
+    assert.deepEqual(await response.json(), {
+      success: true,
+      data: path === "/api/prices" ? [] : [row],
+    });
   }
   assert.equal((await fetch(`${base}/api/bookings?screeningId=7`)).status, 401);
   for (const resource of ["cities", "screens", "films"]) {

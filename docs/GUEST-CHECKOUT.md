@@ -96,7 +96,7 @@ From `frontend/`, run `npm run dev`; use existing presentation movies such as Ho
 on 21 November. The price command refuses nonlocal/unapproved database targets,
 is repeatable for matching values and rolls back rather than overwriting differing
 or duplicate settings. This is approved demo configuration; production price
-permissions/settings remain #61.
+permissions/settings are implemented with corrective follow-up #106; see [price administration](PRICE-ADMINISTRATION.md).
 
 ## Verification and acceptance — 20 November 2026
 

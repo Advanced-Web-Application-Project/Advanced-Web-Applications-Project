@@ -28,7 +28,8 @@ export default function PricesPage() {
         Prices
       </h1>
       <p className="intro">
-        Manage the global adult ticket price and preview the derived child price.
+        Manage the global adult ticket price and preview the derived child
+        price.
       </p>
       <AdminPricesView />
     </>

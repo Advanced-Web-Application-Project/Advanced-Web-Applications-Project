@@ -1,3 +1,4 @@
+import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   render,
@@ -183,5 +184,82 @@ describe("Issue #61: AdminPricesView and PricesPage", () => {
       screen.getByRole("heading", { name: /access denied/i }),
     ).not.toBeNull();
     expect(mockRequest).not.toHaveBeenCalled();
+  });
+});
+
+describe("price editor regressions", () => {
+  beforeEach(() => {
+    mockRequest.mockReset();
+  });
+  afterEach(cleanup);
+  it("keeps the same input focused through normal typing without refetching", async () => {
+    mockRequest.mockResolvedValue(samplePrices);
+    const user = userEvent.setup();
+    render(<AdminPricesView />);
+    const input = await screen.findByLabelText(/adult ticket price/i);
+    await user.clear(input);
+    await user.type(input, "12.01");
+    expect(document.activeElement).toBe(input);
+    expect(input.value).toBe("12.01");
+    expect(mockRequest).toHaveBeenCalledTimes(1);
+  });
+  it("uses the adult revision even if another category is first", async () => {
+    mockRequest.mockImplementation(async (_path, options = {}) =>
+      options.method === "PUT"
+        ? { updated: [{ category: "adult", amount_cents: 1300, version: 8 }] }
+        : [
+            { category: "company", amount_cents: 1, version: 2 },
+            { category: "adult", amount_cents: 1200, version: 7 },
+          ],
+    );
+    const user = userEvent.setup();
+    render(<AdminPricesView />);
+    const input = await screen.findByLabelText(/adult ticket price/i);
+    await user.clear(input);
+    await user.type(input, "13");
+    await user.click(screen.getByRole("button", { name: "Save price" }));
+    await screen.findByText(/saved €13.00/i);
+    expect(
+      mockRequest.mock.calls.find(([, o]) => o.method === "PUT")[1].body
+        .expectedVersion,
+    ).toBe(7);
+  });
+  it("requires a read after an unknown save outcome, preserves draft and never replays writes", async () => {
+    let reads = 0;
+    mockRequest.mockImplementation(async (_path, options = {}) => {
+      if (options.method === "PUT")
+        throw Object.assign(new Error("timeout"), { status: 0 });
+      reads++;
+      return [
+        {
+          category: "adult",
+          amount_cents: reads > 1 ? 1401 : 1200,
+          version: reads > 1 ? 4 : 3,
+        },
+      ];
+    });
+    const user = userEvent.setup();
+    render(<AdminPricesView />);
+    const input = await screen.findByLabelText(/adult ticket price/i);
+    await user.clear(input);
+    await user.type(input, "14.01");
+    await user.click(screen.getByRole("button", { name: "Save price" }));
+    await screen.findByRole("alert");
+    expect(screen.getByRole("button", { name: "Save price" }).disabled).toBe(
+      true,
+    );
+    await user.type(input, "0");
+    expect(screen.getByRole("button", { name: "Save price" }).disabled).toBe(
+      true,
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Reload latest prices" }),
+    );
+    await screen.findByText(/Latest prices loaded/i);
+    expect(screen.getByLabelText(/adult ticket price/i)).toBe(input);
+    expect(input.value).toBe("14.010");
+    expect(
+      mockRequest.mock.calls.filter(([, o]) => o.method === "PUT"),
+    ).toHaveLength(1);
   });
 });

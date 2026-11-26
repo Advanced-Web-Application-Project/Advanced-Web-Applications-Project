@@ -53,8 +53,8 @@ redesign remain future work.
 ## Booking allocation safeguards
 
 The corrected booking API creates owned five-minute unpaid holds and retains
-history on release. The booking API requires migrations through 0008; local staff
-provisioning additionally requires 0009, and staff sessions require 0010. Apply current migrations only to the
+history on release. Current runtime pricing requires migrations through 0012; staff provisioning and
+sessions also require 0009–0010. Read [pricing migration safety](docs/PRICE-ADMINISTRATION.md) before upgrading past 0010. Apply current migrations only to the
 explicit development target described in the database guide.
 See [the contract, verification and remaining work](docs/BOOKING-SAFEGUARDS.md).
 Optional private request keys now support [retry-safe hold creation](docs/CHECKOUT-HOLD-RETRIES.md).
@@ -127,7 +127,7 @@ a disposable PostgreSQL recipe and explains the migration target safeguards.
 Application setup lives in `backend/src/app.js` and has no listening side effect.
 Runtime orchestration lives in `backend/src/server.js`; `backend/server.js` loads
 the environment and handles process signals. Shared configuration is in
-`backend/src/config/`. `backend/api.js` composes the feature routes and retains the legacy price read.
+`backend/src/config/`. `backend/api.js` composes feature routes, including public prices and protected price administration.
 City/screen reads, film reads, screenings, seats and bookings follow their feature
 layers in `backend/src/features/`. See the [browsing contracts and closure evidence](docs/API-BROWSING.md). See the [screening API contract](docs/API-SCREENINGS.md). New business logic should follow the feature
 boundaries in the architecture guide as those features are implemented.

@@ -38,7 +38,7 @@ One repository does not require one deployment or an npm workspace. Keep fronten
 City/screen reads live in `backend/src/features/cinemas/`; film reads share the
 existing `films/` feature with the separate metadata importer. Each follows
 route → controller → service → repository. `backend/api.js` composes feature
-routes and retains only the legacy price read. Customer `features/movies/`
+routes including the prices feature. Customer `features/movies/`
 provides retained title/description details through the shared API client; it
 does not request third-party media. See [the current browsing contract](API-BROWSING.md).
 
@@ -200,3 +200,9 @@ Call hooks at the top level of React function components or custom hooks, not in
 Middleware receives `req`, `res`, and `next`; it either completes the response or passes control onward. Express error middleware has four parameters: `(err, req, res, next)` and is registered after routes. Preserve raw request data for payment-signature verification if the chosen provider requires it; account for this when ordering body parsers.
 
 Hooks and middleware solve different problems and do not replace each other. Ordinary API helpers, SQL repositories, and business functions are neither React hooks nor Express middleware.
+
+## Price feature
+
+`features/prices/` owns administrator pricing writes and public/protected projections.
+Checkout reuses the authoritative current adult setting; React owns only a draft
+and preview. See [pricing contracts and history-safe migration](PRICE-ADMINISTRATION.md).

@@ -1,6 +1,9 @@
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
-import { createStaffAuthController } from "./staffAuthController.js";
+import {
+  createStaffAuthController,
+  assertStaffCsrf,
+} from "./staffAuthController.js";
 import { createStaffAuthRepository } from "./staffAuthRepository.js";
 import {
   createStaffAuthService,
@@ -42,6 +45,15 @@ export function registerStaffAuthRoutes(app, pool, config) {
             ),
           ),
       ],
+      requireCsrf: (_req, res) =>
+        sendStaffError(
+          res,
+          new StaffAuthError(
+            401,
+            "STAFF_AUTH_REQUIRED",
+            "Staff sign-in is required.",
+          ),
+        ),
       close: async () => {},
     };
   }
@@ -150,6 +162,14 @@ export function registerStaffAuthRoutes(app, pool, config) {
   app.post("/api/staff/logout", authenticate, controller.logout);
   return {
     requireSession: [noStore, origin, cookies, authenticate],
+    requireCsrf: (req, res, next) => {
+      try {
+        assertStaffCsrf(req, config);
+        next();
+      } catch (error) {
+        sendStaffError(res, error);
+      }
+    },
     close: () => store.close(),
   };
 }
