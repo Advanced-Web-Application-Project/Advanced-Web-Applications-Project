@@ -23,7 +23,7 @@ Vite forwards `/api` to `http://127.0.0.1:3000`, preserving the browser origin.
 Use the same loopback hostname throughout; do not mix localhost and 127.0.0.1.
 
 The backend needs a deliberately selected isolated PostgreSQL database migrated
-through 0010, real CLI-provisioned staff accounts, distinct customer/staff origins
+through 0012 (see [pricing migration safety](../docs/PRICE-ADMINISTRATION.md)), real CLI-provisioned staff accounts, distinct customer/staff origins
 and a private session secret. Follow the [database guide](../database/README.md),
 [provisioning guide](../docs/STAFF-PROVISIONING.md) and
 [session configuration](../docs/API-STAFF-AUTH.md#configuration-and-local-setup).
@@ -76,3 +76,7 @@ image/container execution is claimed. CI integration is #47; separate Rahti
 routes, real cross-site cookies, ingress and runtime verification remain #67.
 
 See [behavior, contracts and acceptance evidence](../docs/STAFF-APP.md).
+
+## Price settings
+
+Administrators can edit the global adult EUR price at `/prices`; child prices are derived. Revision conflicts and unconfirmed saves require a fresh read and explicit review before another save. See [the API, setup and verification](../docs/PRICE-ADMINISTRATION.md). Keep this UI consistent with customer form styles using local copies and responsive layouts.

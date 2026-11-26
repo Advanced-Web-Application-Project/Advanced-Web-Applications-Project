@@ -7,7 +7,7 @@ export default function StaffLayout() {
   const { model, session } = useSession(),
     { user } = session,
     location = useLocation();
-    const isAdmin = user?.role === "administrator";
+  const isAdmin = user?.role === "administrator";
   const [city, setCity] = useState(null),
     [cityError, setCityError] = useState(false),
     [attempt, setAttempt] = useState(0);
@@ -38,8 +38,6 @@ export default function StaffLayout() {
           to="/screenings"
           aria-label="RIO staff home"
         >
-        
-          
           RIO <span>staff</span>
         </NavLink>
         <p className="nav-label">Workspace</p>

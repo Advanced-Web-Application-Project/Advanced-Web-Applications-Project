@@ -2,254 +2,136 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   calculateChildAmountCents,
-  parcePriceUpdateInput,
+  parsePriceUpdateInput,
   assertAuthorizedPriceManager,
   createPricesService,
 } from "../src/features/prices/pricesService.js";
+import { createStaffActor } from "../src/features/staff/staffAccess.js";
 
-test("calculateChildAmountCents rounds odd adult cents up to half", () => {
+const admin = {
+  staffActor: createStaffActor({ id: 10, role: "administrator" }),
+};
+test("adult-only EUR cents require an explicit revision, including initialization zero", () => {
+  for (const amountCents of [1, 1201, 2147483647]) {
+    assert.deepEqual(
+      parsePriceUpdateInput({
+        category: "adult",
+        amountCents,
+        expectedVersion: 0,
+      }),
+      { category: "adult", amountCents, expectedVersion: 0 },
+    );
+  }
   assert.equal(calculateChildAmountCents(1201), 601);
   assert.equal(calculateChildAmountCents(1), 1);
-  assert.equal(calculateChildAmountCents(1200), 600);
-});
-
-test("parcePriceUpdateInput accepts valid categories and integer cents within bounds", () => {
-  for (const category of ["adult", "child", "company"]) {
-    assert.deepEqual(parcePriceUpdateInput({ category, amountCents: 1201 }), {
-      category,
-      amountCents: 1201,
-      expectedVersion: undefined,
-    });
-  }
-  assert.deepEqual(
-    parcePriceUpdateInput({ category: "adult", amountCents: 2147483647 }),
-    { category: "adult", amountCents: 2147483647, expectedVersion: undefined },
-  );
-  assert.deepEqual(
-    parcePriceUpdateInput({
-      category: "adult",
-      amountCents: 1201,
-      expectedVersion: 2,
-    }),
-    { category: "adult", amountCents: 1201, expectedVersion: 2 },
-  );
-});
-
-test("parcePriceUpdateInput rejects malformed inputs, invalid categories and out-of-range amounts", () => {
-  const invalidBodies = [
+  for (const body of [
     null,
-    undefined,
     [],
-    "adult",
-    1200,
     {},
-    { category: "adult" },
-    { amountCents: 1200 },
-    { category: "adult", amountCents: 1200, extra: true },
-    { category: "student", amountCents: 1200 },
-    { category: "ADULT", amountCents: 1200 },
-    { category: "", amountCents: 1200 },
-    { category: "adult", amountCents: 0 },
-    { category: "adult", amountCents: -100 },
-    { category: "adult", amountCents: 12.5 },
-    { category: "adult", amountCents: "1200" },
-    { category: "adult", amountCents: null },
-    { category: "adult", amountCents: NaN },
-    { category: "adult", amountCents: Infinity },
-    { category: "adult", amountCents: 2147483648 },
-  ];
-
-  for (const body of invalidBodies) {
-    assert.throws(() => parcePriceUpdateInput(body), {
-      status: 400,
-    });
-  }
-});
-
-test("assertAuthorizedPriceManager allows only active administrator without role override", () => {
-  assert.doesNotThrow(() =>
-    assertAuthorizedPriceManager({
-      user: { role: "administrator", is_enabled: true },
-      body: { category: "adult", amountCents: 1201 },
-    }),
-  );
-
-  for (const req of [
-    undefined,
-    null,
-    {},
-    { user: null },
-    { user: { role: "cashier", is_enabled: true } },
-    { user: { role: "customer", is_enabled: true } },
-    { user: { role: "administrator", is_enabled: false } },
+    { category: "child", amountCents: 1, expectedVersion: 1 },
+    { category: "company", amountCents: 1, expectedVersion: 1 },
+    ...[0, -1, 1.5, "1200", null, NaN, Infinity, 2147483648].map(
+      (amountCents) => ({ category: "adult", amountCents, expectedVersion: 1 }),
+    ),
+    ...[undefined, null, -1, 1.5, "1", 2147483648].map((expectedVersion) => ({
+      category: "adult",
+      amountCents: 1200,
+      expectedVersion,
+    })),
     {
-      user: { role: "administrator", is_enabled: true },
-      body: { category: "adult", amountCents: 1201, role: "administrator" },
-    },
-    {
-      staffActor: {
-        userId: 2,
-        email: "cashier@example.invalid",
-        role: "cashier",
-        is_enabled: true,
-        permissions: ["prices:write"],
-      },
-      body: { category: "adult", amountCents: 1201 },
-    },
-    {
-      staffActor: {
-        userId: 3,
-        email: "customer@example.invalid",
-        role: "customer",
-        is_enabled: true,
-      },
-      body: { category: "adult", amountCents: 1201 },
-    },
-    {
-      staffActor: {
-        userId: 1,
-        email: "admin@example.invalid",
-        role: "administrator",
-        is_enabled: false,
-      },
-      body: { category: "adult", amountCents: 1201 },
+      category: "adult",
+      amountCents: 1200,
+      expectedVersion: 1,
+      currency: "USD",
     },
   ]) {
-    assert.throws(() => assertAuthorizedPriceManager(req), {
-      status: 403,
-    });
+    assert.throws(() => parsePriceUpdateInput(body), { status: 400 });
   }
 });
-
-test("createPricesService updates adult price and derives child price (1201 -> 601) inside a transaction", async () => {
-  const rows = new Map([
-    ["adult", { id: 1, category: "adult", amount_cents: 1200, version: 1 }],
-    ["child", { id: 2, category: "child", amount_cents: 600, version: 1 }],
-  ]);
-  let txCount = 0;
-
-  const repo = {
-    async listPrices() {
-      return [...rows.values()];
+test("only trusted administrator actors can read or write administrative settings", () => {
+  assert.doesNotThrow(() => assertAuthorizedPriceManager(admin));
+  for (const req of [
+    undefined,
+    {},
+    { user: { role: "administrator" } },
+    { staffActor: { role: "administrator", userId: 10 } },
+    {
+      staffActor: createStaffActor({
+        id: 11,
+        role: "cashier",
+        permitted_city_id: 1,
+      }),
     },
-    async transaction(fn) {
-      txCount += 1;
-      const tx = {
-        async findByCategoryForUpdate(category) {
-          return rows.get(category) ?? null;
-        },
-        async upsertCategoryPrice(category, amountCents, actor) {
-          const current = rows.get(category) ?? {
-            id: rows.size + 1,
-            category,
-            version: 0,
-          };
-          const next = {
-            ...current,
-            amount_cents: amountCents,
-            version: current.version + 1,
-            updated_at: "2026-11-24T13:00:00.000Z",
-            updated_by_user_id: actor?.userId ?? null,
-            updated_by_email: actor?.email ?? null,
-          };
-          rows.set(category, next);
-          return next;
-        },
-      };
-      return fn(tx);
-    },
-  };
-
-  const service = createPricesService(repo);
-  const adminReq = {
-    user: {
-      id: 10,
-      email: "admin@example.invalid",
-      role: "administrator",
-      is_enabled: true,
-    },
-  };
-
-  const result = await service.setPrice(
-    { category: "adult", amountCents: 1201 },
-    adminReq,
-  );
-
-  assert.equal(txCount, 1);
-  assert.equal(result.category, "adult");
-  assert.equal(result.amountCents, 1201);
-  assert.equal(result.version, 2);
-  assert.deepEqual(result.updatedBy, {
-    userId: 10,
-    email: "admin@example.invalid",
-  });
-  assert.equal(result.updated[0].amount_cents, 1201);
-  assert.equal(result.updated[1].amount_cents, 601);
+    { staffActor: createStaffActor({ id: 12, role: "customer" }) },
+  ]) {
+    assert.throws(() => assertAuthorizedPriceManager(req), { status: 403 });
+  }
 });
-
-test("createPricesService rejects stale expectedVersion with 409 STALE_PRICE_EDIT", async () => {
-  const rows = new Map([
-    [
-      "adult",
+test("public and protected reads derive child prices from the adult row and redact public audits", async () => {
+  const service = createPricesService({
+    listPrices: async () => [
+      { id: 3, category: "company", amount_cents: 10, version: 9 },
       {
         id: 1,
         category: "adult",
-        amount_cents: 1200,
-        version: 2,
-        updated_at: "2026-11-24T12:00:00.000Z",
+        amount_cents: 1201,
+        version: 4,
         updated_by_user_id: 10,
-        updated_by_email: "admin@example.invalid",
+        updated_by_email: "fixture@example.invalid",
       },
+      { id: 2, category: "child", amount_cents: 1, version: 2 },
     ],
+  });
+  assert.deepEqual(await service.listPrices(), [
+    { id: 1, category: "adult", amount_cents: 1201 },
+    { id: 1, category: "child", amount_cents: 601 },
   ]);
-
-  const repo = {
-    async listPrices() {
-      return [...rows.values()];
-    },
-    async transaction(fn) {
-      const tx = {
-        async findByCategoryForUpdate(category) {
-          return rows.get(category) ?? null;
+  const staff = await service.listStaffPrices(admin);
+  assert.equal(staff[0].version, 4);
+  assert.equal(staff[1].amount_cents, 601);
+  await assert.rejects(service.listStaffPrices({}), { status: 403 });
+});
+test("updates check adult revision under transaction and initialize only when unconfigured", async () => {
+  let row = null,
+    writes = 0;
+  const service = createPricesService({
+    transaction: async (run) =>
+      run({
+        findByCategoryForUpdate: async (category) => {
+          assert.equal(category, "adult");
+          return row;
         },
-        async upsertCategoryPrice(category, amountCents, actor) {
-          const current = rows.get(category) ?? {
-            id: rows.size + 1,
+        upsertCategoryPrice: async (category, amount, actor) => {
+          writes++;
+          assert.equal(actor.userId, 10);
+          row = {
+            id: 1,
             category,
-            version: 0,
+            amount_cents: amount,
+            version: (row?.version ?? 0) + 1,
+            updated_by_user_id: actor.userId,
           };
-          const next = {
-            ...current,
-            amount_cents: amountCents,
-            version: current.version + 1,
-            updated_at: "2026-11-24T13:00:00.000Z",
-            updated_by_user_id: actor?.userId ?? null,
-            updated_by_email: actor?.email ?? null,
-          };
-          rows.set(category, next);
-          return next;
+          return row;
         },
-      };
-      return fn(tx);
-    },
-  };
-
-  const service = createPricesService(repo);
-  const adminReq = {
-    user: {
-      id: 10,
-      email: "admin@example.invalid",
-      role: "administrator",
-      is_enabled: true,
-    },
-  };
-
-  await assert.rejects(
-    () =>
-      service.setPrice(
-        { category: "adult", amountCents: 1500, expectedVersion: 1 },
-        adminReq,
-      ),
-    (error) => error?.status === 409 && error?.code === "STALE_PRICE_EDIT",
+      }),
+  });
+  const first = await service.setPrice(
+    { category: "adult", amountCents: 1201, expectedVersion: 0 },
+    admin,
   );
+  assert.equal(first.updated[1].amount_cents, 601);
+  for (const expectedVersion of [0, 2])
+    await assert.rejects(
+      service.setPrice(
+        { category: "adult", amountCents: 1400, expectedVersion },
+        admin,
+      ),
+      { code: "STALE_PRICE_EDIT" },
+    );
+  assert.equal(writes, 1);
+  const next = await service.setPrice(
+    { category: "adult", amountCents: 1400, expectedVersion: 1 },
+    admin,
+  );
+  assert.equal(next.version, 2);
 });

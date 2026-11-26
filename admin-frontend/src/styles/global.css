@@ -535,3 +535,62 @@ select {
     font-size: 0.8rem;
   }
 }
+
+/* Local customer UI patterns: responsive panels, gold actions and readable forms. */
+.price-admin {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 3vw, 2rem);
+}
+.price-summary,
+.price-form {
+  min-width: 0;
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 1px solid #b49a63;
+  border-radius: 0.75rem;
+  background: #211e1e;
+}
+.price-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.price-meta {
+  display: grid;
+  gap: 1rem;
+}
+.price-meta div {
+  display: grid;
+  grid-template-columns: minmax(6rem, 1fr) minmax(0, 2fr);
+  gap: 1rem;
+}
+.price-meta dt {
+  font-weight: 600;
+}
+.price-meta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.price-form input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.75rem;
+  font: inherit;
+  color: inherit;
+  background: #0d0d0d;
+  border: 1px solid #b49a63;
+  border-radius: 0.5rem;
+}
+.price-form .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.price-form .form-actions button {
+  flex: 1 1 10rem;
+}
+@media (max-width: 48rem) {
+  .price-admin {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

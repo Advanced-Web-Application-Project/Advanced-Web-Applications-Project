@@ -639,7 +639,7 @@ test(
         }),
     );
     await t.test(
-      "missing, duplicate or odd child price configuration fails without allocating; late ticket failure rolls everything back",
+      "missing current adult settings fail and historical duplicates stay out of quotes; late ticket failure rolls everything back",
       async () =>
         database(async ({ c, data, places, book, count }) => {
           const screen = data.cities[0].screens[0],
@@ -651,16 +651,14 @@ test(
           await c.query(
             "INSERT INTO prices(category,amount_cents) VALUES ('adult',1201)",
           );
-          assert.equal(
-            (await book(screen, [{ seatId: id, category: "child" }])).status,
-            503,
+          await c.query(
+            "UPDATE prices SET is_current=FALSE WHERE category='adult'",
           );
+          assert.equal((await book(screen, [id])).status, 503);
           await c.query(
             "INSERT INTO prices(category,amount_cents) VALUES ('adult',1200)",
           );
-          assert.equal((await book(screen, [id])).status, 503);
           assert.deepEqual(await count(), before);
-          await c.query("DELETE FROM prices WHERE amount_cents=1201");
           await c.query(
             "CREATE FUNCTION reject_customer_ticket() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.ticket_category='child' THEN RAISE EXCEPTION 'simulated write failure'; END IF; RETURN NEW; END; $$; CREATE TRIGGER zz_reject_customer_ticket BEFORE INSERT ON tickets FOR EACH ROW EXECUTE FUNCTION reject_customer_ticket()",
           );

@@ -88,7 +88,7 @@ describe("createPriceAdminService", () => {
     const rows = await service.listPrices(controller.signal);
 
     assert.equal(calls.length, 1);
-    assert.equal(calls[0].path, "/prices");
+    assert.equal(calls[0].path, "/staff/prices");
     assert.equal(calls[0].options.signal, controller.signal);
     assert.equal(rows[0].amountCents, 1200);
   });
@@ -124,8 +124,7 @@ describe("createPriceAdminService", () => {
 
     const service = createPriceAdminService(model);
     await assert.rejects(
-      () =>
-        service.updateAdultPrice({ amountCents: 1500, expectedVersion: 1 }),
+      () => service.updateAdultPrice({ amountCents: 1500, expectedVersion: 1 }),
       (err) => err?.status === 409,
     );
   });

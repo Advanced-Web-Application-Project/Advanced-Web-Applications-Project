@@ -125,7 +125,7 @@ export function createBookingsRepository(pool) {
           async readPrices() {
             return (
               await client.query(
-                "SELECT id,category,amount_cents FROM prices WHERE category='adult' ORDER BY id FOR SHARE",
+                "SELECT id,category,amount_cents FROM prices WHERE category='adult' AND is_current ORDER BY id FOR SHARE",
               )
             ).rows;
           },
