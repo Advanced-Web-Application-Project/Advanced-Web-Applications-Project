@@ -118,23 +118,24 @@ test(
               "0008_checkout_request_identity.sql",
               "0009_staff_identity.sql",
               "0010_staff_sessions.sql",
+              "0011_customer_sessions.sql",
             ],
             previouslyApplied: 0,
           });
           const schema = await inspectDatabase(url);
           assert.deepEqual(schema.missingTables, []);
-          assert.equal(schema.tables.length, 15);
+          assert.equal(schema.tables.length, 17);
           assert.equal(
             schema.constraints.filter((row) => row.type === "f").length,
             14,
           );
           assert.equal(
             schema.constraints.filter((row) => row.type === "c").length,
-            24,
+            25,
           );
           assert.equal(
             schema.constraints.filter((row) => row.type === "p").length,
-            15,
+            17,
           );
           assert.deepEqual(
             schema.triggers.map((row) => [row.name, row.enabled]),
@@ -194,6 +195,8 @@ test(
             staff_sessions: "sid sess expire",
             staff_login_attempts: "bucket window_start attempts",
             staff_auth_events: "id actor_user_id event_type occurred_at",
+            customer_sessions: "sid sess expire",
+            customer_login_attempts: "bucket window_start attempts",
             users:
               "id role permitted_city_id email password_hash loyalty_progress login_email is_enabled session_version provisioned_at credentials_changed_at disabled_at",
             bookings:
@@ -321,7 +324,7 @@ test(
           const records = await snapshot();
           assert.deepEqual(await migrate(url), {
             applied: [],
-            previouslyApplied: 10,
+            previouslyApplied: 11,
           });
           assert.deepEqual(await snapshot(), records);
           assert.equal(
@@ -348,10 +351,10 @@ test(
                 "SELECT count(*)::int AS count FROM rio_schema_migrations",
               )
             ).rows[0].count,
-            10,
+            11,
           );
           console.log(
-            "Schema evidence: empty → 14 application tables, 14 foreign keys, 24 checks, 13 enabled triggers; linked IDs survive rerun.",
+            "Schema evidence: empty → 16 application tables, 14 foreign keys, 25 checks, 13 enabled triggers; linked IDs survive rerun.",
           );
         });
       },
@@ -364,9 +367,9 @@ test(
           const results = await Promise.all([migrate(url), migrate(url)]);
           assert.equal(
             results.reduce((count, result) => count + result.applied.length, 0),
-            10,
+            11,
           );
-          assert.equal((await inspectDatabase(url)).tables.length, 15);
+          assert.equal((await inspectDatabase(url)).tables.length, 17);
         });
       },
     );

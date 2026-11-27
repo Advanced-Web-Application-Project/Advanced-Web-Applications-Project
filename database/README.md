@@ -44,6 +44,14 @@ create tables automatically. Enable staff endpoints only with the explicit
 origin/secret configuration in [the staff session guide](../docs/API-STAFF-AUTH.md).
 The same guide records local verification and unverified Rahti acceptance.
 
+## Customer sessions
+
+Migration `0012_customer_sessions.sql` adds separate customer session storage and
+login-throttle buckets without changing existing users, bookings, or guest
+checkout. Customer sign-in is optional and requires a separate private
+`CUSTOMER_SESSION_SECRET`; see the [customer session guide](../docs/API-CUSTOMER-AUTH.md).
+The inspection report recognizes sixteen application tables.
+
 ## Commands and target
 
 Set `DATABASE_URL` in your local `backend/.env`, or export it in your shell.
@@ -57,7 +65,7 @@ npm run db:inspect
 Inspection runs in a repeatable-read, read-only transaction. JSON output includes
 public tables, columns/defaults, keys/check constraints, indexes, function and
 trigger definitions, application row counts, PostgreSQL version and session
-timezone. `missingTables` compares names with the eleven baseline application
+timezone. `missingTables` compares names with the sixteen current application
 tables. This is an inspection report, not an automatic proof of full schema
 compatibility. Save a before/after report when applying a schema change.
 It lists structure and counts, without retrieving customer records or printing

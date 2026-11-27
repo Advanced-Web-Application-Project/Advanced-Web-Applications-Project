@@ -2,13 +2,14 @@
 
 ## Scope and status
 
-The backend now provides real email/password sign-in, current-session recovery,
+The backend now provides staff email/password sign-in, current-session recovery,
 logout and city-scoped booking reads. PostgreSQL owns the session store and
 revocation/expiry state; browsers receive an opaque signed HttpOnly cookie.
 Customer browsing, selection, quotes and owned guest hold/release stay public
-under their existing rules. This backend milestone did not introduce customer
-sign-in. The separate [#58/#97 staff app](STAFF-APP.md) now consumes this API;
-its operational business features remain separate.
+under their existing rules. Customer sign-in is documented separately in
+[the customer session API](API-CUSTOMER-AUTH.md). The separate
+[#58/#97 staff app](STAFF-APP.md) consumes this API; its operational business
+features remain separate.
 
 This is verified local backend behavior, not a deployed Rahti result. The #35
 criterion covering actual separate Rahti sites still needs #67 evidence. Keep
@@ -17,9 +18,10 @@ do not close #19/#4 from this backend milestone alone.
 
 ## Configuration and local setup
 
-Apply current migrations through `0010_staff_sessions.sql` to an explicitly
-selected isolated database. Migration 0010 only adds session, attempt-counter and
-auth-event tables. It does not rewrite users, existing bookings or charged amounts.
+Apply current migrations through `0011_customer_sessions.sql` to an explicitly
+selected isolated database. Migration 0010 adds staff session, attempt-counter
+and auth-event tables; migration 0011 adds separate customer session and attempt
+tables. Neither rewrites users, existing bookings or charged amounts.
 Runtime never creates its own session table or falls back to a memory store.
 Use [#33 provisioning](STAFF-PROVISIONING.md) for real staff accounts and hidden
 password entry. No account/password is hardcoded or self-registered via HTTP.

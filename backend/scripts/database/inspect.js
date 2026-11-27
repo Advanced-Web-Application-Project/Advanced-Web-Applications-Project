@@ -4,6 +4,8 @@ export const APPLICATION_TABLES = [
   "bookings",
   "cities",
   "company_requests",
+  "customer_login_attempts",
+  "customer_sessions",
   "films",
   "invoices",
   "prices",

@@ -31,6 +31,7 @@ test("configuration requires a PostgreSQL database and an explicit frontend orig
     databaseUrl: environment.DATABASE_URL,
     frontendUrl: environment.FRONTEND_URL,
     staff: null,
+    customer: null,
     port: 3000,
   });
   for (const databaseUrl of [
@@ -166,6 +167,33 @@ test("not-found responses remain compatible", async (t) => {
     assert.equal(response.status, 404);
     assert.equal((await response.json()).success, false);
   }
+});
+
+test("disabled customer sign-in fails safely without blocking public browsing", async (t) => {
+  const { server, shutdown } = await startServer({
+    config,
+    pool: fakePool([{ id: 1, name: "Oulu" }]),
+    host: "127.0.0.1",
+  });
+  t.after(shutdown);
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const unavailable = await fetch(`${base}/api/customer/session`, {
+    headers: { Origin: config.frontendUrl },
+  });
+  assert.equal(unavailable.status, 503);
+  assert.equal(unavailable.headers.get("cache-control"), "no-store");
+  const browsing = await fetch(`${base}/api/cities`);
+  assert.equal(browsing.status, 200);
+  const malformed = await fetch(`${base}/api/customer/login`, {
+    method: "POST",
+    headers: {
+      Origin: config.frontendUrl,
+      "Content-Type": "application/json",
+    },
+    body: "{invalid",
+  });
+  assert.equal(malformed.status, 400);
+  assert.equal(malformed.headers.get("cache-control"), "no-store");
 });
 
 test("CORS uses the configured origin and malformed JSON has a safe error response", async (t) => {

@@ -1,9 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import GuestCheckout from "../features/bookings/components/GuestCheckout.jsx";
 import Icon from "../shared/components/Icon.jsx";
 import SelectionSummary from "../features/seats/components/SelectionSummary.jsx";
 import SeatSelection from "../features/seats/components/SeatSelection.jsx";
 import ScreeningSelection from "../features/screenings/components/ScreeningSelection.jsx";
+import CustomerAccount from "../features/account/components/CustomerAccount.jsx";
+import { CustomerSessionContext } from "../features/account/CustomerSessionContext.js";
+
+function CustomerAccountSlot() {
+  const sessionModel = useContext(CustomerSessionContext);
+  return sessionModel ? <CustomerAccount /> : null;
+}
 
 export default function HomePage() {
   const [checkout, setCheckout] = useState(null);
@@ -17,9 +24,12 @@ export default function HomePage() {
         <a className="wordmark" href="#main" aria-label="RIO cinema home">
           RIO<span>cinema</span>
         </a>
-        <a className="header-link" href="#cinemas">
-          Find a screening <Icon name="arrow-up-right" />
-        </a>
+        <nav className="header-actions" aria-label="Account and cinema">
+          <CustomerAccountSlot />
+          <a className="header-link" href="#cinemas">
+            Find a screening <Icon name="arrow-up-right" />
+          </a>
+        </nav>
       </header>
       <main id="main" className="shell">
         <section className="hero" aria-labelledby="hero-title">

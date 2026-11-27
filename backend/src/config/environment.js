@@ -52,7 +52,45 @@ export function readEnvironment(environment = process.env) {
     databaseUrl,
     frontendUrl: readHttpOrigin(environment.FRONTEND_URL),
     staff: readStaffEnvironment(environment),
+    customer: readCustomerEnvironment(environment),
     port,
+  };
+}
+
+export function readCustomerEnvironment(environment = process.env) {
+  const secret = environment.CUSTOMER_SESSION_SECRET;
+  if (!secret) return null;
+  if (
+    !/^[A-Za-z0-9_-]{43}$/.test(secret) ||
+    Buffer.from(secret, "base64url").toString("base64url") !== secret
+  )
+    throw new Error(
+      "CUSTOMER_SESSION_SECRET must be a private random 32-byte canonical base64url value",
+    );
+  const origin = readHttpOrigin(environment.FRONTEND_URL);
+  const url = new URL(origin);
+  const secureCookies = url.protocol === "https:";
+  if (
+    !secureCookies &&
+    (environment.NODE_ENV === "production" ||
+      !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname))
+  )
+    throw new Error(
+      "HTTP customer origins are allowed only for loopback development; production requires HTTPS",
+    );
+  const proxy =
+    environment.CUSTOMER_TRUST_PROXY_HOPS ??
+    environment.STAFF_TRUST_PROXY_HOPS ??
+    "0";
+  if (!["0", "1"].includes(String(proxy)))
+    throw new Error(
+      "CUSTOMER_TRUST_PROXY_HOPS must be 0 or 1; configure the verified deployment proxy boundary",
+    );
+  return {
+    origin,
+    secret,
+    secureCookies,
+    trustProxyHops: Number(proxy),
   };
 }
 

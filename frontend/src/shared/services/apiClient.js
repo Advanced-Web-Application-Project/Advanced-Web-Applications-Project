@@ -11,10 +11,18 @@ export function createApiClient(baseUrl) {
   const base = baseUrl.replace(/\/+$/, "");
   return async function apiRequest(
     path,
-    { signal, method = "GET", body: requestBody, cache, headers = {} } = {},
+    {
+      signal,
+      method = "GET",
+      body: requestBody,
+      cache,
+      credentials = "same-origin",
+      headers = {},
+    } = {},
   ) {
     const response = await fetch(`${base}/${path.replace(/^\/+/, "")}`, {
       method,
+      credentials,
       headers: {
         ...headers,
         Accept: "application/json",

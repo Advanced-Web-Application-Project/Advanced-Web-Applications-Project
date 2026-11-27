@@ -34,6 +34,16 @@ change the backend port, update the proxy in `vite.config.js`, or set the public
 API base URL explicitly, including `/api`. With a direct API URL, configure the
 backend's `FRONTEND_URL` to the actual browser origin so CORS permits it.
 
+The header offers customer sign-in and registration. New accounts use email and
+a 15–128-character password, activate immediately, and do not require a
+verification email. Sessions use a server-side PostgreSQL store and an HttpOnly
+cookie; customer identity and CSRF data stay in memory, not browser storage.
+Customer auth requires `CUSTOMER_SESSION_SECRET` and migration
+`0011_customer_sessions.sql` in the backend. Without that configuration,
+browsing and guest checkout continue to work. Password recovery and account
+reservation pages are not included; see the
+[customer auth contract](../docs/API-CUSTOMER-AUTH.md).
+
 Vite exposes `VITE_` configuration to the browser and embeds it during a build.
 Only public API configuration belongs here; database credentials remain in the
 backend. See [Vite environment documentation](https://vite.dev/guide/env-and-mode).
@@ -50,8 +60,8 @@ npm run preview
 
 `npm run format` applies formatting. `npm test` runs both suites:
 
-- `npm run test:unit`: 20 Node tests for transport and pure selection rules.
-- `npm run test:components`: 19 Vitest/Testing Library tests in a simulated DOM,
+- `npm run test:unit`: 27 Node tests for transport and pure selection rules.
+- `npm run test:components`: 56 Vitest/Testing Library tests in a simulated DOM,
   with controlled HTTP responses for loading, empty data, retry, focus and races.
 
 No database credentials are needed for frontend tests. The test dependencies are
@@ -112,8 +122,9 @@ request hook, screening service, and pure selection/reset rules. All services us
 `src/styles/global.css`.
 
 The old standalone `CinemaLocations.jsx` list and its unused styles were removed
-because the selectors replace it. No checkout/account/staff pages or empty
-feature scaffolding were added. Request state is local; abandoned requests are
+because the selectors replace it. Customer sign-in is optional and does not
+replace guest checkout; staff tools remain in the separate admin frontend.
+Request state is local; abandoned requests are
 aborted and their results ignored. Data from a previous request identity is
 hidden immediately when a parent choice changes. Loading, empty and error
 feedback plus retry are present as needed for these controls. #25 adds controlled

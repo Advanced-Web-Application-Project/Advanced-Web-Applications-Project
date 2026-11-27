@@ -13,6 +13,7 @@ export async function startServer({
       pool,
       frontendUrl: config.frontendUrl,
       staff: config.staff,
+      customer: config.customer,
     });
     server = await new Promise((resolve, reject) => {
       const listener = app.listen(config.port, host);
@@ -23,7 +24,7 @@ export async function startServer({
       });
     });
   } catch (error) {
-    await app?.locals.closeStaffAuth?.();
+    await app?.locals.closeAuth?.();
     await pool.end();
     throw error;
   }
@@ -39,7 +40,7 @@ export async function startServer({
         });
       } finally {
         clearTimeout(forceClose);
-        await app.locals.closeStaffAuth?.();
+        await app.locals.closeAuth?.();
         await pool.end();
       }
     })();

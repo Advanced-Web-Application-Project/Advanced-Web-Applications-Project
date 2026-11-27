@@ -48,6 +48,7 @@ button:focus-visible {
   top: 0.75rem;
 }
 .site-header {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -76,6 +77,114 @@ button:focus-visible {
 }
 .header-link span {
   margin-left: 1.125rem;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.customer-account {
+  position: relative;
+}
+.account-button,
+.account-submit,
+.account-retry {
+  min-height: 2.75rem;
+  border: 1px solid #e8bc64;
+  border-radius: 0.25rem;
+  padding: 0.55rem 0.9rem;
+  color: #171111;
+  background: #e8bc64;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+.account-panel {
+  position: absolute;
+  z-index: 4;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  width: min(22rem, calc(100vw - 2.5rem));
+  padding: 1.25rem;
+  border: 1px solid #725b49;
+  border-radius: 0.4rem;
+  background: #211a1b;
+  box-shadow: 0 0.75rem 2rem #0008;
+}
+.account-panel h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+}
+.account-panel p {
+  color: #c2b3a3;
+  font-size: var(--font-small);
+}
+.account-panel label {
+  display: block;
+  margin: 1rem 0 0.35rem;
+  font-weight: 600;
+}
+.account-panel input {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #725b49;
+  border-radius: 0.25rem;
+  color: #f5eee8;
+  background: #151112;
+  font: inherit;
+}
+.account-submit,
+.account-retry {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+.account-switch {
+  display: block;
+  width: 100%;
+  min-height: 2.5rem;
+  margin-top: 0.5rem;
+  border: 0;
+  padding: 0.4rem;
+  color: #e8bc64;
+  background: transparent;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.account-switch:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.account-retry {
+  color: #f5eee8;
+  border-color: #725b49;
+  background: transparent;
+}
+.account-button:disabled,
+.account-submit:disabled,
+.account-retry:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.account-error {
+  display: block;
+  margin-top: 0.75rem;
+  color: #ffb0a4;
+  font-size: var(--font-small);
+}
+.account-status {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  max-width: min(22rem, 75vw);
+  color: #c2b3a3;
+  font-size: var(--font-caption);
+  overflow-wrap: anywhere;
+}
+.account-note {
+  margin-bottom: 0;
 }
 .hero {
   display: grid;
@@ -211,6 +320,13 @@ h3 {
   }
   .site-header {
     padding-block: 1.375rem;
+  }
+  .header-actions {
+    gap: 0.7rem;
+  }
+  .account-button {
+    padding-inline: 0.6rem;
+    font-size: var(--font-caption);
   }
   .hero {
     grid-template-columns: 1fr;
