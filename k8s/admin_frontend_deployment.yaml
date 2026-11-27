@@ -15,5 +15,6 @@ spec:
       containers:
         - name: admin-frontend
           image: image-registry.openshift-image-registry.svc:5000/awap-rio/adminfrontend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
