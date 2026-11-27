@@ -53,3 +53,37 @@ spec:
     to:
       kind: ImageStreamTag
       name: backend:latest
+
+---
+
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: admin-frontend-build
+  labels:
+    app: admin-frontend
+spec:
+  triggers:
+  - type: GitHub
+    github:
+      secret: secret101
+  - type: ImageChange
+    imageChange: {}
+  - type: ConfigChange
+  source:
+    type: Git
+    git:
+      uri: https://github.com/Santsu4/Advanced-Web-Applications-Project
+      ref: main
+    contextDir: admin-frontend
+  strategy:
+    type: Docker
+    dockerStrategy:
+      noCache: true
+      buildArgs:
+        - name: VITE_API_BASE_URL
+          value: "/api"
+  output:
+    to:
+      kind: ImageStreamTag
+      name: adminfrontend:v1
